@@ -161,8 +161,6 @@ print:
 
 clean:
 	rm -f gmock.a gmock_main.a *.o FRED ../bin/FRED fsz ../bin/fsz *~
-	(cd ../region; make clean)
-	(cd ../tests; make clean)
 	(cd $(SNAPPY_DIR); make clean)
 	(cd $(SNAPPY_DIR); rm -r lib include share)
 	(cd $(SQLITE_DIR); make clean)
@@ -183,7 +181,7 @@ VER = 1.0.1
 release:
 	make clean
 	(cd ../..; tar cvzf FRED-V${VER}-`date +"%Y-%m-%d"`.tgz --exclude CVS \
-	FRED/Makefile FRED/LICENSE FRED/bin FRED/doc FRED/input_files FRED/region/ \
+	FRED/Makefile FRED/LICENSE FRED/bin FRED/input_files FRED/region/ \
 	FRED/src/Makefile FRED/src/*.h  FRED/src/*.cc FRED/src/mt*.c FRED/tests)
 	rm -f gmock.a gmock_main.a *.o FRED ../bin/FRED *~
 
