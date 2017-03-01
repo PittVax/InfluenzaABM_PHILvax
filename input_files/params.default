@@ -79,7 +79,7 @@ output_population_date_match = 01-01-*
 ##########################################################
 
 # location of the synthetic population files
-synthetic_population_directory = $FRED_HOME/populations
+synthetic_population_directory = $PHIL_HOME/populations
 
 # defaults to Jefferson County Population (RTI Ver 2)
 synthetic_population_id = 2005_2009_ver2_42065
@@ -140,11 +140,11 @@ enable_deaths = 0
 enable_mobility = 0 
 enable_migration = 0 
 yearly_mortality_rate_file = none
-# yearly_mortality_rate_file = $FRED_HOME/input_files/mortality_rate.txt
+# yearly_mortality_rate_file = $PHIL_HOME/input_files/mortality_rate.txt
 yearly_mobility_rate_file = none
-# yearly_mobility_rate_file = $FRED_HOME/input_files/mobility_rate.txt
+# yearly_mobility_rate_file = $PHIL_HOME/input_files/mobility_rate.txt
 yearly_birth_rate_file = none
-# yearly_birth_rate_file = $FRED_HOME/input_files/birth_rate.txt
+# yearly_birth_rate_file = $PHIL_HOME/input_files/birth_rate.txt
 birth_rate_multiplier = 1
 
 ##########################################################
@@ -198,10 +198,10 @@ min_travel_distance = 100.0
 max_trips_per_day = 1000000
 
 # file containing list of sample trips
-tripfile = $FRED_HOME/input_files/trips.txt
+tripfile = $PHIL_HOME/input_files/trips.txt
 
 # file with population estimate for each large cell
-cell_popfile = $FRED_HOME/input_files/cell_pop.txt
+cell_popfile = $PHIL_HOME/input_files/cell_pop.txt
 
 ##########################################################
 #
@@ -210,7 +210,7 @@ cell_popfile = $FRED_HOME/input_files/cell_pop.txt
 ##########################################################
 
 # parameters for disease 0 (modify for each disease as needed)
-primary_cases_file[0] = $FRED_HOME/input_files/primary_case_schedule-0.txt
+primary_cases_file[0] = $PHIL_HOME/input_files/primary_case_schedule-0.txt
 
 # how are initial infections selected?
 seed_by_age = 0
@@ -320,7 +320,7 @@ at_risk_values[0] = 0
 enable_seasonality = 0
 enable_climate = 0
 seasonality_timestep_file = none
-# seasonality_timestep_file = $FRED_HOME/input_files/seasonality_timestep
+# seasonality_timestep_file = $PHIL_HOME/input_files/seasonality_timestep
 seasonality_multiplier_max[0] = 1
 seasonality_multiplier_min[0] = 1
 seasonality_multiplier_Ka[0] = -180
@@ -412,7 +412,7 @@ infection_immunity_prob_values[0] = 1 1.0
 vaccination_immunity_prob_ages[0] = 6 0 2 3 70 71 100
 vaccination_immunity_prob_values[0] = 3 0.5 0.9 0.3
 num_codons = 12
-codon_translation_file = $FRED_HOME/input_files/evolution/numAA.txt
+codon_translation_file = $PHIL_HOME/input_files/evolution/numAA.txt
 past_infections_strains_file = none
 past_infections_hosts_file = none
 #######################################################
@@ -542,7 +542,7 @@ vaccination_capacity_file = none
 vaccine_coverage_by_age = 0
 vaccinate_symptomatics = 0
 
-# vaccination_capacity_file = $FRED_HOME/input_files/vaccination_capacity-0.txt
+# vaccination_capacity_file = $PHIL_HOME/input_files/vaccination_capacity-0.txt
 
 ## vaccine age-specific clinical infection monitoring
 track_vaccine_infection_events = 1
