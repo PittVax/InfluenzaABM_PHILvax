@@ -161,9 +161,8 @@ print:
 
 clean:
 	rm -f gmock.a gmock_main.a *.o FRED ../bin/FRED fsz ../bin/fsz *~
-	(cd $(SNAPPY_DIR); make clean)
-	(cd $(SNAPPY_DIR); rm -r lib include share)
-	(cd $(SQLITE_DIR); make clean)
+	#(cd $(SNAPPY_DIR); make clean)
+	#(cd $(SNAPPY_DIR); rm -r lib include share)
 
 tar: clean
 	cd ..
