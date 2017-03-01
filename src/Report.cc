@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Report.cc
@@ -27,9 +16,9 @@ void Report::setup() {
     // the number of states saves memory.  The values used here must be determined
     // through experimentation.  Optimal values will vary based on the particular
     // cpu, number of threads, calibrated attack rate, population density, etc...
-    unsigned int dim = fred::omp_get_max_threads();
+    unsigned int dim = phil::omp_get_max_threads();
     dim = dim == 0 ? 1 : dim;
-    dim = dim <= fred::omp_get_max_threads() ? dim : fred::omp_get_max_threads();
+    dim = dim <= phil::omp_get_max_threads() ? dim : phil::omp_get_max_threads();
     // Initialize specified number of states
     report_state = State< Report_State >(dim);
 }

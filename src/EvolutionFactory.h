@@ -1,17 +1,6 @@
-/*
-  This file is part of the FRED system.
 
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
-
-#ifndef _FRED_EVOLUTION_FACTORY_H
-#define _FRED_EVOLUTION_FACTORY_H
+#ifndef _PHIL_EVOLUTION_FACTORY_H
+#define _PHIL_EVOLUTION_FACTORY_H
 
 #include <map>
 

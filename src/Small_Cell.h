@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Small_Cell.h
 //
 
-#ifndef _FRED_SMALL_CELL_H
-#define _FRED_SMALL_CELL_H
+#ifndef _PHIL_SMALL_CELL_H
+#define _PHIL_SMALL_CELL_H
 
 #include "Global.h"
 #include "Abstract_Cell.h"
@@ -51,4 +40,4 @@ class Small_Cell : public Abstract_Cell {
     int popsize;
 };
 
-#endif // _FRED_SMALL_CELL_H
+#endif // _PHIL_SMALL_CELL_H

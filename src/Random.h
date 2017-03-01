@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Random.h
 //
 
-#ifndef _FRED_RANDOM_H
-#define _FRED_RANDOM_H
+#ifndef _PHIL_RANDOM_H
+#define _PHIL_RANDOM_H
 
 #include <math.h>
 #include <vector>
@@ -33,7 +22,7 @@
 
 // Using  double precision SIMD oriented Fast Mersenne Twister(dSFMT)
 // by M Saito, T. Nishimura and M. Matsumoto.
-// See FRED/src/PRNG__Mersenne_Twister/dSFMT-src-2.2/LICENSE.txt for acknowledgements.
+// See PHIL/src/PRNG__Mersenne_Twister/dSFMT-src-2.2/LICENSE.txt for acknowledgements.
 
 #define INIT_RANDOM(SEED)   RNG::init(SEED)
 #define RANDOM()        RNG::random_double()
@@ -157,4 +146,4 @@ void FYShuffle(std::vector <T> &array) {
     }
 }
 
-#endif // _FRED_RANDOM_H
+#endif // _PHIL_RANDOM_H

@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Large_Cell.h
 //
 
-#ifndef _FRED_LARGE_CELL_H
-#define _FRED_LARGE_CELL_H
+#ifndef _PHIL_LARGE_CELL_H
+#define _PHIL_LARGE_CELL_H
 
 #include <vector>
 
@@ -38,7 +27,7 @@ class Large_Cell : public Abstract_Cell {
     double distance_to_grid_cell(Large_Cell *grid_cell2);
     void add_person(Person * p) {
         // <-------------------------------------------------------------- Mutex
-        fred::Scoped_Lock lock(mutex);
+        phil::Scoped_Lock lock(mutex);
         person.push_back(p);
         ++demes[ p->get_deme_id() ];
         ++popsize;
@@ -66,7 +55,7 @@ class Large_Cell : public Abstract_Cell {
     unsigned char get_deme_id();
 
   protected:
-    fred::Mutex mutex;
+    phil::Mutex mutex;
     Large_Grid * grid;
     int popsize;
     vector <Person *> person;
@@ -78,4 +67,4 @@ class Large_Cell : public Abstract_Cell {
     std::map< unsigned char, int > demes;
 };
 
-#endif // _FRED_LARGE_CELL_H
+#endif // _PHIL_LARGE_CELL_H

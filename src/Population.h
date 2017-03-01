@@ -1,21 +1,10 @@
-/*
-   This file is part of the FRED system.
-
-   Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-   Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-   Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-   Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-   more information.
-   */
-
 //
 //
 // File: Population.h
 //
 
-#ifndef _FRED_POPULATION_H
-#define _FRED_POPULATION_H
+#ifndef _PHIL_POPULATION_H
+#define _PHIL_POPULATION_H
 
 #include <iostream>
 #include <fstream>
@@ -234,7 +223,7 @@ class Population {
      * TODO redefine the mask type so that multiple sets of masks
      * are available (one set for each disease)
      */
-    void set_mask_by_index(fred::Pop_Masks mask, int person_index);
+    void set_mask_by_index(phil::Pop_Masks mask, int person_index);
 
     /*
      * Clear the mask bit for the person_index
@@ -242,12 +231,12 @@ class Population {
      * TODO redefine the mask type so that multiple sets of masks
      * are available (one set for each disease)
      */
-    void clear_mask_by_index(fred::Pop_Masks mask, int person_index);
+    void clear_mask_by_index(phil::Pop_Masks mask, int person_index);
 
     /*
      * Check to see if mask is set for person_index
      */
-    bool check_mask_by_index(fred::Pop_Masks mask, int person_index) {
+    bool check_mask_by_index(phil::Pop_Masks mask, int person_index) {
         return blq.mask_is_set(mask, person_index);
     }
 
@@ -256,7 +245,7 @@ class Population {
         return blq.size();
     }
 
-    int size(fred::Pop_Masks mask) {
+    int size(phil::Pop_Masks mask) {
         return blq.size(mask);
     }
 
@@ -266,7 +255,7 @@ class Population {
     }
 
     template< typename Functor >
-    void apply(fred::Pop_Masks m, Functor & f) {
+    void apply(phil::Pop_Masks m, Functor & f) {
         blq.apply(m, f);
     }
 
@@ -276,12 +265,12 @@ class Population {
     }
 
     template< typename Functor >
-    void parallel_masked_apply(fred::Pop_Masks m, Functor & f) {
+    void parallel_masked_apply(phil::Pop_Masks m, Functor & f) {
         blq.parallel_masked_apply(m, f);
     }
 
     template< typename Functor >
-    void parallel_not_masked_apply(fred::Pop_Masks m, Functor & f) {
+    void parallel_not_masked_apply(phil::Pop_Masks m, Functor & f) {
         blq.parallel_not_masked_apply(m, f);
     }
 
@@ -290,7 +279,7 @@ class Population {
     }
     /* TODO rewrite
        template< typename MaskType >
-       struct masked_iterator : bloque< Person, fred::Pop_Masks >::masked_iterator< MaskType > { };
+       struct masked_iterator : bloque< Person, phil::Pop_Masks >::masked_iterator< MaskType > { };
 
        template< typename MaskType >
        masked_iterator< MaskType > begin() { return blq.begin(); }
@@ -365,7 +354,7 @@ class Population {
                                           const Place_List & places, bool is_group_quarters_population);
 
 
-    bloque< Person, fred::Pop_Masks > blq;   // all Persons in the population
+    bloque< Person, phil::Pop_Masks > blq;   // all Persons in the population
     vector <Person * > death_list;     // list agents to die today
     vector <Person * > maternity_list; // list agents to give birth today
     int pop_size;
@@ -380,9 +369,9 @@ class Population {
     // have changed since the last history dump
     ChangeMap never_changed;        // agents who have *never* changed
 
-    static char profilefile[FRED_STRING_SIZE];
-    static char pop_outfile[FRED_STRING_SIZE];
-    static char output_population_date_match[FRED_STRING_SIZE];
+    static char profilefile[PHIL_STRING_SIZE];
+    static char pop_outfile[PHIL_STRING_SIZE];
+    static char output_population_date_match[PHIL_STRING_SIZE];
     static int output_population;
     static bool is_initialized;
     static int next_id;
@@ -469,9 +458,9 @@ class Population {
         void operator()(Person & p);
     };
 
-    fred::Mutex mutex;
-    fred::Mutex add_person_mutex;
-    fred::Mutex batch_add_person_mutex;
+    phil::Mutex mutex;
+    phil::Mutex add_person_mutex;
+    phil::Mutex batch_add_person_mutex;
 
 };
 
@@ -542,7 +531,7 @@ struct Person_Init_Data {
     }
 };
 
-#endif // _FRED_POPULATION_H
+#endif // _PHIL_POPULATION_H
 
 
 

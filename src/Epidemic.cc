@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Epidemic.cc
@@ -121,7 +110,7 @@ void Epidemic::setup() {
         assert(fraction_exposed + fraction_infectious >= 0.99);
         fraction_seeds_infectious = fraction_infectious;
     } else {
-        Utils::fred_abort("Invalid advance_seeding parameter: %s!\n", seeding_type_name);
+        Utils::phil_abort("Invalid advance_seeding parameter: %s!\n", seeding_type_name);
     }
 
     tracker_state = State< Tracker<string>* > (NCPU);
@@ -139,17 +128,17 @@ Epidemic::~Epidemic() {
 
 void Epidemic::become_susceptible(Person *person) {
     // operations on bloque (underlying container for population) are thread-safe
-    Global::Pop.set_mask_by_index(fred::Susceptible, person->get_pop_index());
+    Global::Pop.set_mask_by_index(phil::Susceptible, person->get_pop_index());
     #pragma omp atomic
     --(removed_people);
 }
 
 void Epidemic::become_unsusceptible(Person *person) {
     // operations on bloque (underlying container for population) are thread-safe
-    if (Global::Pop.check_mask_by_index(fred::Susceptible, person->get_pop_index())) {
-        Global::Pop.clear_mask_by_index(fred::Susceptible, person->get_pop_index());
+    if (Global::Pop.check_mask_by_index(phil::Susceptible, person->get_pop_index())) {
+        Global::Pop.clear_mask_by_index(phil::Susceptible, person->get_pop_index());
     } else {
-        FRED_VERBOSE(0, "WARNING: become_unsusceptible: person %d not removed from \
+        PHIL_VERBOSE(0, "WARNING: become_unsusceptible: person %d not removed from \
         susceptible_list\n", person->get_id());
     }
 }
@@ -163,7 +152,7 @@ void Epidemic::become_exposed(Person *person) {
     // TODO the daily infections list may end up containing defunct pointers if
     // enable_deaths is in effect (whether or not we are running in parallel mode).
     // Make daily reports and purge list after each report to fix this.
-    fred::Spin_Lock lock(spin_mutex);
+    phil::Spin_Lock lock(spin_mutex);
     daily_infections_list.push_back(person);
 }
 
@@ -171,15 +160,15 @@ void Epidemic::become_infectious(Person *person) {
     #pragma omp atomic
     exposed_people--;
     // operations on bloque (underlying container for population) are thread-safe
-    Global::Pop.set_mask_by_index(fred::Infectious, person->get_pop_index());
+    Global::Pop.set_mask_by_index(phil::Infectious, person->get_pop_index());
 }
 
 void Epidemic::become_uninfectious(Person *person) {
     // operations on bloque (underlying container for population) are thread-safe
-    if (Global::Pop.check_mask_by_index(fred::Infectious, person->get_pop_index())) {
-        Global::Pop.clear_mask_by_index(fred::Infectious, person->get_pop_index());
+    if (Global::Pop.check_mask_by_index(phil::Infectious, person->get_pop_index())) {
+        Global::Pop.clear_mask_by_index(phil::Infectious, person->get_pop_index());
     } else {
-        FRED_VERBOSE(0, "WARNING: become_uninfectious: person %d not removed from \
+        PHIL_VERBOSE(0, "WARNING: become_uninfectious: person %d not removed from \
         infectious_list\n",person->get_id());
     }
 }
@@ -194,22 +183,22 @@ void Epidemic::become_symptomatic(Person *person) {
 void Epidemic::become_removed(Person *person, bool susceptible, bool infectious, bool symptomatic) {
     // operations on bloque (underlying container for population) are thread-safe
     if (susceptible) {
-        if (Global::Pop.check_mask_by_index(fred::Susceptible, person->get_pop_index())) {
-            Global::Pop.clear_mask_by_index(fred::Susceptible, person->get_pop_index());
-            FRED_VERBOSE(1, "OK: become_removed: person %d removed from \
+        if (Global::Pop.check_mask_by_index(phil::Susceptible, person->get_pop_index())) {
+            Global::Pop.clear_mask_by_index(phil::Susceptible, person->get_pop_index());
+            PHIL_VERBOSE(1, "OK: become_removed: person %d removed from \
           susceptible_list\n",person->get_id());
         } else {
-            FRED_VERBOSE(0, "WARNING: become_removed: person %d not removed \
+            PHIL_VERBOSE(0, "WARNING: become_removed: person %d not removed \
           from susceptible_list\n",person->get_id());
         }
     }
     if (infectious) {
-        if (Global::Pop.check_mask_by_index(fred::Infectious, person->get_pop_index())) {
-            Global::Pop.clear_mask_by_index(fred::Infectious, person->get_pop_index());
-            FRED_VERBOSE(1, "OK: become_removed: person %d removed from \
+        if (Global::Pop.check_mask_by_index(phil::Infectious, person->get_pop_index())) {
+            Global::Pop.clear_mask_by_index(phil::Infectious, person->get_pop_index());
+            PHIL_VERBOSE(1, "OK: become_removed: person %d removed from \
           infectious_list\n",person->get_id());
         } else {
-            FRED_VERBOSE(0, "WARNING: become_removed: person %d not removed from \
+            PHIL_VERBOSE(0, "WARNING: become_removed: person %d not removed from \
           infectious_list\n",person->get_id());
         }
     }
@@ -223,22 +212,22 @@ void Epidemic::become_removed(Person *person, bool susceptible, bool infectious,
 
 void Epidemic::become_immune(Person *person, bool susceptible, bool infectious, bool symptomatic) {
     if (susceptible) {
-        if (Global::Pop.check_mask_by_index(fred::Susceptible, person->get_pop_index())) {
-            Global::Pop.clear_mask_by_index(fred::Susceptible, person->get_pop_index());
-            FRED_VERBOSE(1, "OK: become_immune: person %d removed from \
+        if (Global::Pop.check_mask_by_index(phil::Susceptible, person->get_pop_index())) {
+            Global::Pop.clear_mask_by_index(phil::Susceptible, person->get_pop_index());
+            PHIL_VERBOSE(1, "OK: become_immune: person %d removed from \
           susceptible_list\n",person->get_id());
         } else {
-            FRED_VERBOSE(0, "WARNING: become_immune: person %d not removed from \
+            PHIL_VERBOSE(0, "WARNING: become_immune: person %d not removed from \
           susceptible_list\n",person->get_id());
         }
     }
     if (infectious) {
-        if (Global::Pop.check_mask_by_index(fred::Infectious, person->get_pop_index())) {
-            Global::Pop.clear_mask_by_index(fred::Infectious, person->get_pop_index());
-            FRED_VERBOSE(1, "OK: become_immune: person %d removed from \
+        if (Global::Pop.check_mask_by_index(phil::Infectious, person->get_pop_index())) {
+            Global::Pop.clear_mask_by_index(phil::Infectious, person->get_pop_index());
+            PHIL_VERBOSE(1, "OK: become_immune: person %d removed from \
           infectious_list\n", person->get_id());
         } else {
-            FRED_VERBOSE(0, "WARNING: become_immune: person %d not removed from \
+            PHIL_VERBOSE(0, "WARNING: become_immune: person %d not removed from \
           infectious_list\n", person->get_id());
         }
     }
@@ -252,7 +241,7 @@ void Epidemic::become_immune(Person *person, bool susceptible, bool infectious, 
 }
 
 void Epidemic::print_stats(int day) {
-    FRED_VERBOSE(1, "epidemic update stats\n","");
+    PHIL_VERBOSE(1, "epidemic update stats\n","");
 
     // set population size, and remember original pop size
     if (day == 0) {
@@ -274,8 +263,8 @@ void Epidemic::print_stats(int day) {
         }
     }
 
-    susceptible_people = Global::Pop.size(fred::Susceptible);
-    infectious_people = Global::Pop.size(fred::Infectious);
+    susceptible_people = Global::Pop.size(phil::Susceptible);
+    infectious_people = Global::Pop.size(phil::Infectious);
 
     total_people_ever_infected += people_becoming_infected_today;
     total_people_ever_symptomatic += people_becoming_symptomatic_today;
@@ -289,7 +278,7 @@ void Epidemic::print_stats(int day) {
     prevalence_count = exposed_people + infectious_people;
     prevalence = (double) prevalence_count / (double) N;
 
-    char buffer[ FRED_STRING_SIZE ];
+    char buffer[ PHIL_STRING_SIZE ];
     int nchar_used = sprintf(buffer,
                              "Day %3d Date %s Wkday %s Year %d Week %2d Str %d S %7d E %7d I %7d Is %7d R %7d P %7d C %7d Cs %7d AR %5.2f ARs %5.2f RR %4.2f N %7d",
                              day, Global::Sim_Current_Date->get_YYYYMMDD().c_str(),
@@ -301,13 +290,13 @@ void Epidemic::print_stats(int day) {
                              prevalence_count, incidence, symptomatic_incidence,
                              attack_ratio, symptomatic_attack_ratio, RR, N);
     fprintf(Global::Outfp, "%s", buffer);
-    FRED_STATUS(0, "%s", buffer);
+    PHIL_STATUS(0, "%s", buffer);
 
     if (Global::Enable_Seasonality) {
         double average_seasonality_multiplier = 1.0;
         average_seasonality_multiplier = Global::Clim->get_average_seasonality_multiplier(disease->get_id());
         fprintf(Global::Outfp, " SM %2.4f", average_seasonality_multiplier);
-        FRED_STATUS(0, " SM %2.4f", average_seasonality_multiplier);
+        PHIL_STATUS(0, " SM %2.4f", average_seasonality_multiplier);
     }
 
     // Print Residual Immunuties
@@ -323,8 +312,8 @@ void Epidemic::print_stats(int day) {
             if (res_immunity != 0) {
                 //fprintf(Global::Outfp, " ResM_%d %lf", i, res_immunity);
                 fprintf(Global::Outfp, " S_%d %lf", i, 1.0-res_immunity);
-                //FRED_STATUS(0, " ResM_%d %lf", i, res_immunity);
-                FRED_STATUS(0, " S_%d %lf", i, 1.0-res_immunity);
+                //PHIL_STATUS(0, " ResM_%d %lf", i, res_immunity);
+                PHIL_STATUS(0, " S_%d %lf", i, 1.0-res_immunity);
             }
         }
     }
@@ -372,17 +361,17 @@ void::Epidemic::report_age_of_infection(int day) {
     if (count_infections > 0) {
         mean_age /= count_infections;
     }
-    Utils::fred_log("\nDay %d INF_AGE: ", day);
-    Utils::fred_report(" Age_at_infection %f", mean_age);
+    Utils::phil_log("\nDay %d INF_AGE: ", day);
+    Utils::phil_report(" Age_at_infection %f", mean_age);
     if (Global::Report_Age_Of_Infection > 1) {
         report_transmission_by_age_group(day);
     }
     if (Global::Report_Age_Of_Infection > 2) {
         for (int i = 0; i <= 20; i++) {
-            Utils::fred_report(" A%d %d", i*5, age_count[i]);
+            Utils::phil_report(" A%d %d", i*5, age_count[i]);
         }
     }
-    Utils::fred_log("\n");
+    Utils::phil_log("\n");
 }
 
 void::Epidemic::report_transmission_by_age_group(int day) {
@@ -391,7 +380,7 @@ void::Epidemic::report_transmission_by_age_group(int day) {
     sprintf(file, "%s/AGE.%d", Global::Output_directory, day);
     fp = fopen(file, "w");
     if (fp == NULL) {
-        Utils::fred_abort("Can't open file to report age transmission matrix\n");
+        Utils::phil_abort("Can't open file to report age transmission matrix\n");
     }
     int age_count[100][100];                // age group counts
     for (int i = 0; i < 100; i++)
@@ -457,10 +446,10 @@ void::Epidemic::report_place_of_infection(int day) {
         }
     }
 
-    Utils::fred_log("\nDay %d INF_PLACE: ", day);
-    Utils::fred_report(" X %d H %d Nbr %d Sch %d", X, H, N, S);
-    Utils::fred_report(" Cls %d Wrk %d Off %d ", C, W, O);
-    Utils::fred_log("\n");
+    Utils::phil_log("\nDay %d INF_PLACE: ", day);
+    Utils::phil_report(" X %d H %d Nbr %d Sch %d", X, H, N, S);
+    Utils::phil_report(" Cls %d Wrk %d Off %d ", C, W, O);
+    Utils::phil_log("\n");
 }
 
 void Epidemic::report_distance_of_infection(int day) {
@@ -486,9 +475,9 @@ void Epidemic::report_distance_of_infection(int day) {
     if (n>0) {
         ave_dist = tot_dist / n;
     }
-    Utils::fred_log("\nDay %d INF_DIST: ", day);
-    Utils::fred_report(" Dist %f ", 1000*ave_dist);
-    Utils::fred_log("\n");
+    Utils::phil_log("\nDay %d INF_DIST: ", day);
+    Utils::phil_report(" Dist %f ", 1000*ave_dist);
+    Utils::phil_log("\n");
 }
 
 void Epidemic::report_presenteeism(int day) {
@@ -564,20 +553,20 @@ void Epidemic::report_presenteeism(int day) {
     int presenteeism_with_sl = presenteeism_small_with_sl + presenteeism_med_with_sl
                                + presenteeism_large_with_sl + presenteeism_xlarge_with_sl;
 
-    Utils::fred_log("\nDay %d PRESENTEE: ",day);
-    Utils::fred_report(" small %d ", presenteeism_small);
-    Utils::fred_report("small_n %d ", Workplace::get_workers_in_small_workplaces());
-    Utils::fred_report("med %d ", presenteeism_med);
-    Utils::fred_report("med_n %d ", Workplace::get_workers_in_medium_workplaces());
-    Utils::fred_report("large %d ", presenteeism_large);
-    Utils::fred_report("large_n %d ", Workplace::get_workers_in_large_workplaces());
-    Utils::fred_report("xlarge %d ", presenteeism_xlarge);
-    Utils::fred_report("xlarge_n %d ", Workplace::get_workers_in_xlarge_workplaces());
-    Utils::fred_report("pres %d ", presenteeism);
-    Utils::fred_report("pres_sl %d ", presenteeism_with_sl);
-    Utils::fred_report("inf_at_work %d ", infections_at_work);
-    Utils::fred_report("tot_emp %d ", Workplace::get_total_workers());
-    Utils::fred_log("N %d\n", N);
+    Utils::phil_log("\nDay %d PRESENTEE: ",day);
+    Utils::phil_report(" small %d ", presenteeism_small);
+    Utils::phil_report("small_n %d ", Workplace::get_workers_in_small_workplaces());
+    Utils::phil_report("med %d ", presenteeism_med);
+    Utils::phil_report("med_n %d ", Workplace::get_workers_in_medium_workplaces());
+    Utils::phil_report("large %d ", presenteeism_large);
+    Utils::phil_report("large_n %d ", Workplace::get_workers_in_large_workplaces());
+    Utils::phil_report("xlarge %d ", presenteeism_xlarge);
+    Utils::phil_report("xlarge_n %d ", Workplace::get_workers_in_xlarge_workplaces());
+    Utils::phil_report("pres %d ", presenteeism);
+    Utils::phil_report("pres_sl %d ", presenteeism_with_sl);
+    Utils::phil_report("inf_at_work %d ", infections_at_work);
+    Utils::phil_report("tot_emp %d ", Workplace::get_total_workers());
+    Utils::phil_log("N %d\n", N);
 }
 
 
@@ -585,37 +574,37 @@ void Epidemic::report_presenteeism(int day) {
 void Epidemic::add_infectious_place(Place *place, char type) {
     switch (type) {
     case HOUSEHOLD: {
-        fred::Spin_Lock lock(household_mutex);
+        phil::Spin_Lock lock(household_mutex);
         inf_households.push_back(place);
     }
     break;
 
     case NEIGHBORHOOD: {
-        fred::Spin_Lock lock(neighborhood_mutex);
+        phil::Spin_Lock lock(neighborhood_mutex);
         inf_neighborhoods.push_back(place);
     }
     break;
 
     case CLASSROOM: {
-        fred::Spin_Lock lock(classroom_mutex);
+        phil::Spin_Lock lock(classroom_mutex);
         inf_classrooms.push_back(place);
     }
     break;
 
     case SCHOOL: {
-        fred::Spin_Lock lock(school_mutex);
+        phil::Spin_Lock lock(school_mutex);
         inf_schools.push_back(place);
     }
     break;
 
     case WORKPLACE: {
-        fred::Spin_Lock lock(workplace_mutex);
+        phil::Spin_Lock lock(workplace_mutex);
         inf_workplaces.push_back(place);
     }
     break;
 
     case OFFICE: {
-        fred::Spin_Lock lock(office_mutex);
+        phil::Spin_Lock lock(office_mutex);
         inf_offices.push_back(place);
     }
     break;
@@ -672,7 +661,7 @@ void Epidemic::get_primary_infections(int day) {
                 }
 
                 if (person == NULL) { // nobody home
-                    FRED_WARNING("Person selected for seeding in Epidemic update is NULL.\n");
+                    PHIL_WARNING("Person selected for seeding in Epidemic update is NULL.\n");
                     continue;
                 }
 
@@ -693,7 +682,7 @@ void Epidemic::get_primary_infections(int day) {
             }
 
             if (successes < mst->get_min_successes()) {
-                FRED_WARNING("A minimum of %d successes was specified, but only %d successful transmissions occurred.",
+                PHIL_WARNING("A minimum of %d successes was specified, but only %d successful transmissions occurred.",
                              mst->get_min_successes(),successes);
             }
         }
@@ -712,7 +701,7 @@ void Epidemic::advance_seed_infection(Person * person) {
         advance = person->get_infectious_date(d) - person->get_exposure_date(d);
     }
     assert(advance <= duration);
-    FRED_VERBOSE(0, "%s %s %s %d %s %d %s\n",
+    PHIL_VERBOSE(0, "%s %s %s %d %s %d %s\n",
                  "advanced_seeding:", seeding_type_name, "=> advance infection trajectory of duration",
                  duration, "by", advance, "days");
     person->advance_seed_infection(d, advance);
@@ -733,13 +722,13 @@ void Epidemic::transmit(int day) {
     infectious_places += (int) inf_workplaces.size();
     infectious_places += (int) inf_offices.size();
 
-    FRED_STATUS(0, "Number of infectious places        => %9d\n", infectious_places);
-    FRED_STATUS(0, "Number of infectious households    => %9d\n", (int) inf_households.size());
-    FRED_STATUS(0, "Number of infectious neighborhoods => %9d\n", (int) inf_neighborhoods.size());
-    FRED_STATUS(0, "Number of infectious schools       => %9d\n", (int) inf_schools.size());
-    FRED_STATUS(0, "Number of infectious classrooms    => %9d\n", (int) inf_classrooms.size());
-    FRED_STATUS(0, "Number of infectious workplaces    => %9d\n", (int) inf_workplaces.size());
-    FRED_STATUS(0, "Number of infectious offices       => %9d\n", (int) inf_offices.size());
+    PHIL_STATUS(0, "Number of infectious places        => %9d\n", infectious_places);
+    PHIL_STATUS(0, "Number of infectious households    => %9d\n", (int) inf_households.size());
+    PHIL_STATUS(0, "Number of infectious neighborhoods => %9d\n", (int) inf_neighborhoods.size());
+    PHIL_STATUS(0, "Number of infectious schools       => %9d\n", (int) inf_schools.size());
+    PHIL_STATUS(0, "Number of infectious classrooms    => %9d\n", (int) inf_classrooms.size());
+    PHIL_STATUS(0, "Number of infectious workplaces    => %9d\n", (int) inf_workplaces.size());
+    PHIL_STATUS(0, "Number of infectious offices       => %9d\n", (int) inf_offices.size());
 
     #pragma omp parallel
     {
@@ -802,12 +791,12 @@ void Epidemic::update_infectious_activities::operator()(Person & person) {
 }
 
 void Epidemic::find_infectious_places(int day, int disease_id) {
-    FRED_STATUS(1, "find_infectious_places entered\n", "");
+    PHIL_STATUS(1, "find_infectious_places entered\n", "");
 
     update_infectious_activities update_functor(day, disease_id);
-    Global::Pop.parallel_masked_apply(fred::Infectious, update_functor);
+    Global::Pop.parallel_masked_apply(phil::Infectious, update_functor);
 
-    FRED_STATUS(1, "find_infectious_places finished\n", "");
+    PHIL_STATUS(1, "find_infectious_places finished\n", "");
 }
 
 void Epidemic::update_susceptible_activities::operator()(Person & person) {
@@ -815,12 +804,12 @@ void Epidemic::update_susceptible_activities::operator()(Person & person) {
 }
 
 void Epidemic::add_susceptibles_to_infectious_places(int day, int disease_id) {
-    FRED_STATUS(1, "add_susceptibles_to_infectious_places entered\n");
+    PHIL_STATUS(1, "add_susceptibles_to_infectious_places entered\n");
 
     update_susceptible_activities update_functor(day, disease_id);
-    Global::Pop.parallel_masked_apply(fred::Susceptible, update_functor);
+    Global::Pop.parallel_masked_apply(phil::Susceptible, update_functor);
 
-    FRED_STATUS(1, "add_susceptibles_to_infectious_places finished\n");
+    PHIL_STATUS(1, "add_susceptibles_to_infectious_places finished\n");
 }
 
 void Epidemic::infectious_sampler::operator()(Person & person) {
@@ -837,6 +826,6 @@ void Epidemic::get_infectious_samples(vector<Person *> &samples, double prob = 1
     infectious_sampler sampler;
     sampler.samples = &samples;
     sampler.prob = prob;
-    Global::Pop.parallel_masked_apply(fred::Infectious, sampler);
+    Global::Pop.parallel_masked_apply(phil::Infectious, sampler);
 }
 

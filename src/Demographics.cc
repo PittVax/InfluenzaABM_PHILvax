@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Demographics.cc
@@ -91,7 +80,7 @@ void Demographics::setup(Person * self, short int _age, char _sex,
             rand_birthday = rand_birthday * 366.0 / 365.0;
         }
 
-        FRED_CONDITIONAL_VERBOSE(0, birthyear < 1800, "===========================================> \n","");
+        PHIL_CONDITIONAL_VERBOSE(0, birthyear < 1800, "===========================================> \n","");
 
         Date tmpDate = Date(birthyear, (int) ceil(rand_birthday));
         this->birth_day_of_year = tmpDate.get_day_of_year();
@@ -115,7 +104,7 @@ void Demographics::setup(Person * self, short int _age, char _sex,
         if (RANDOM() <= pct_chance_to_die) {
             //Yes, so set the death day (in simulation days)
             this->deceased_sim_day = (day + IRAND(1,364));
-            Global::Pop.set_mask_by_index(fred::Update_Deaths, self_index);
+            Global::Pop.set_mask_by_index(phil::Update_Deaths, self_index);
         }
     }
 
@@ -125,8 +114,8 @@ void Demographics::setup(Person * self, short int _age, char _sex,
             //Yes, so set the due_date (in simulation days)
             this->due_sim_day = (day + IRAND(1, 280));
             this->pregnant = true;
-            Global::Pop.set_mask_by_index(fred::Update_Births, self_index);
-            FRED_STATUS(2, "Birth scheduled during initialization! conception day: %d, delivery day: %d\n",
+            Global::Pop.set_mask_by_index(phil::Update_Births, self_index);
+            PHIL_STATUS(2, "Birth scheduled during initialization! conception day: %d, delivery day: %d\n",
                         conception_sim_day, due_sim_day);
         }
     }
@@ -147,7 +136,7 @@ void Demographics::update_births(Person * self, int day) {
             due_sim_day = -1;
             pregnant = false;
             // don't update this person's demographics anymore
-            Global::Pop.clear_mask_by_index(fred::Update_Births, self->get_pop_index());
+            Global::Pop.clear_mask_by_index(phil::Update_Births, self->get_pop_index());
             // give birth
             Global::Pop.prepare_to_give_birth(day, self->get_pop_index());
         }
@@ -159,7 +148,7 @@ void Demographics::update_deaths(Person * self, int day) {
         //Is this your day to die?
         if (deceased_sim_day == day) {
             // don't update this person's demographics anymore
-            Global::Pop.clear_mask_by_index(fred::Update_Deaths, self->get_pop_index());
+            Global::Pop.clear_mask_by_index(phil::Update_Deaths, self->get_pop_index());
             deceased = true;
             Global::Pop.prepare_to_die(day, self->get_pop_index());
         }
@@ -167,7 +156,7 @@ void Demographics::update_deaths(Person * self, int day) {
 }
 
 void Demographics::birthday(Person * self, int day) {
-    FRED_STATUS(2, "birthday entered for person %d age %d\n", self->get_id(), self->get_age());
+    PHIL_STATUS(2, "birthday entered for person %d age %d\n", self->get_id(), self->get_age());
     //The age to look up should be an integer between 0 and the MAX_AGE
     int age_lookup = (age <= Demographics::MAX_AGE ? age : Demographics::MAX_AGE);
     if (Global::Enable_Aging) {
@@ -188,10 +177,10 @@ void Demographics::birthday(Person * self, int day) {
                 RANDOM() <= pct_chance_to_die) {
 
             // Yes, so set the death day (in simulation days)
-            FRED_STATUS(2, "set deceased_sim_day\n");
+            PHIL_STATUS(2, "set deceased_sim_day\n");
             this->deceased_sim_day = (day + IRAND(0,364));
             // and flag for daily updates until death
-            Global::Pop.set_mask_by_index(fred::Update_Deaths, self->get_pop_index());
+            Global::Pop.set_mask_by_index(phil::Update_Deaths, self->get_pop_index());
         }
     }
 
@@ -211,13 +200,13 @@ void Demographics::birthday(Person * self, int day) {
                                   Demographics::MEAN_PREG_DAYS, Demographics::STDDEV_PREG_DAYS) + 0.5);
                 pregnant = true;
                 // flag for daily updates
-                Global::Pop.set_mask_by_index(fred::Update_Births, self->get_pop_index());
-                FRED_STATUS(2, "Birth scheduled! conception day: %d, delivery day: %d\n",
+                Global::Pop.set_mask_by_index(phil::Update_Births, self->get_pop_index());
+                PHIL_STATUS(2, "Birth scheduled! conception day: %d, delivery day: %d\n",
                             conception_sim_day, due_sim_day);
             }
         }
     }
-    FRED_STATUS(2, "birthday finished for person %d age %d\n", self->get_id(), self->get_age());
+    PHIL_STATUS(2, "birthday finished for person %d age %d\n", self->get_id(), self->get_age());
 }
 
 void Demographics::read_init_files() {
@@ -226,8 +215,8 @@ void Demographics::read_init_files() {
         return;
     }
 
-    char yearly_mortality_rate_file[FRED_STRING_SIZE];
-    char yearly_birth_rate_file[FRED_STRING_SIZE];
+    char yearly_mortality_rate_file[PHIL_STRING_SIZE];
+    char yearly_birth_rate_file[PHIL_STRING_SIZE];
     double birth_rate_multiplier;
     FILE *fp = NULL;
 
@@ -243,7 +232,7 @@ void Demographics::read_init_files() {
         Params::get_param_from_string("yearly_birth_rate_file", yearly_birth_rate_file);
         Params::get_param_from_string("birth_rate_multiplier", &birth_rate_multiplier);
         // read and load the birth rates
-        fp = Utils::fred_open_file(yearly_birth_rate_file);
+        fp = Utils::phil_open_file(yearly_birth_rate_file);
         if (fp == NULL) {
             fprintf(Global::Statusfp, "Demographic init_file %s not found\n", yearly_birth_rate_file);
             exit(1);
@@ -252,7 +241,7 @@ void Demographics::read_init_files() {
             int age;
             float rate;
             if (fscanf(fp, "%d %f", &age, &rate) != 2) {
-                Utils::fred_abort("Help! Read failure for age %d\n", i);
+                Utils::phil_abort("Help! Read failure for age %d\n", i);
             }
             Demographics::age_yearly_birth_rate[i] = birth_rate_multiplier * (double)rate;
         }
@@ -270,7 +259,7 @@ void Demographics::read_init_files() {
         Params::get_param_from_string("yearly_mortality_rate_file", yearly_mortality_rate_file);
 
         // read death rate file and load the values unt the death_rate_array
-        FILE *fp = Utils::fred_open_file(yearly_mortality_rate_file);
+        FILE *fp = Utils::phil_open_file(yearly_mortality_rate_file);
         if (fp == NULL) {
             fprintf(Global::Statusfp, "Demographic init_file %s not found\n", yearly_mortality_rate_file);
             exit(1);
@@ -280,7 +269,7 @@ void Demographics::read_init_files() {
             float female_rate;
             float male_rate;
             if (fscanf(fp, "%d %f %f", &age, &female_rate, &male_rate) != 3) {
-                Utils::fred_abort("Help! Read failure for age %d\n", i);
+                Utils::phil_abort("Help! Read failure for age %d\n", i);
             }
             Demographics::age_yearly_mortality_rate_female[i] = (double)female_rate;
             Demographics::age_yearly_mortality_rate_male[i] = (double)male_rate;
@@ -311,7 +300,7 @@ int Demographics::get_age_in_days() const {
         const Date tmp_date = Date(birth_year, birth_day_of_year);
         return Date::days_between(Global::Sim_Current_Date, & tmp_date);
     }
-    FRED_WARNING("WARNING: Birth year (%d) before start of epoch (Date::EPOCH_START_YEAR == %d)!\n",
+    PHIL_WARNING("WARNING: Birth year (%d) before start of epoch (Date::EPOCH_START_YEAR == %d)!\n",
                  birth_year, Date::get_epoch_start_year());
     return -1;
 }

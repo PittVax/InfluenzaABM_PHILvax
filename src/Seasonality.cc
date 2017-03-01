@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 #include "Seasonality.h"
 #include "Geo_Utils.h"
 #include "Random.h"
@@ -90,7 +79,7 @@ void Seasonality::update_seasonality_multiplier() {
     }
 }
 
-double Seasonality::get_seasonality_multiplier_by_lat_lon(fred::geo lat, fred::geo lon, int disease_id) {
+double Seasonality::get_seasonality_multiplier_by_lat_lon(phil::geo lat, phil::geo lon, int disease_id) {
     int row = grid->get_row(lat);
     int col = grid->get_col(lon);
     return get_seasonality_multiplier(row, col, disease_id);

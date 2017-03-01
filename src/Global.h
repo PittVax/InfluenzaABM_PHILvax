@@ -1,20 +1,9 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 
 //
 // File: Global.h
 //
-#ifndef _FRED_GLOBAL_H
-#define _FRED_GLOBAL_H
+#ifndef _PHIL_GLOBAL_H
+#define _PHIL_GLOBAL_H
 
 #include <stdio.h>
 #include <err.h>
@@ -43,7 +32,7 @@
 #endif
 
 // Size of strings (usually file names)
-#define FRED_STRING_SIZE 256
+#define PHIL_STRING_SIZE 256
 
 class Population;
 class Place_List;
@@ -58,7 +47,7 @@ class Tracker;
 class Report;
 
 /**
- * This class contains the static variables used by the FRED program.  The variables all have public access,
+ * This class contains the static variables used by the PHIL program.  The variables all have public access,
  * so they can be modified by any class that uses the <code>Global</code> class.  However, by making them
  * static class variables, the compiler forces the programmer to reference them using the full nomenclature
  * <code>Global::variable_name</code>, which in turn makes it clear for code maintenance where the actual
@@ -89,17 +78,17 @@ class Global {
     static const int SCHOOL_AGE = 5;
     static const int RETIREMENT_AGE = 67;
     static const int MAX_AGE = 120;
-    // MAX_NUM_DISEASES sets the size of stl::bitsets and static arrays used throughout FRED
+    // MAX_NUM_DISEASES sets the size of stl::bitsets and static arrays used throughout PHIL
     // to store disease-specific flags and pointers; set to the smallest possible value
     // for optimal performance and memory usage
     static const int MAX_NUM_DISEASES = 1;
-    // MAX_NUM_SIMPLE_STRAINS sets the size of stl::bitsets and static arrays used throughout FRED
+    // MAX_NUM_SIMPLE_STRAINS sets the size of stl::bitsets and static arrays used throughout PHIL
     // to store simple strain-specific flags and pointers; set to the smallest possible value
     // for optimal performance and memory usage
     static const int MAX_NUM_SIMPLE_STRAINS = 8;
     // Change this constant and recompile to allow more threads.  For efficiency should be
     // equal to OMP_NUM_THREADS value that will be used.  If OMP_NUM_THREADS greater than
-    // MAX_NUM_THREADS is used, FRED will abort the run.
+    // MAX_NUM_THREADS is used, PHIL will abort the run.
     static const int MAX_NUM_THREADS = NCPU;
 
     // race codes (ver 2)
@@ -269,10 +258,10 @@ class Global {
 };
 
 /*
- * Put fred's global typedefs in namespace fred.
+ * Put phil's global typedefs in namespace phil.
  */
 
-namespace fred {
+namespace phil {
 
 /*
  * This is a space optimization for small bitsets (uses 1 byte rather than 8)
@@ -481,7 +470,7 @@ typedef Scoped_Lock Spin_Lock;
 
 }
 
-#endif // _FRED_GLOBAL_H
+#endif // _PHIL_GLOBAL_H
 
 
 

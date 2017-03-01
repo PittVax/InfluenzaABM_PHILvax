@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Multistrain_Timestep_Map.h
@@ -27,8 +16,8 @@
 // see http://stein.cshl.org/boulder/docs/Boulder.html
 
 
-#ifndef _FRED_MULTISTRAIN_TIMESTEP_MAP_H
-#define _FRED_MULTISTRAIN_TIMESTEP_MAP_H
+#ifndef _PHIL_MULTISTRAIN_TIMESTEP_MAP_H
+#define _PHIL_MULTISTRAIN_TIMESTEP_MAP_H
 
 #include "Global.h"
 #include <stdio.h>
@@ -89,7 +78,7 @@ class Multistrain_Timestep_Map : public Timestep_Map {
                 }
                 int n = tsVec.size();
                 if (n < 3) {
-                    Utils::fred_abort("Need to specify at least SimulationDayStart, SimulationDayEnd and NumSeedingAttempts for Multistrain_Timestep_Map. ");
+                    Utils::phil_abort("Need to specify at least SimulationDayStart, SimulationDayEnd and NumSeedingAttempts for Multistrain_Timestep_Map. ");
                 } else {
                     stringstream(tsVec[0]) >> simDayStart;
                     stringstream(tsVec[1]) >> simDayEnd;
@@ -139,10 +128,10 @@ class Multistrain_Timestep_Map : public Timestep_Map {
             return (radius < 40075 && radius >= 0);
         }
 
-        fred::geo get_lon() {
+        phil::geo get_lon() {
             return lon;
         }
-        fred::geo get_lat() {
+        phil::geo get_lat() {
             return lat;
         }
         double get_radius() {
@@ -156,7 +145,7 @@ class Multistrain_Timestep_Map : public Timestep_Map {
       private:
 
         int simDayStart, simDayEnd, strain, numSeedingAttempts, minNumSuccessful;
-        fred::geo lat, lon;
+        phil::geo lat, lon;
         double seedingAttemptProb, radius;
 
         bool is_complete;
@@ -184,5 +173,5 @@ class Multistrain_Timestep_Map : public Timestep_Map {
 
 };
 
-#endif // _FRED_MULTISTRAIN_TIMESTEP_MAP_H
+#endif // _PHIL_MULTISTRAIN_TIMESTEP_MAP_H
 

@@ -1,26 +1,15 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Neighborhood.h
 //
 
-#ifndef _FRED_NEIGHBORHOOD_H
-#define _FRED_NEIGHBORHOOD_H
+#ifndef _PHIL_NEIGHBORHOOD_H
+#define _PHIL_NEIGHBORHOOD_H
 
 #include "Place.h"
 #include "Random.h"
 /**
- * This class represents a neighborhood location in the FRED application. It inherits from <code>Place</code>.
+ * This class represents a neighborhood location in the PHIL application. It inherits from <code>Place</code>.
  * The class contains static variables that will be filled with values from the parameter file.
  *
  * @see Place
@@ -102,5 +91,5 @@ class Neighborhood : public Place {
     static bool Neighborhood_parameters_set;
 };
 
-#endif // _FRED_NEIGHBORHOOD_H
+#endif // _PHIL_NEIGHBORHOOD_H
 

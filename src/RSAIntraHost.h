@@ -1,5 +1,5 @@
 /*
-  This file is part of the FRED system.
+  This file is part of the PHIL system.
 
   Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
   Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
@@ -10,8 +10,8 @@
   more information.
 */
 
-#ifndef _FRED_RSA_IntraHost_H
-#define _FRED_RSA_IntraHost_H
+#ifndef _PHIL_RSA_IntraHost_H
+#define _PHIL_RSA_IntraHost_H
 
 #include <vector>
 #include <map>

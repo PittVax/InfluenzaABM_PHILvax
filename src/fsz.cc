@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 #include <string>
 #include <cstring>
 #include <sstream>
@@ -44,7 +33,7 @@ int main(int argc, char *argv[]) {
             filename = optarg;
             break;
         case '?':
-            std::cerr << "\nfsz, FRED's snappy compression utility.  Usage:\n\n";
+            std::cerr << "\nfsz, PHIL's snappy compression utility.  Usage:\n\n";
             std::cerr << "  fsz -c <file> => file will be compressed using snappy and written to stdout\n";
             std::cerr << "  fsz -u <file> => file assumed to have been compressed with snappy; will be uncompressed to stdout\n\n";
             break;

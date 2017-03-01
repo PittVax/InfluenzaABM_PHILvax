@@ -6,8 +6,8 @@ import numpy as np
 
 extensions = [
         Extension(
-            name = 'fred_output_extractor.count_events',
-            sources = ['src/fred_output_extractor/count_events.pyx'],
+            name = 'phil_output_extractor.count_events',
+            sources = ['src/phil_output_extractor/count_events.pyx'],
             include_dirs = [np.get_include()],
             language = 'c',
             #library_dirs = ['/usr/local/lib/gcc/5','/usr/local/lib'],
@@ -20,14 +20,14 @@ extensions = [
     ]
 
 setup(
-        name = 'fred-output-extractor',
+        name = 'phil-output-extractor',
         version = '0.0.1',
         description = 'tools for producing aggregated hdf5 output from set of FRED realizations',
         author = 'Jay DePasse',
         author_email='depasse@psc.edu',
         ext_modules = cythonize(extensions, force=True),
-        packages = ['fred_output_extractor',],
+        packages = ['phil_output_extractor',],
         package_dir = {'': 'src'},
         include_package_data = True,
-        scripts = ['src/fred_output_extractor/foe.py',]
+        scripts = ['src/phil_output_extractor/poe.py',]
         )

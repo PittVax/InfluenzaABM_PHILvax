@@ -1,17 +1,6 @@
 /*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
-/*
  *  Multistrain_Timestep_Map.cpp
- *  FRED
+ *  PHIL
  *
  *  Created by Jay DePasse on 06/21/2011.
  *  Copyright 2010 University of Pittsburgh. All rights reserved.
@@ -47,7 +36,7 @@ void Multistrain_Timestep_Map::read_map() {
     ifstream * ts_input = new ifstream(map_file_name);
 
     if (!ts_input->is_open()) {
-        Utils::fred_abort("Help!  Can't read %s Timestep Map\n", map_file_name);
+        Utils::phil_abort("Help!  Can't read %s Timestep Map\n", map_file_name);
         abort();
     }
 
@@ -58,10 +47,10 @@ void Multistrain_Timestep_Map::read_map() {
         } else if (line == "#structured_format") {
             read_map_structured(ts_input);
         } else {
-            Utils::fred_abort("First line has to specify either #line_format or #structured_format; see primary_case_schedule-0.txt for an example. ");
+            Utils::phil_abort("First line has to specify either #line_format or #structured_format; see primary_case_schedule-0.txt for an example. ");
         }
     } else {
-        Utils::fred_abort("Nothing in the file!");
+        Utils::phil_abort("Nothing in the file!");
     }
     delete ts_input;
 }

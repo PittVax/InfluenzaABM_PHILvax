@@ -1,21 +1,10 @@
-/*
-   This file is part of the FRED system.
-
-   Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-   Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-   Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-   Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-   more information.
-   */
-
 //
 //
 // File: Tracker.h
 //
 
-#ifndef _FRED_TRACKER_H
-#define _FRED_TRACKER_H
+#ifndef _PHIL_TRACKER_H
+#define _PHIL_TRACKER_H
 
 #include <stdlib.h>
 #include <map>
@@ -37,21 +26,21 @@ using namespace std;
 #define ERROR_PRINT printf
 #else
 #include "Utils.h"
-#define ERROR_PRINT Utils::fred_abort
+#define ERROR_PRINT Utils::phil_abort
 #endif
 
 const string allowed_typenames[] = { "double", "int", "string" };
 //#############################
 
 struct Tracker_State {
-    fred::Spin_Mutex mutex;
+    phil::Spin_Mutex mutex;
 };
 
 //struct Tracker_State_Merge: Tracker_State {
 //  void operator() ( const Tracker
 /**
  * The Tracker Class is a class that contains maps that allow one to
- * log on a daily basis different counts of things throughout FRED
+ * log on a daily basis different counts of things throughout PHIL
  *
  * It basically contains three maps for integers, doubles, and strings
  * and stores a key, and then allows you to log daily values.

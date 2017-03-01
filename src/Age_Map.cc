@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: AgeMap.cpp
@@ -69,7 +58,7 @@ void Age_Map::read_from_input(string Input) {
     int na  = Params::get_param_vector(ages_string,ages_tmp);
 
     if (na % 2) {
-        Utils::fred_abort("Error parsing Age_Map: %s: Must be an even number of age entries\n", Input.c_str());
+        Utils::phil_abort("Error parsing Age_Map: %s: Must be an even number of age entries\n", Input.c_str());
     }
 
     for (int i=0; i<na; i+=2) {
@@ -85,7 +74,7 @@ void Age_Map::read_from_input(string Input) {
         cout << ages_string << endl;
         cout << values_string << endl;   
         print();
-        Utils::fred_abort(Input.c_str());
+        Utils::phil_abort(Input.c_str());
     }
     return;
 }
@@ -102,7 +91,7 @@ void Age_Map::read_table(string Input) {
     int na  = Params::get_param_vector(ages_string,ages_tmp);
 
     if (na % 2) {
-        Utils::fred_abort("Error parsing Age_Map: %s: Must be an even number of age entries\n", Input.c_str());
+        Utils::phil_abort("Error parsing Age_Map: %s: Must be an even number of age entries\n", Input.c_str());
     }
 
     for (int i=0; i<na; i+=2) {
@@ -122,7 +111,7 @@ void Age_Map::read_table(string Input) {
     }
 
     if (quality_control() != true)
-        Utils::fred_abort("");
+        Utils::phil_abort("");
     return;
 }
 

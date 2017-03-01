@@ -1,20 +1,9 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
-// File: Fred.cc
+// File: Phil.cc
 //
 
-#include "Fred.h"
+#include "Phil.h"
 #include "Utils.h"
 #include "Global.h"
 #include "Population.h"
@@ -47,12 +36,12 @@ int main(int argc, char* argv[]) {
 
     int run;          // number of current run
     unsigned long new_seed;
-    char directory[FRED_STRING_SIZE];
-    char paramfile[FRED_STRING_SIZE];
+    char directory[PHIL_STRING_SIZE];
+    char paramfile[PHIL_STRING_SIZE];
 
     Global::Statusfp = stdout;
-    Utils::fred_start_timer();
-    Utils::fred_print_wall_time("FRED started");
+    Utils::phil_start_timer();
+    Utils::phil_print_wall_time("PHIL started");
 
     // read optional param file name from command line
     if (argc > 1) {
@@ -94,15 +83,15 @@ int main(int argc, char* argv[]) {
     } else {
         // change the Output_directory
         strcpy(Global::Output_directory, directory);
-        FRED_STATUS(0, "Overridden from command line: Output_directory = %s\n",
+        PHIL_STATUS(0, "Overridden from command line: Output_directory = %s\n",
                     Global::Output_directory);
     }
 
     // create the output directory, if necessary
-    Utils::fred_make_directory(directory);
+    Utils::phil_make_directory(directory);
 
     // open output files with global file pointers
-    Utils::fred_open_output_files(directory, run);
+    Utils::phil_open_output_files(directory, run);
 
     // initialize RNG
     INIT_RANDOM(Global::Seed);
@@ -128,7 +117,7 @@ int main(int argc, char* argv[]) {
     fprintf(Global::Statusfp, "seed = %lu\n", new_seed);
     INIT_RANDOM(new_seed);
 
-    Utils::fred_print_wall_time("\nFRED run %d started", (int) run);
+    Utils::phil_print_wall_time("\nPHIL run %d started", (int) run);
 
     // initializations
 
@@ -146,7 +135,7 @@ int main(int argc, char* argv[]) {
     // Loop over all Demes and read in the household, schools and workplaces
     // and setup grids and cells
     Global::Places.read_all_places(Global::Pop.get_demes());
-    Utils::fred_print_lap_time("Places.read_places");
+    Utils::phil_print_lap_time("Places.read_places");
 
     // initialize activities
     Activities::read_init_files();
@@ -155,41 +144,41 @@ int main(int argc, char* argv[]) {
     // in each favorite place identified in the population file
     Global::Pop.setup();
     Global::Places.setup_households();
-    Utils::fred_print_lap_time("Pop.setup");
+    Utils::phil_print_lap_time("Pop.setup");
 
     if (Global::Report_Epidemic_Data_By_Census_Block) {
         Global::Block_Epi_Day_Tracker = new Tracker<string>("Census Day Block String Tracker","BlockGroup");
         Global::Pop.initialize_disease_state_counts_by_block();
     }
-    // define FRED-specific places and have each person enroll as needed
+    // define PHIL-specific places and have each person enroll as needed
 
     // classrooms
     Global::Places.setup_classrooms();
     Global::Pop.assign_classrooms();
-    Utils::fred_print_lap_time("assign classrooms");
+    Utils::phil_print_lap_time("assign classrooms");
 
     // teachers
     if (Global::Assign_Teachers) {
         Global::Places.assign_teachers();
-        Utils::fred_print_lap_time("assign teachers");
+        Utils::phil_print_lap_time("assign teachers");
     }
 
     // offices
     Global::Places.setup_offices();
     Global::Pop.assign_offices();
-    Utils::fred_print_lap_time("assign offices");
+    Utils::phil_print_lap_time("assign offices");
 
     // after all enrollments, prepare to receive visitors
     Global::Places.prepare();
 
     // record the favorite places for households within each grid cell
     Global::Cells->record_favorite_places();
-    Utils::fred_print_lap_time("place prep");
+    Utils::phil_print_lap_time("place prep");
 
     if (Global::Enable_Travel) {
         Global::Large_Cells->set_population_size();
         Travel::setup(directory);
-        Utils::fred_print_lap_time("Travel setup");
+        Utils::phil_print_lap_time("Travel setup");
     }
 
     if (Global::Quality_control) {
@@ -203,7 +192,7 @@ int main(int argc, char* argv[]) {
         if (Global::Track_network_stats) {
             Global::Pop.get_network_stats(directory);
         }
-        Utils::fred_print_lap_time("quality control");
+        Utils::phil_print_lap_time("quality control");
     }
 
     if (Global::Track_age_distribution) {
@@ -235,8 +224,8 @@ int main(int argc, char* argv[]) {
         Global::Small_Cells->initialize_gaia_data(directory, run);
     }
 
-    Utils::fred_print_lap_time("FRED initialization");
-    Utils::fred_print_wall_time("FRED initialization complete");
+    Utils::phil_print_lap_time("PHIL initialization");
+    Utils::phil_print_wall_time("PHIL initialization complete");
 
     Global::Rpt.setup();
 
@@ -251,11 +240,11 @@ int main(int argc, char* argv[]) {
     Global::Rpt.append(j);
 
     time_t simulation_start_time;
-    Utils::fred_start_timer(&simulation_start_time);
+    Utils::phil_start_timer(&simulation_start_time);
 
     for (int day = 0; day < Global::Days; day++) {
 
-        Utils::fred_start_day_timer();
+        Utils::phil_start_day_timer();
         if (day == Global::Reseed_day) {
             fprintf(Global::Statusfp, "************** reseed day = %d\n", day);
             fflush(Global::Statusfp);
@@ -276,16 +265,16 @@ int main(int argc, char* argv[]) {
         }
 
         Global::Places.update(day);
-        Utils::fred_print_lap_time("day %d update places", day);
+        Utils::phil_print_lap_time("day %d update places", day);
 
         Global::Pop.update(day);
-        Utils::fred_print_lap_time("day %d update population", day);
+        Utils::phil_print_lap_time("day %d update population", day);
 
         Epidemic::update(day);
-        Utils::fred_print_lap_time("day %d update epidemics", day);
+        Utils::phil_print_lap_time("day %d update epidemics", day);
 
         Global::Pop.report(day);
-        Utils::fred_print_lap_time("day %d report population", day);
+        Utils::phil_print_lap_time("day %d report population", day);
 
         // If Block Output is desired, update this
         if (Global::Report_Epidemic_Data_By_Census_Block) {
@@ -302,7 +291,7 @@ int main(int argc, char* argv[]) {
         // print GAIA data if desired
         if (Global::Print_GAIA_Data && run == 1) {
             Global::Small_Cells->print_gaia_data(directory, run, day);
-            Utils::fred_print_lap_time("day %d print_gaia_data", day);
+            Utils::phil_print_lap_time("day %d print_gaia_data", day);
         }
 
         if (Global::Enable_Migration
@@ -352,10 +341,10 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        Utils::fred_print_wall_time("day %d finished", day);
+        Utils::phil_print_wall_time("day %d finished", day);
 
-        Utils::fred_print_day_timer(day);
-        Utils::fred_print_resource_usage(day);
+        Utils::phil_print_day_timer(day);
+        Utils::phil_print_resource_usage(day);
 
         Global::Sim_Current_Date->advance();
 
@@ -365,19 +354,19 @@ int main(int argc, char* argv[]) {
 
     fflush(Global::Infectionfp);
 
-    Utils::fred_print_lap_time(&simulation_start_time,
-                               "\nFRED simulation complete. Excluding initialization, %d days",
+    Utils::phil_print_lap_time(&simulation_start_time,
+                               "\nPHIL simulation complete. Excluding initialization, %d days",
                                Global::Days);
 
-    Utils::fred_print_wall_time("FRED finished");
-    Utils::fred_print_finish_timer();
+    Utils::phil_print_wall_time("PHIL finished");
+    Utils::phil_print_finish_timer();
 
     // finish up
     Global::Pop.end_of_run();
     Global::Places.end_of_run();
 
     // close all open output files with global file pointers
-    Utils::fred_end();
+    Utils::phil_end();
 
     return 0;
 }

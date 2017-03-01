@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Small_Cell.cc
@@ -43,7 +32,7 @@ double Small_Cell::distance_to_grid_cell(Small_Cell *p2) {
 }
 
 void Small_Cell::print() {
-    FRED_VERBOSE(0, "small_cell: %d %d %d %d\n", row, col, count, popsize);
+    PHIL_VERBOSE(0, "small_cell: %d %d %d %d\n", row, col, count, popsize);
 }
 
 

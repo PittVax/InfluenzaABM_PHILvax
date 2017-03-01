@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 void Place_List::quality_control(char *directory) {
     int number_places = places.size();
 
-    FRED_STATUS(0, "places quality control check for %d places\n", number_places);
+    PHIL_STATUS(0, "places quality control check for %d places\n", number_places);
 
     if (Global::Verbose>1) {
-        char filename [FRED_STRING_SIZE];
+        char filename [PHIL_STRING_SIZE];
         sprintf(filename, "%s/houses.dat", directory);
         FILE *fp = fopen(filename, "w");
         for (int p = 0; p < number_places; p++) {
@@ -185,7 +174,7 @@ void Place_List::quality_control(char *directory) {
                         per = h->get_housemate(i);
                 }
                 if (per == NULL) {
-                    FRED_WARNING("Help! No head of household found for household id %d label %s\n",
+                    PHIL_WARNING("Help! No head of household found for household id %d label %s\n",
                                  h->get_id(), h->get_label());
                     count[0]++;
                 } else {
@@ -226,7 +215,7 @@ void Place_List::quality_control(char *directory) {
                         per = h->get_housemate(i);
                 }
                 if (per == NULL) {
-                    FRED_WARNING("Help! No head of household found for household id %d label %s\n",
+                    PHIL_WARNING("Help! No head of household found for household id %d label %s\n",
                                  h->get_id(), h->get_label());
                     count[0]++;
                 } else {

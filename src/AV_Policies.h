@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: AV_Decision.h
 //
 
-#ifndef _FRED_AV_POLICIES_H
-#define _FRED_AV_POLICIES_H
+#ifndef _PHIL_AV_POLICIES_H
+#define _PHIL_AV_POLICIES_H
 
 #include <iostream>
 #include <string>

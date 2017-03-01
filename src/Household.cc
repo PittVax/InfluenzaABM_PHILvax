@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Household.cc
@@ -38,8 +27,8 @@ double *** Household::Household_contact_prob;
 //Private static variable to assure we only lookup parameters once
 bool Household::Household_parameters_set = false;
 
-Household::Household(const  char *lab, fred::geo lon,
-                     fred::geo lat, Place *container, Population* pop) {
+Household::Household(const  char *lab, phil::geo lon,
+                     phil::geo lat, Place *container, Population* pop) {
     type = HOUSEHOLD;
     setup(lab, lon, lat, container, pop);
     get_parameters(Global::Diseases);
@@ -158,7 +147,7 @@ void Household::unenroll(Person * per) {
             printf("%d ", housemate[i]->get_id());
         printf("\n");
         fflush(stdout);
-        Utils::fred_abort("");
+        Utils::phil_abort("");
     }
 
     // unenroll from large cell as well

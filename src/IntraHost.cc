@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 
 
 #include "IntraHost.h"
@@ -38,7 +27,7 @@ IntraHost *IntraHost :: newIntraHost(int type) {
     //      return new ODEIntraHost;
 
     default:
-        FRED_WARNING("Unknown IntraHost type (%d) supplied to IntraHost factory.  Using DefaultIntraHost.\n", type);
+        PHIL_WARNING("Unknown IntraHost type (%d) supplied to IntraHost factory.  Using DefaultIntraHost.\n", type);
         return new DefaultIntraHost;
     }
 }

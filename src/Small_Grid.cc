@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Small_Grid.cc
@@ -89,7 +78,7 @@ Small_Cell * Small_Grid::get_grid_cell(int row, int col) {
         return NULL;
 }
 
-Small_Cell * Small_Grid::get_grid_cell(fred::geo lat, fred::geo lon) {
+Small_Cell * Small_Grid::get_grid_cell(phil::geo lat, phil::geo lon) {
     int row = get_row(lat);
     int col = get_col(lon);
     return get_grid_cell(row,col);
@@ -114,7 +103,7 @@ void Small_Grid::quality_control(char * directory) {
     }
 
     if (Global::Verbose>1) {
-        char filename [FRED_STRING_SIZE];
+        char filename [PHIL_STRING_SIZE];
         sprintf(filename, "%s/smallgrid.dat", directory);
         FILE *fp = fopen(filename, "w");
         for (int row = 0; row < rows; row++) {
@@ -145,15 +134,15 @@ void Small_Grid::quality_control(char * directory) {
 // Specific to Small_Grid:
 
 void Small_Grid::initialize_gaia_data(char * directory, int run) {
-    char gaia_dir[FRED_STRING_SIZE];
+    char gaia_dir[PHIL_STRING_SIZE];
 
     // create GAIA data directory
-    char gaia_top_dir[FRED_STRING_SIZE];
+    char gaia_top_dir[PHIL_STRING_SIZE];
     sprintf(gaia_top_dir, "%s/GAIA", directory);
-    Utils::fred_make_directory(gaia_top_dir);
+    Utils::phil_make_directory(gaia_top_dir);
 
     // create GAIA setup file
-    char gaiafile[FRED_STRING_SIZE];
+    char gaiafile[PHIL_STRING_SIZE];
     sprintf(gaiafile, "%s/grid.txt", gaia_top_dir);
     FILE *fp = fopen(gaiafile, "w");
     fprintf(fp, "rows = %d\n", rows);
@@ -166,33 +155,33 @@ void Small_Grid::initialize_gaia_data(char * directory, int run) {
 
     // make directory for this run
     sprintf(gaia_top_dir, "%s/run%d", gaia_top_dir, run);
-    Utils::fred_make_directory(gaia_top_dir);
+    Utils::phil_make_directory(gaia_top_dir);
 
     // create GAIA sub directories for diseases and output vars
     for (int d = 0; d < Global::Diseases; d++) {
-        char gaia_dis_dir[FRED_STRING_SIZE];
+        char gaia_dis_dir[PHIL_STRING_SIZE];
         sprintf(gaia_dis_dir, "%s/dis%d", gaia_top_dir, d);
-        Utils::fred_make_directory(gaia_dis_dir);
+        Utils::phil_make_directory(gaia_dis_dir);
 
         // create directories for specific output variables
         sprintf(gaia_dir, "%s/I", gaia_dis_dir);
-        Utils::fred_make_directory(gaia_dir);
+        Utils::phil_make_directory(gaia_dir);
         sprintf(gaia_dir, "%s/Is", gaia_dis_dir);
-        Utils::fred_make_directory(gaia_dir);
+        Utils::phil_make_directory(gaia_dir);
         sprintf(gaia_dir, "%s/C", gaia_dis_dir);
-        Utils::fred_make_directory(gaia_dir);
+        Utils::phil_make_directory(gaia_dir);
         sprintf(gaia_dir, "%s/Cs", gaia_dis_dir);
-        Utils::fred_make_directory(gaia_dir);
+        Utils::phil_make_directory(gaia_dir);
         sprintf(gaia_dir, "%s/P", gaia_dis_dir);
-        Utils::fred_make_directory(gaia_dir);
+        Utils::phil_make_directory(gaia_dir);
         sprintf(gaia_dir, "%s/N", gaia_dis_dir);
-        Utils::fred_make_directory(gaia_dir);
+        Utils::phil_make_directory(gaia_dir);
     }
 }
 
 void Small_Grid::print_gaia_data(char * directory, int run, int day) {
     for (int disease_id = 0; disease_id < Global::Diseases; disease_id++) {
-        char dir[FRED_STRING_SIZE];
+        char dir[PHIL_STRING_SIZE];
         sprintf(dir, "%s/GAIA/run%d", directory, run);
         print_output_data(dir, disease_id, Global::OUTPUT_I, (char *) "I", day);
         print_output_data(dir, disease_id, Global::OUTPUT_Is, (char *)"Is", day);
@@ -204,7 +193,7 @@ void Small_Grid::print_gaia_data(char * directory, int run, int day) {
 }
 
 void Small_Grid::print_population_data(char * dir, int disease_id, int day) {
-    char filename[FRED_STRING_SIZE];
+    char filename[PHIL_STRING_SIZE];
     // printf("Printing population size for GAIA\n");
     sprintf(filename,"%s/dis%d/N/day-%d.txt",dir,disease_id,day);
     FILE *fp = fopen(filename, "w");
@@ -227,7 +216,7 @@ void Small_Grid::print_population_data(char * dir, int disease_id, int day) {
 }
 
 void Small_Grid::print_output_data(char * dir, int disease_id, int output_code, char * output_str, int day) {
-    char filename[FRED_STRING_SIZE];
+    char filename[PHIL_STRING_SIZE];
     sprintf(filename, "%s/dis%d/%s/day-%d.txt", dir, disease_id, output_str, day);
     FILE *fp = fopen(filename, "w");
     // printf("print_output_data to file %s\n", filename);

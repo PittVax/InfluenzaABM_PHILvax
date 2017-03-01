@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Health.h
 //
 
-#ifndef _FRED_HEALTH_H
-#define _FRED_HEALTH_H
+#ifndef _PHIL_HEALTH_H
+#define _PHIL_HEALTH_H
 
 #include <vector>
 #include <bitset>
@@ -243,7 +232,7 @@ class Health {
 
 
     void die() {
-        FRED_VERBOSE(2, "Killing Agent");
+        PHIL_VERBOSE(2, "Killing Agent");
         alive = false;
     }
 
@@ -262,17 +251,17 @@ class Health {
     Infection * infection[ Global::MAX_NUM_DISEASES ];
     // bitset removes need to check each infection in above array to
     // find out if any are not NULL
-    fred::disease_bitset active_infections;
-    fred::disease_bitset immunity;
-    fred::disease_bitset at_risk;  // Agent is/isn't at risk for severe complications
+    phil::disease_bitset active_infections;
+    phil::disease_bitset immunity;
+    phil::disease_bitset at_risk;  // Agent is/isn't at risk for severe complications
     // Per-disease health status flags
-    fred::disease_bitset susceptible;
-    fred::disease_bitset infectious;
-    fred::disease_bitset symptomatic;
-    fred::disease_bitset recovered_today;
-    fred::disease_bitset evaluate_susceptibility;
+    phil::disease_bitset susceptible;
+    phil::disease_bitset infectious;
+    phil::disease_bitset symptomatic;
+    phil::disease_bitset recovered_today;
+    phil::disease_bitset evaluate_susceptibility;
 
-    fred::simple_strains_bitset * strain_susceptible[Global::MAX_NUM_DISEASES];
+    phil::simple_strains_bitset * strain_susceptible[Global::MAX_NUM_DISEASES];
 
     // per-disease susceptibility multiplier
     double susceptibility_multp[ Global::MAX_NUM_DISEASES ];
@@ -310,4 +299,4 @@ class Health {
     void setup(Person * self);
 };
 
-#endif // _FRED_HEALTH_H
+#endif // _PHIL_HEALTH_H

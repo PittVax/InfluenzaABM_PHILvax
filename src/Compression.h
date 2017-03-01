@@ -1,23 +1,12 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Compression.h
 //
-// This file added to FRED by J. DePasse (jvd10@pitt.edu) in July 2012
+// This file added to PHIL by J. DePasse (jvd10@pitt.edu) in July 2012
 //
 //
-#ifndef _FRED_COMPRESSION_H
-#define _FRED_COMPRESSION_H
+#ifndef _PHIL_COMPRESSION_H
+#define _PHIL_COMPRESSION_H
 
 #include <cstring>
 #include <string>
@@ -80,7 +69,7 @@ class SnappyFileCompression {
     uint64_t total_compressed_bytes;
     uint64_t total_header_bytes;
 
-    fred::Mutex mutex;
+    phil::Mutex mutex;
 
   public:
 

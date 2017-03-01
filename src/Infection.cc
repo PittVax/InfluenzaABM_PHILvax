@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 // Infection.cc
 // ------------
 // Stores the infectivity and symptomaticity trajectories that determine the transition dates for this person.
@@ -43,7 +32,7 @@ using nlohmann::json;
 Infection::Infection(Disease *disease, Person* infector, Person* host, Place* place, int day) {
 
     // flag for health updates
-    Global::Pop.set_mask_by_index(fred::Update_Health, host->get_pop_index());
+    Global::Pop.set_mask_by_index(phil::Update_Health, host->get_pop_index());
 
     // general
     this->disease = disease;

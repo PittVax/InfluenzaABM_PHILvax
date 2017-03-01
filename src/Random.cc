@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Random.cc
@@ -206,26 +195,26 @@ void RNG::init(int seed) {
 }
 
 double RNG::random_double() {
-    assert(fred::omp_get_thread_num() < Global::MAX_NUM_THREADS);
-    return rng_state[ fred::omp_get_thread_num() ].random_double();
+    assert(phil::omp_get_thread_num() < Global::MAX_NUM_THREADS);
+    return rng_state[ phil::omp_get_thread_num() ].random_double();
 }
 
 unsigned char RNG::random_char() {
-    assert(fred::omp_get_thread_num() < Global::MAX_NUM_THREADS);
-    return rng_state[ fred::omp_get_thread_num() ].random_char();
+    assert(phil::omp_get_thread_num() < Global::MAX_NUM_THREADS);
+    return rng_state[ phil::omp_get_thread_num() ].random_char();
 }
 
 int RNG::random_int_0_7() {
-    assert(fred::omp_get_thread_num() < Global::MAX_NUM_THREADS);
-    int int_0_7 = ((int)(rng_state[ fred::omp_get_thread_num() ].random_char() >> 5));
+    assert(phil::omp_get_thread_num() < Global::MAX_NUM_THREADS);
+    int int_0_7 = ((int)(rng_state[ phil::omp_get_thread_num() ].random_char() >> 5));
     assert(int_0_7 < 8 && int_0_7 >= 0);
     return int_0_7;
 }
 
 void RNG::refresh_all_buffers() {
-    assert(fred::omp_get_thread_num() < Global::MAX_NUM_THREADS);
+    assert(phil::omp_get_thread_num() < Global::MAX_NUM_THREADS);
     #pragma omp parallel for
-    for (int t = 0; t < fred::omp_get_max_threads(); ++t) {
+    for (int t = 0; t < phil::omp_get_max_threads(); ++t) {
         rng_state[ t ].refresh_all_buffers();
     }
 }

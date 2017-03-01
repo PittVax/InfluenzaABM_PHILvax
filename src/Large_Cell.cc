@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Large_Cell.cc
@@ -97,7 +86,7 @@ void Large_Cell::set_max_popsize(int n) {
 
 void Large_Cell::unenroll(Person *per) {
     // <-------------------------------------------------------------- Mutex
-    fred::Scoped_Lock lock(mutex);
+    phil::Scoped_Lock lock(mutex);
     /* Why look by id and not just find and remove the pointer using std algorithms?
     int id = per->get_id();
     vector<Person *>::iterator it;
@@ -138,7 +127,7 @@ Place *Large_Cell::get_workplace_near_to_school(Place *school) {
     int min_staff = (int)(0.75 * staff);
     if (min_staff < 1) min_staff = 1;
     int max_staff = (int)(0.5 + 1.25 * staff);
-    FRED_VERBOSE(0, " size %d staff %d %d %d \n", size, min_staff, staff, max_staff);
+    PHIL_VERBOSE(0, " size %d staff %d %d %d \n", size, min_staff, staff, max_staff);
 
     // find nearest workplace that has right number of employees
     double min_dist = 1e99;
@@ -147,7 +136,7 @@ Place *Large_Cell::get_workplace_near_to_school(Place *school) {
     assert(nearby_workplace != NULL);
     double x2 = Geo_Utils::get_x(nearby_workplace->get_longitude());
     double y2 = Geo_Utils::get_y(nearby_workplace->get_latitude());
-    FRED_VERBOSE(0, "nearby workplace %s %f %f wsize %d work_dist %f\n", nearby_workplace->get_label(), x2, y2, nearby_workplace->get_size(), min_dist);
+    PHIL_VERBOSE(0, "nearby workplace %s %f %f wsize %d work_dist %f\n", nearby_workplace->get_label(), x2, y2, nearby_workplace->get_size(), min_dist);
 
     return nearby_workplace;
 }

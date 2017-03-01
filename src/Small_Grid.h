@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Small_Grid.h
 //
 
-#ifndef _FRED_SMALL_GRID_H
-#define _FRED_SMALL_GRID_H
+#ifndef _PHIL_SMALL_GRID_H
+#define _PHIL_SMALL_GRID_H
 
 #include "Global.h"
 #include "Abstract_Grid.h"
@@ -29,7 +18,7 @@ class Small_Grid : public Abstract_Grid {
     void get_parameters();
     Small_Cell ** get_neighbors(int row, int col);
     Small_Cell * get_grid_cell(int row, int col);
-    Small_Cell * get_grid_cell(fred::geo lat, fred::geo lon);
+    Small_Cell * get_grid_cell(phil::geo lat, phil::geo lon);
     Small_Cell * select_random_grid_cell();
     void quality_control(char * directory);
 
@@ -46,4 +35,4 @@ class Small_Grid : public Abstract_Grid {
     void print_output_data(char * dir, int disease_id, int output_code, char * output_str, int day);
 };
 
-#endif // _FRED_SMALL_GRID_H
+#endif // _PHIL_SMALL_GRID_H

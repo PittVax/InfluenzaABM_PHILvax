@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Activities.cc
@@ -68,7 +57,7 @@ void Activities::setup(Person * self, Place *house, Place *school, Place *work) 
 
     // get the neighbhood from the household
     set_neighborhood(get_household()->get_grid_cell()->get_neighborhood());
-    FRED_CONDITIONAL_VERBOSE(0, get_neighborhood() == NULL,
+    PHIL_CONDITIONAL_VERBOSE(0, get_neighborhood() == NULL,
                              "Help! NO NEIGHBORHOOD for person %d house %d \n",
                              self->get_id(), get_household()->get_id());
     assert(get_neighborhood() != NULL);
@@ -111,7 +100,7 @@ static int employees_xlarge_with_sick_leave = 0;
 static int employees_xlarge_without_sick_leave = 0;
 
 void Activities::initialize_sick_leave() {
-    FRED_VERBOSE(1, "Activities::initialize_sick_leave entered\n");
+    PHIL_VERBOSE(1, "Activities::initialize_sick_leave entered\n");
     int workplace_size = 0;
     my_sick_days_absent = 0;
     my_sick_days_present = 0;
@@ -157,7 +146,7 @@ void Activities::initialize_sick_leave() {
         }
     } else
         sick_leave_available = false;
-    FRED_VERBOSE(1, "Activities::initialize_sick_leave size_leave_avaliable = %d\n", sick_leave_available?1:0);
+    PHIL_VERBOSE(1, "Activities::initialize_sick_leave size_leave_avaliable = %d\n", sick_leave_available?1:0);
 
     // compute sick days remaining (for flu)
     sick_days_remaining = 0.0;
@@ -172,25 +161,25 @@ void Activities::initialize_sick_leave() {
             sick_days_remaining = Activities::Flu_days;
         }
     }
-    FRED_VERBOSE(1, "Activities::initialize_sick_leave sick_days_remaining = %d\n", sick_days_remaining);
+    PHIL_VERBOSE(1, "Activities::initialize_sick_leave sick_days_remaining = %d\n", sick_days_remaining);
 }
 
 void Activities::before_run() {
-    FRED_STATUS(0, "employees at small workplaces with sick leave: %d\n",
+    PHIL_STATUS(0, "employees at small workplaces with sick leave: %d\n",
                 employees_small_with_sick_leave);
-    FRED_STATUS(0, "employees at small workplaces without sick leave: %d\n",
+    PHIL_STATUS(0, "employees at small workplaces without sick leave: %d\n",
                 employees_small_without_sick_leave);
-    FRED_STATUS(0, "employees at med workplaces with sick leave: %d\n",
+    PHIL_STATUS(0, "employees at med workplaces with sick leave: %d\n",
                 employees_med_with_sick_leave);
-    FRED_STATUS(0, "employees at med workplaces without sick leave: %d\n",
+    PHIL_STATUS(0, "employees at med workplaces without sick leave: %d\n",
                 employees_med_without_sick_leave);
-    FRED_STATUS(0, "employees at large workplaces with sick leave: %d\n",
+    PHIL_STATUS(0, "employees at large workplaces with sick leave: %d\n",
                 employees_large_with_sick_leave);
-    FRED_STATUS(0, "employees at large workplaces without sick leave: %d\n",
+    PHIL_STATUS(0, "employees at large workplaces without sick leave: %d\n",
                 employees_large_without_sick_leave);
-    FRED_STATUS(0, "employees at xlarge workplaces with sick leave: %d\n",
+    PHIL_STATUS(0, "employees at xlarge workplaces with sick leave: %d\n",
                 employees_xlarge_with_sick_leave);
-    FRED_STATUS(0, "employees at xlarge workplaces without sick leave: %d\n",
+    PHIL_STATUS(0, "employees at xlarge workplaces without sick leave: %d\n",
                 employees_xlarge_without_sick_leave);
 }
 
@@ -220,14 +209,14 @@ void Activities::assign_profile(Person * self) {
 
 void Activities::update(int day) {
 
-    FRED_STATUS(1, "Activities update entered\n");
+    PHIL_STATUS(1, "Activities update entered\n");
 
     // decide if this is a weekday:
     Activities::day_of_week = Global::Sim_Current_Date->get_day_of_week();
     Activities::is_weekday = (0 < Activities::day_of_week && Activities::day_of_week < 6);
 
     // print out absenteeism/presenteeism counts
-    FRED_CONDITIONAL_VERBOSE(1, day > 0,
+    PHIL_CONDITIONAL_VERBOSE(1, day > 0,
                              "DAY %d ABSENTEEISM: work absent %d present %d %0.2f  school absent %d present %d %0.2f\n", day-1,
                              Activities::Sick_days_absent,
                              Activities::Sick_days_present,
@@ -242,7 +231,7 @@ void Activities::update(int day) {
     Activities::School_sick_days_present = 0;
     Activities::School_sick_days_absent = 0;
 
-    FRED_STATUS(1, "Activities update completed\n");
+    PHIL_STATUS(1, "Activities update completed\n");
 }
 
 
@@ -331,7 +320,7 @@ void Activities::update_schedule(Person * self, int day) {
             set_neighborhood(((Household *)get_household())->select_new_neighborhood(Community_prob, Community_distance, Home_neighborhood_prob, r));
         }
     }
-    FRED_STATUS(1, "update_schedule on day %d\n%s\n",
+    PHIL_STATUS(1, "update_schedule on day %d\n%s\n",
                 day, schedule_to_string(self, day).c_str());
 }
 
@@ -408,11 +397,11 @@ bool Activities::default_sick_leave_behavior() {
 }
 
 void Activities::print_schedule(Person * self, int day) {
-    FRED_STATUS(0, "%s\n", schedule_to_string(self, day).c_str());
+    PHIL_STATUS(0, "%s\n", schedule_to_string(self, day).c_str());
 }
 
 void Activities::print(Person * self) {
-    FRED_STATUS(0, "%s\n", to_string(self).c_str());
+    PHIL_STATUS(0, "%s\n", to_string(self).c_str());
 }
 
 void Activities::assign_school(Person * self) {
@@ -492,8 +481,8 @@ void Activities::assign_school(Person * self) {
        }
        trials++;
        }*/
-    Utils::fred_abort("assign_school: can't locate school for person %d\n", self->get_id());
-    //FRED_WARNING("assign_school: can't locate school for person %d\n", self->get_id());
+    Utils::phil_abort("assign_school: can't locate school for person %d\n", self->get_id());
+    //PHIL_WARNING("assign_school: can't locate school for person %d\n", self->get_id());
 }
 
 void Activities::assign_classroom(Person * self) {
@@ -567,7 +556,7 @@ void Activities::assign_workplace(Person * self) {
         level++;
     }
 
-    FRED_WARNING("assign_workplace: can't locate workplace for person %d\n",
+    PHIL_WARNING("assign_workplace: can't locate workplace for person %d\n",
                  self->get_id());
 }
 
@@ -579,7 +568,7 @@ void Activities::assign_office(Person * self) {
             ((Workplace *) get_workplace())->assign_office(self);
         if (place != NULL) place->enroll(self);
         else {
-            FRED_VERBOSE(0, "Warning! No office assigned for person %d workplace %d\n",
+            PHIL_VERBOSE(0, "Warning! No office assigned for person %d workplace %d\n",
                          self->get_id(), get_workplace()->get_id());
         }
         set_office(place);
@@ -609,7 +598,7 @@ void Activities::update_profile(Person * self) {
         // select a school based on age and neighborhood
         assign_school(self);
 
-        FRED_STATUS(1,
+        PHIL_STATUS(1,
                     "CHANGED BEHAVIOR PROFILE TO STUDENT: id %d age %d sex %c\n%s\n",
                     self->get_id(), age, self->get_sex(), to_string(self).c_str());
 
@@ -622,7 +611,7 @@ void Activities::update_profile(Person * self) {
         Classroom * c = (Classroom *) get_classroom();
         if (c == NULL || c->get_age_level() == age) {
             // no change
-            FRED_STATUS(1,
+            PHIL_STATUS(1,
                         "KEPT CLASSROOM ASSIGNMENT: id %d age %d sex %c %s %s | %s\n",
                         self->get_id(), age, self->get_sex(), s->get_label(), c->get_label(),
                         to_string(self).c_str());
@@ -634,7 +623,7 @@ void Activities::update_profile(Person * self) {
             } else {
                 assign_school(self);
             }
-            FRED_STATUS(1,
+            PHIL_STATUS(1,
                         "%s: id %d age %d sex %c from %s %s to %s %s | %s\n",
                         "CHANGED CLASSROOM ASSIGNMENT",
                         self->get_id(), age, self->get_sex(),
@@ -655,17 +644,17 @@ void Activities::update_profile(Person * self) {
         profile = WORKER_PROFILE;
         assign_workplace(self);
         initialize_sick_leave();
-        FRED_STATUS(1, "CHANGED BEHAVIOR PROFILE TO WORKER: id %d age %d sex %c\n%s\n",
+        PHIL_STATUS(1, "CHANGED BEHAVIOR PROFILE TO WORKER: id %d age %d sex %c\n%s\n",
                     self->get_id(), age, self->get_sex(), to_string(self).c_str());
         return;
     }
 
     if (profile != RETIRED_PROFILE && Global::RETIREMENT_AGE <= age) {
         if (RANDOM() < 0.5) {
-            FRED_STATUS(1,
+            PHIL_STATUS(1,
                         "CHANGING BEHAVIOR PROFILE TO RETIRED: id %d age %d sex %c\n",
                         self->get_id(), age, self->get_sex());
-            FRED_STATUS(1, "to_string: %s\n", to_string(self).c_str());
+            PHIL_STATUS(1, "to_string: %s\n", to_string(self).c_str());
             // quit working
             if (is_teacher()) {
                 set_school(NULL);
@@ -675,7 +664,7 @@ void Activities::update_profile(Person * self) {
             set_office(NULL);
             profile = RETIRED_PROFILE;
             initialize_sick_leave(); // no sick leave available if retired
-            FRED_STATUS(1,
+            PHIL_STATUS(1,
                         "CHANGED BEHAVIOR PROFILE TO RETIRED: id %d age %d sex %c\n%s\n",
                         self->get_id(), age, self->get_sex(), to_string(self).c_str());
         }
@@ -690,7 +679,7 @@ static int mcount = 0;
 void Activities::update_household_mobility(Person * self) {
     if (!Global::Enable_Mobility) return;
 
-    FRED_STATUS(1,
+    PHIL_STATUS(1,
                 "update_household_mobility entered with mcount = %d\n", mcount);
 
     if (mcount == 0) {
@@ -751,28 +740,28 @@ void Activities::read_init_files() {
 
     if (!Global::Enable_Mobility) return;
 
-    char yearly_mobility_rate_file[FRED_STRING_SIZE];
+    char yearly_mobility_rate_file[PHIL_STRING_SIZE];
 
-    FRED_STATUS(0, "read activities init files entered\n", "");
+    PHIL_STATUS(0, "read activities init files entered\n", "");
 
     Params::get_param_from_string("yearly_mobility_rate_file", yearly_mobility_rate_file);
     // read mobility rate file and load the values into the mobility_rate_array
-    FILE *fp = Utils::fred_open_file(yearly_mobility_rate_file);
+    FILE *fp = Utils::phil_open_file(yearly_mobility_rate_file);
     if (fp == NULL) {
-        Utils::fred_abort("Activities init_file %s not found\n", yearly_mobility_rate_file);
+        Utils::phil_abort("Activities init_file %s not found\n", yearly_mobility_rate_file);
     }
     for (int i = 0; i <= MAX_MOBILITY_AGE; i++) {
         int age;
         double mobility_rate;
         if (fscanf(fp, "%d %lf", &age, &mobility_rate) != 2) {
-            Utils::fred_abort("Help! Read failure for age %d\n", i);
+            Utils::phil_abort("Help! Read failure for age %d\n", i);
         }
         Activities::age_yearly_mobility_rate[age] = mobility_rate;
     }
     fclose(fp);
-    FRED_STATUS(0, "finished reading Activities init_file = %s\n", yearly_mobility_rate_file);
+    PHIL_STATUS(0, "finished reading Activities init_file = %s\n", yearly_mobility_rate_file);
     for (int i = 0; Global::Verbose && i <= MAX_MOBILITY_AGE; i++) {
-        FRED_STATUS(0, "%d %f\n", i, Activities::age_yearly_mobility_rate[i]);
+        PHIL_STATUS(0, "%d %f\n", i, Activities::age_yearly_mobility_rate[i]);
     }
 }
 
@@ -790,7 +779,7 @@ void Activities::start_traveling(Person * self, Person * visited) {
         }
     }
     travel_status = true;
-    FRED_STATUS(1, "start traveling: id = %d\n", self->get_id());
+    PHIL_STATUS(1, "start traveling: id = %d\n", self->get_id());
 }
 
 void Activities::stop_traveling(Person * self) {
@@ -799,15 +788,15 @@ void Activities::stop_traveling(Person * self) {
     }
     travel_status = false;
     traveling_outside = false;
-    FRED_STATUS(1, "stop traveling: id = %d\n", self->get_id());
+    PHIL_STATUS(1, "stop traveling: id = %d\n", self->get_id());
 }
 
 bool Activities::become_a_teacher(Person * self, Place *school) {
     bool success = false;
-    FRED_STATUS(1, "Become a teacher entered for person %d age %d\n", self->get_id(), self->get_age());
+    PHIL_STATUS(1, "Become a teacher entered for person %d age %d\n", self->get_id(), self->get_age());
     if (get_school() != NULL) {
         if (Global::Verbose > 1) {
-            FRED_WARNING("become_a_teacher: person %d already goes to school %d age %d\n",
+            PHIL_WARNING("become_a_teacher: person %d already goes to school %d age %d\n",
                          self->get_id(), get_school()->get_id(), self->get_age());
         }
         profile = STUDENT_PROFILE;
@@ -815,7 +804,7 @@ bool Activities::become_a_teacher(Person * self, Place *school) {
         // set profile
         profile = TEACHER_PROFILE;
         // join the school
-        FRED_STATUS(1, "set school to %s\n", school->get_label());
+        PHIL_STATUS(1, "set school to %s\n", school->get_label());
         set_school(school);
         get_school()->enroll(self);
         success = true;
@@ -824,14 +813,14 @@ bool Activities::become_a_teacher(Person * self, Place *school) {
     // withdraw from this workplace and any associated office
     if (get_workplace() != NULL) {
         get_workplace()->unenroll(self);
-        FRED_STATUS(1, "set workplace to NULL\n");
+        PHIL_STATUS(1, "set workplace to NULL\n");
         set_workplace(NULL);
     }
     if (get_office() != NULL) {
         get_office()->unenroll(self);
         set_office(NULL);
     }
-    FRED_STATUS(1, "Become a teacher finished for person %d age %d\n", self->get_id(), self->get_age());
+    PHIL_STATUS(1, "Become a teacher finished for person %d age %d\n", self->get_id(), self->get_age());
     return success;
 }
 

@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Place.h
 //
 
-#ifndef _FRED_PLACE_H
-#define _FRED_PLACE_H
+#ifndef _PHIL_PLACE_H
+#define _PHIL_PLACE_H
 
 #define HOUSEHOLD 'H'
 #define NEIGHBORHOOD 'N'
@@ -46,22 +35,22 @@ class Person;
 
 struct Place_State {
 
-    fred::Spin_Mutex mutex;
+    phil::Spin_Mutex mutex;
     std::vector< Person * > susceptibles;
     std::vector< Person * > infectious;
 
     void add_susceptible(Person * p) {
-        fred::Spin_Lock lock(mutex);
+        phil::Spin_Lock lock(mutex);
         susceptibles.push_back(p);
     }
 
     void clear_susceptibles() {
-        fred::Spin_Lock lock(mutex);
+        phil::Spin_Lock lock(mutex);
         susceptibles.clear();
     }
 
     size_t susceptibles_size() {
-        fred::Spin_Lock lock(mutex);
+        phil::Spin_Lock lock(mutex);
         return susceptibles.size();
     }
 
@@ -70,17 +59,17 @@ struct Place_State {
     }
 
     void add_infectious(Person * p) {
-        fred::Spin_Lock lock(mutex);
+        phil::Spin_Lock lock(mutex);
         infectious.push_back(p);
     }
 
     void clear_infectious() {
-        fred::Spin_Lock lock(mutex);
+        phil::Spin_Lock lock(mutex);
         infectious.clear();
     }
 
     size_t infectious_size() {
-        fred::Spin_Lock lock(mutex);
+        phil::Spin_Lock lock(mutex);
         return infectious.size();
     }
 
@@ -107,7 +96,7 @@ struct Place_State {
 struct Place_State_Merge : Place_State {
 
     void operator()(const Place_State & state) {
-        fred::Spin_Lock lock(mutex);
+        phil::Spin_Lock lock(mutex);
         susceptibles.insert(susceptibles.end(), state.susceptibles.begin(), state.susceptibles.end());
         infectious.insert(infectious.end(), state.infectious.begin(), state.infectious.end());
     }
@@ -132,7 +121,7 @@ class Place {
      *  @param cont this Place's container
      *  @param pop this Place's population
      */
-    void setup(const char *lab, fred::geo lon, fred::geo lat, Place *cont, Population *pop);
+    void setup(const char *lab, phil::geo lon, phil::geo lat, Place *cont, Population *pop);
 
     /**
      * Get this place ready
@@ -316,7 +305,7 @@ class Place {
      *
      * @return the latitude
      */
-    fred::geo get_latitude() {
+    phil::geo get_latitude() {
         return latitude;
     }
 
@@ -325,7 +314,7 @@ class Place {
      *
      * @return the longitude
      */
-    fred::geo get_longitude() {
+    phil::geo get_longitude() {
         return longitude;
     }
 
@@ -379,7 +368,7 @@ class Place {
      *
      * @param x the new latitude
      */
-    void set_latitude(fred::geo x) {
+    void set_latitude(phil::geo x) {
         latitude = x;
     }
 
@@ -388,7 +377,7 @@ class Place {
      *
      * @param x the new longitude
      */
-    void set_longitude(fred::geo x) {
+    void set_longitude(phil::geo x) {
         longitude = x;
     }
 
@@ -613,14 +602,14 @@ class Place {
     //  - list of infectious visitors (per disease); size of which gives the infectious count
     State< Place_State > place_state[ Global::MAX_NUM_DISEASES ];
     // track whether or not place is infectious with each disease
-    fred::disease_bitset infectious_bitset;
+    phil::disease_bitset infectious_bitset;
 
     char label[32];         // external id
     char type;              // HOME, WORK, SCHOOL, COMMUNITY
     int id;                 // place id
     Place *container;       // container place
-    fred::geo latitude;     // geo location
-    fred::geo longitude;    // geo location
+    phil::geo latitude;     // geo location
+    phil::geo longitude;    // geo location
     vector <Person *> enrollees;
     int close_date;         // this place will be closed during:
     int open_date;          //   [close_date, open_date)
@@ -726,4 +715,4 @@ class Place {
 };
 
 
-#endif // _FRED_PLACE_H
+#endif // _PHIL_PLACE_H

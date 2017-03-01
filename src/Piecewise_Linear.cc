@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 #include <stdio.h>
 #include <vector>
 #include <string>
@@ -35,7 +24,7 @@ void Piecewise_Linear :: setup(string _name, Disease * _disease) {
     Params::get_param_vector(param_name, probabilities);
 
     if (quality_control() != true) {
-        Utils::fred_abort("Piecewise Linear quality control failed!");
+        Utils::phil_abort("Piecewise Linear quality control failed!");
     }
 }
 
@@ -43,7 +32,7 @@ bool Piecewise_Linear :: quality_control() {
     bool return_value = true;
     int disease_id = disease->get_id();
     if (ag_distances.size() != probabilities.size()) {
-        FRED_WARNING("Error parsing %s[%d]: "
+        PHIL_WARNING("Error parsing %s[%d]: "
                      "number of distances not equal to number of probabilities",
                      name.c_str(), disease_id);
         return_value = false;
@@ -52,7 +41,7 @@ bool Piecewise_Linear :: quality_control() {
     // The antigenic distances have to be sorted and should not repeat
     for (int i = 0; i < ag_distances.size() - 1; i++) {
         if (ag_distances[ i ] >= ag_distances[ i + 1 ]) {
-            FRED_WARNING("Error parsing %s[%d]: "
+            PHIL_WARNING("Error parsing %s[%d]: "
                          "%s_distances[%d][%d] not smaller than %s_distances[%d][%d]",
                          name.c_str(), disease_id, i, name.c_str(), disease_id, i+1);
             return_value = false;
@@ -62,7 +51,7 @@ bool Piecewise_Linear :: quality_control() {
     // The probabilities should be valid
     for (int i = 0; i < probabilities.size(); i++) {
         if (probabilities[ i ] > 1.0 || probabilities[ i ] < 0.0) {
-            FRED_WARNING("Error parsing %s[%d]: "
+            PHIL_WARNING("Error parsing %s[%d]: "
                          "%s_probabilities[%d][%d] not a valid probability",
                          name.c_str(), disease->get_id(), i);
             return_value = false;

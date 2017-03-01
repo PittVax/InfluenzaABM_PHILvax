@@ -12,8 +12,8 @@ New_York North_Carolina North_Dakota Ohio Oklahoma Oregon Pennsylvania Rhode_Isl
 South_Carolina South_Dakota Tennessee Texas Utah Vermont Virginia Washington
 West_Virginia Wisconsin Wyoming);
 
-my $FRED = $ENV{FRED_HOME};
-die "run_fred: Please set environmental variable FRED_HOME to location of FRED home directory\n" if not $FRED;
+my $PHIL = $ENV{PHIL_HOME};
+die "run_phil: Please set environmental variable PHIL_HOME to location of PHIL home directory\n" if not $PHIL;
 
 make_params();
 
@@ -23,7 +23,7 @@ for my $st (@states) {
   print scalar(localtime), "\n";
   print "$st\n";
   system "rm -rf OUT.$st/*";
-  system "run_fred -p params.$st";
+  system "run_phil -p params.$st";
   system "get_distr OUT.$st > OUT.$st/get_distr.out";
   # system "gzip OUT.$st/degree.txt";
   system "gzip -f OUT.$st/infections1.txt";
@@ -36,7 +36,7 @@ sub make_params {
   for my $st (@states) {
     open PAR, ">params.$st";
     print PAR "days = 100\n";
-    print PAR "popdir = $FRED/region\n";
+    print PAR "popdir = $PHIL/region\n";
     print PAR "popfile = pop_$st.txt\n";
     print PAR "locfile = loc_$st.txt\n";
     print PAR "enable_large_grid = 1\n";

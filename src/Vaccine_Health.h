@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: VaccineHealth.h
 //
 
-#ifndef _FRED_VACCINEHEALTH_H
-#define _FRED_VACCINEHEALTH_H
+#ifndef _PHIL_VACCINEHEALTH_H
+#define _PHIL_VACCINEHEALTH_H
 
 #include <stdio.h>
 #include <assert.h>
@@ -71,7 +60,7 @@ class Vaccine_Health {
             vaccination_day = day;
         } else {
             //This is an error, but it will not stop a run, only pring a Warning.
-            FRED_WARNING("WARNING! Vaccination Status, setting vaccine day of someone who has already been vaccinated\n");
+            PHIL_WARNING("WARNING! Vaccination Status, setting vaccine day of someone who has already been vaccinated\n");
         }
     }
     bool isEffective() {

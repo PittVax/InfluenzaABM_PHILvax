@@ -1,14 +1,3 @@
-/*
-   This file is part of the FRED system.
-
-   Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-   Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-   Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-   Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-   more information.
-   */
-
 //
 //
 // File: Population.cc
@@ -57,8 +46,8 @@ int birth_count[Demographics::MAX_AGE + 1];
 int death_count_male[Demographics::MAX_AGE + 1];
 int death_count_female[Demographics::MAX_AGE + 1];
 
-char Population::pop_outfile[FRED_STRING_SIZE];
-char Population::output_population_date_match[FRED_STRING_SIZE];
+char Population::pop_outfile[PHIL_STRING_SIZE];
+char Population::output_population_date_match[PHIL_STRING_SIZE];
 int  Population::output_population = 0;
 bool Population::is_initialized = false;
 int  Population::next_id = 0;
@@ -85,12 +74,12 @@ Population::Population() {
 void Population::initialize_masks() {
     // can't do this in the constructor because the Global:: variables aren't yet
     // available when the Global::Pop is defined
-    blq.add_mask(fred::Infectious);
-    blq.add_mask(fred::Susceptible);
-    blq.add_mask(fred::Update_Deaths);
-    blq.add_mask(fred::Update_Births);
-    blq.add_mask(fred::Update_Health);
-    blq.add_mask(fred::Update_Interventions);
+    blq.add_mask(phil::Infectious);
+    blq.add_mask(phil::Susceptible);
+    blq.add_mask(phil::Update_Deaths);
+    blq.add_mask(phil::Update_Births);
+    blq.add_mask(phil::Update_Health);
+    blq.add_mask(phil::Update_Interventions);
 }
 
 
@@ -151,7 +140,7 @@ void Population::get_parameters() {
 Person * Population::add_person(int age, char sex, int race, int rel, Place *house,
                                 Place *school, Place *work, int day, bool today_is_birthday, int label_id) {
 
-    fred::Scoped_Lock lock(add_person_mutex);
+    phil::Scoped_Lock lock(add_person_mutex);
 
     int id;
     if (label_id == -1) {
@@ -189,7 +178,7 @@ Person * Population::add_person(int age, char sex, int race, int rel, Place *hou
             pos++;
         }
         birthday_vecs[ pos ].push_back(person);
-        FRED_VERBOSE(2,
+        PHIL_VERBOSE(2,
                      "Adding person %d to birthday vector for day = %d.\n ... birthday_vecs[ %d ].size() = %zu\n",
                      id, pos, pos, birthday_vecs[ pos ].size());
         birthday_map[ person ] = ((int) birthday_vecs[ pos ].size() - 1);
@@ -197,21 +186,21 @@ Person * Population::add_person(int age, char sex, int race, int rel, Place *hou
     return person;
 }
 
-void Population::set_mask_by_index(fred::Pop_Masks mask, int person_index) {
+void Population::set_mask_by_index(phil::Pop_Masks mask, int person_index) {
     // assert that the mask has in fact been added
     blq.set_mask_by_index(mask, person_index);
 }
 
-void Population::clear_mask_by_index(fred::Pop_Masks mask, int person_index) {
+void Population::clear_mask_by_index(phil::Pop_Masks mask, int person_index) {
     // assert that the mask has in fact been added
     blq.clear_mask_by_index(mask, person_index);
 }
 
 void Population::delete_person(Person * person) {
-    FRED_VERBOSE(1,"DELETING PERSON: %d ...\n", person->get_id());
+    PHIL_VERBOSE(1,"DELETING PERSON: %d ...\n", person->get_id());
 
     person->terminate();
-    FRED_VERBOSE(1,"DELETED PERSON: %d\n", person->get_id());
+    PHIL_VERBOSE(1,"DELETED PERSON: %d\n", person->get_id());
 
     for (int d = 0; d < Global::Diseases; d++) {
         disease[d].get_evolution()->terminate_person(person);
@@ -233,7 +222,7 @@ void Population::delete_person(Person * person) {
     pop_size--;
 
     if ((unsigned) pop_size != blq.size()) {
-        FRED_VERBOSE(0,"pop_size = %d  blq.size() = %d\n",
+        PHIL_VERBOSE(0,"pop_size = %d  blq.size() = %d\n",
                      pop_size, (int) blq.size());
     }
     assert((unsigned) pop_size == blq.size());
@@ -241,7 +230,7 @@ void Population::delete_person(Person * person) {
 
 void Population::prepare_to_die(int day, int person_index) {
     Person * per = get_person_by_index(person_index);
-    fred::Scoped_Lock lock(mutex);
+    phil::Scoped_Lock lock(mutex);
     // add person to daily death_list
     death_list.push_back(per);
     report_death(day, per);
@@ -255,7 +244,7 @@ void Population::prepare_to_die(int day, int person_index) {
 
 void Population::prepare_to_give_birth(int day, int person_index) {
     Person * per = get_person_by_index(person_index);
-    fred::Scoped_Lock lock(mutex);
+    phil::Scoped_Lock lock(mutex);
     // add person to daily maternity_list
     maternity_list.push_back(per);
     report_birth(day, per);
@@ -266,7 +255,7 @@ void Population::prepare_to_give_birth(int day, int person_index) {
 }
 
 void Population::setup() {
-    FRED_STATUS(0, "setup population entered\n","");
+    PHIL_STATUS(0, "setup population entered\n","");
 
     disease = new Disease [Global::Diseases];
     for (int d = 0; d < Global::Diseases; d++) {
@@ -312,12 +301,12 @@ void Population::setup() {
                 count++;
             }
         }
-        FRED_STATUS(0, "number of residually immune people = %d\n", count);
+        PHIL_STATUS(0, "number of residually immune people = %d\n", count);
     }
     av_manager->reset();
     vacc_manager->reset();
 
-    FRED_STATUS(0, "population setup finished\n","");
+    PHIL_STATUS(0, "population setup finished\n","");
 }
 
 Person_Init_Data Population::get_person_init_data(char * line,
@@ -369,20 +358,20 @@ Person_Init_Data Population::get_person_init_data(char * line,
     pid.school = places.get_place_from_label(pid.school_label);
     // warn if we can't find workplace
     if (strcmp(pid.work_label, "-1") != 0 && pid.work == NULL) {
-        FRED_VERBOSE(2, "WARNING: person %s -- no workplace found for label = %s\n",
+        PHIL_VERBOSE(2, "WARNING: person %s -- no workplace found for label = %s\n",
                      pid.label, pid.work_label);
         if (Global::Enable_Local_Workplace_Assignment) {
             pid.work = Global::Places.get_random_workplace();
-            FRED_CONDITIONAL_VERBOSE(0, pid.work != NULL,
+            PHIL_CONDITIONAL_VERBOSE(0, pid.work != NULL,
                                      "WARNING: person %s assigned to workplace %s\n",
                                      pid.label, pid.work->get_label());
-            FRED_CONDITIONAL_VERBOSE(0, pid.work == NULL,
+            PHIL_CONDITIONAL_VERBOSE(0, pid.work == NULL,
                                      "WARNING: no workplace available for person %s\n",
                                      pid.label);
         }
     }
     // warn if we can't find school.  No school for gq_people
-    FRED_CONDITIONAL_VERBOSE(0,
+    PHIL_CONDITIONAL_VERBOSE(0,
                              (strcmp(pid.school_label,"-1")!=0 && pid.school == NULL),
                              "WARNING: person %s -- no school found for label = %s\n",
                              pid.label, pid.school_label);
@@ -397,15 +386,15 @@ void Population::parse_lines_from_stream(std::istream & stream,
     std::vector< Person_Init_Data > pidv;
 
     while (stream.good()) {
-        char line[FRED_STRING_SIZE];
-        stream.getline(line, FRED_STRING_SIZE);
+        char line[PHIL_STRING_SIZE];
+        stream.getline(line, PHIL_STRING_SIZE);
         // skip empty lines...
         if ((line[ 0 ] == '\0') || strncmp(line, "p_id", 4) == 0) continue;
         //printf("line: |%s|\n", line); fflush(stdout); // exit(0);
         const Person_Init_Data & pid = get_person_init_data(line, Global::Places,
                                        is_group_quarters_pop);
         // verbose printing of all person initialization data
-        FRED_VERBOSE(1, "%s\n", pid.to_string().c_str());
+        PHIL_VERBOSE(1, "%s\n", pid.to_string().c_str());
         //skip header line
         if (strcmp(pid.label,"p_id")==0) continue;
         /*
@@ -424,7 +413,7 @@ void Population::parse_lines_from_stream(std::istream & stream,
         } else {
             // we need at least a household (homeless people not yet supported), so
             // skip this person
-            FRED_VERBOSE(0, "WARNING: skipping person %s -- %s %s\n",
+            PHIL_VERBOSE(0, "WARNING: skipping person %s -- %s %s\n",
                          pid.label, "no household found for label =", pid.house_label);
         }
     } // <----- end while loop over stream
@@ -434,7 +423,7 @@ void Population::parse_lines_from_stream(std::istream & stream,
     // preserves the (fine-grained) order in the population file.  Protect
     // with mutex so that we do this sequentially and avoid thrashing the
     // scoped mutex in add_person.
-    fred::Scoped_Lock lock(batch_add_person_mutex);
+    phil::Scoped_Lock lock(batch_add_person_mutex);
     std::vector< Person_Init_Data >::iterator it = pidv.begin();
     for (; it != pidv.end(); ++it) {
         Person_Init_Data & pid = *it;
@@ -451,10 +440,10 @@ void Population::split_synthetic_populations_by_deme() {
     using namespace Utils;
     const char delim = ' ';
 
-    FRED_STATUS(0, "Validating synthetic population identifiers before reading.\n", "");
+    PHIL_STATUS(0, "Validating synthetic population identifiers before reading.\n", "");
     const char * pop_dir = Global::Synthetic_population_directory;
-    FRED_STATUS(0, "Using population directory: %s\n", pop_dir);
-    FRED_STATUS(0, "FRED defines a \"deme\" to be a local population %s\n%s%s\n",
+    PHIL_STATUS(0, "Using population directory: %s\n", pop_dir);
+    PHIL_STATUS(0, "PHIL defines a \"deme\" to be a local population %s\n%s%s\n",
                 "of people whose households are contained in the same bounded geographic region.",
                 "No Synthetic Population ID may have more than one Deme ID, but a Deme ID may ",
                 "contain many Synthetic Population IDs.");
@@ -479,31 +468,31 @@ void Population::split_synthetic_populations_by_deme() {
             if (d == 0) {
                 strcpy(pop_id_string, Global::Synthetic_population_id);
             } else {
-                Utils::fred_abort("Help! %d %s %d %s %d %s\n",
+                Utils::phil_abort("Help! %d %s %d %s %d %s\n",
                                   param_num_demes, "demes were requested ( param_num_demes = ",
                                   param_num_demes, " ), but indexed paramater synthetic_population_id[",
                                   d,"] was not found!");
             }
         }
         Demes.push_back(split_by_delim(pop_id_string, delim));
-        FRED_STATUS(0, "Split ID string \"%s\" into %d %s using delimiter: \'%c\'\n",
+        PHIL_STATUS(0, "Split ID string \"%s\" into %d %s using delimiter: \'%c\'\n",
                     pop_id_string, int(Demes[ d ].size()),
                     Demes[ d ].size() > 1 ? "tokens" : "token", delim);
         assert(Demes.size() > 0);
         // only allow up to 255 demes
         assert(Demes.size() <= std::numeric_limits< unsigned char >::max());
-        FRED_STATUS(0, "Deme %d comprises %d synthetic population id%s:\n",
+        PHIL_STATUS(0, "Deme %d comprises %d synthetic population id%s:\n",
                     d, Demes[ d ].size(), Demes[ d ].size() > 1 ? "s" : "");
         assert(Demes[ d ].size() > 0);
         for (int i = 0; i < Demes[ d ].size(); ++i) {
-            FRED_CONDITIONAL_WARNING(
+            PHIL_CONDITIONAL_WARNING(
                 pop_id_set.find(Demes[ d ][ i ]) != pop_id_set.end(),
                 "%s %s %s %s\n", "Population ID ", Demes[ d ][ i ],
                 "was specified more than once!",
                 "Population IDs must be unique across all Demes!");
             assert(pop_id_set.find(Demes[ d ][ i ]) == pop_id_set.end());
             pop_id_set.insert(Demes[ d ][ i ]);
-            FRED_STATUS(0, "--> Deme %d, Synth. Pop. ID %d: %s\n",
+            PHIL_STATUS(0, "--> Deme %d, Synth. Pop. ID %d: %s\n",
                         d, i, Demes[ d ][ i ]);
         }
     }
@@ -515,15 +504,15 @@ void Population::read_all_populations() {
     const char * pop_dir = Global::Synthetic_population_directory;
     assert(Demes.size() > 0);
     for (int d = 0; d < Demes.size(); ++d) {
-        FRED_STATUS(0, "Loading population for Deme %d:\n", d);
+        PHIL_STATUS(0, "Loading population for Deme %d:\n", d);
         assert(Demes[ d ].size() > 0);
         for (int i = 0; i < Demes[ d ].size(); ++i) {
-            FRED_STATUS(0 , "Loading population %d for Deme %d: %s\n",
+            PHIL_STATUS(0 , "Loading population %d for Deme %d: %s\n",
                         i, d, Demes[ d ][ i ]);
             // Call read_population to actually read the population files
             read_population(pop_dir, Demes[ d ][ i ], "people");
             if (Global::Enable_Group_Quarters) {
-                FRED_STATUS(0, "Loading group quarters population %d for Deme %d: %s\n",
+                PHIL_STATUS(0, "Loading group quarters population %d for Deme %d: %s\n",
                             i, d, Demes[ d ][ i ]);
                 // Call read_population to actually read the population files
                 read_population(pop_dir, Demes[ d ][ i ], "gq_people");
@@ -535,7 +524,7 @@ void Population::read_all_populations() {
 void Population::read_population(const char * pop_dir, const char * pop_id,
                                  const char * pop_type) {
 
-    FRED_STATUS(0, "read population entered\n");
+    PHIL_STATUS(0, "read population entered\n");
 
     Population::next_id = 0;
 
@@ -549,7 +538,7 @@ void Population::read_population(const char * pop_dir, const char * pop_id,
             pop_dir, pop_id, pop_id, pop_type);
 
     FILE *fp = NULL;
-    fp = Utils::fred_open_file(population_file);
+    fp = Utils::phil_open_file(population_file);
     if (fp != NULL) {
         fclose(fp);
         SnappyFileCompression compressor = SnappyFileCompression(population_file);
@@ -571,16 +560,16 @@ void Population::read_population(const char * pop_dir, const char * pop_id,
         sprintf(population_file, "%s/%s/%s_synth_%s.txt",
                 pop_dir, pop_id, pop_id, pop_type);
 
-        fp = Utils::fred_open_file(population_file);
+        fp = Utils::phil_open_file(population_file);
         if (fp == NULL) {
-            Utils::fred_abort("population_file %s not found\n", population_file);
+            Utils::phil_abort("population_file %s not found\n", population_file);
         }
         fclose(fp);
         std::ifstream stream(population_file, ifstream::in);
         parse_lines_from_stream(stream, is_group_quarters_pop);
     }
 
-    FRED_VERBOSE(0, "finished reading population, pop_size = %d\n", pop_size);
+    PHIL_VERBOSE(0, "finished reading population, pop_size = %d\n", pop_size);
 }
 
 void Population::update(int day) {
@@ -600,11 +589,11 @@ void Population::update(int day) {
         int bd_count = 0;
         size_t vec_size = 0;
 
-        FRED_VERBOSE(0, "day_of_year = [%d]\n", day_of_year);
+        PHIL_VERBOSE(0, "day_of_year = [%d]\n", day_of_year);
 
         bool is_leap = Date::is_leap_year(year);
 
-        FRED_VERBOSE(2, "Day: %d, Year: %d, is_leap: %d\n", day_of_year, year, is_leap);
+        PHIL_VERBOSE(2, "Day: %d, Year: %d, is_leap: %d\n", day_of_year, year, is_leap);
 
         // All birthdays except Feb. 29 ( unless in leap year )
         if (day_of_year != 60 || is_leap) {
@@ -621,13 +610,13 @@ void Population::update(int day) {
                 bd_count++;
             }
         }
-        FRED_VERBOSE(0, "birthday count = [%d]\n", bd_count);
+        PHIL_VERBOSE(0, "birthday count = [%d]\n", bd_count);
     }
 
     if (Global::Enable_Births) {
         // populate the maternity list (Demographics::update_births)
         Update_Population_Births update_population_births(day);
-        blq.parallel_masked_apply(fred::Update_Births, update_population_births);
+        blq.parallel_masked_apply(phil::Update_Births, update_population_births);
         // add the births to the population
         size_t births = maternity_list.size();
         for (size_t i = 0; i < births; i++) {
@@ -635,7 +624,7 @@ void Population::update(int day) {
             Person * baby = mother->give_birth(day);
 
             if (vacc_manager->do_vaccination()) {
-                FRED_DEBUG(1, "Adding %d to Vaccine Queue\n",baby->get_id());
+                PHIL_DEBUG(1, "Adding %d to Vaccine Queue\n",baby->get_id());
                 vacc_manager->add_to_queue(baby);
             }
             int age_lookup = mother->get_age();
@@ -643,13 +632,13 @@ void Population::update(int day) {
                 age_lookup = Demographics::MAX_AGE;
             birth_count[ age_lookup ]++;
         }
-        FRED_STATUS(0, "births = %d\n", (int) births);
+        PHIL_STATUS(0, "births = %d\n", (int) births);
     }
 
     if (Global::Enable_Deaths) {
         // populate the death list (Demographics::update_deaths)
         Update_Population_Deaths update_population_deaths(day);
-        blq.parallel_masked_apply(fred::Update_Deaths, update_population_deaths);
+        blq.parallel_masked_apply(phil::Update_Deaths, update_population_deaths);
 
         // remove the dead from the population
         size_t deaths = death_list.size();
@@ -664,7 +653,7 @@ void Population::update(int day) {
                 death_count_male[ age_lookup ]++;
 
             if (vacc_manager->do_vaccination()) {
-                FRED_DEBUG(1, "Removing %d from Vaccine Queue\n", death_list[ i ]->get_id());
+                PHIL_DEBUG(1, "Removing %d from Vaccine Queue\n", death_list[ i ]->get_id());
                 vacc_manager->remove_from_queue(death_list[ i ]);
             }
 
@@ -673,7 +662,7 @@ void Population::update(int day) {
                 map< Person *, int >::iterator itr;
                 itr = birthday_map.find(death_list[ i ]);
                 if (itr == birthday_map.end()) {
-                    FRED_VERBOSE(0, "Help! person %d deleted, but not in the birthday_map\n",
+                    PHIL_VERBOSE(0, "Help! person %d deleted, but not in the birthday_map\n",
                                  death_list[ i ]->get_id());
                 }
                 assert(itr != birthday_map.end());
@@ -695,24 +684,24 @@ void Population::update(int day) {
 
             delete_person(death_list[ i ]);
         }
-        FRED_STATUS(0, "deaths = %d\n", (int) deaths);
+        PHIL_STATUS(0, "deaths = %d\n", (int) deaths);
     }
 
     // first update everyone's health intervention status
     if (Global::Enable_Vaccination || Global::Enable_Antivirals) {
         Update_Health_Interventions update_health_interventions(day);
         //blq.apply(update_health_interventions);
-        blq.masked_apply(fred::Update_Interventions, update_health_interventions);
+        blq.masked_apply(phil::Update_Interventions, update_health_interventions);
     }
 
-    FRED_VERBOSE(1, "population::update health  day = %d\n", day);
+    PHIL_VERBOSE(1, "population::update health  day = %d\n", day);
 
     // update everyone's health status
     Update_Population_Health update_population_health(day);
-    blq.parallel_masked_apply(fred::Update_Health, update_population_health);
-    // Utils::fred_print_wall_time("day %d update_health", day);
+    blq.parallel_masked_apply(phil::Update_Health, update_population_health);
+    // Utils::phil_print_wall_time("day %d update_health", day);
 
-    FRED_VERBOSE(1, "population::update household_mobility day = %d\n", day);
+    PHIL_VERBOSE(1, "population::update household_mobility day = %d\n", day);
 
     // update household mobility activity on July 1
     if (Global::Enable_Mobility
@@ -721,7 +710,7 @@ void Population::update(int day) {
         blq.apply(update_household_mobility);
     }
 
-    FRED_VERBOSE(1, "population::update prepare activities day = %d\n", day);
+    PHIL_VERBOSE(1, "population::update prepare activities day = %d\n", day);
 
     // prepare Activities at start up
     if (day == 0) {
@@ -730,7 +719,7 @@ void Population::update(int day) {
         Activities::before_run();
     }
 
-    FRED_VERBOSE(1, "population::update_activity_profile day = %d\n", day);
+    PHIL_VERBOSE(1, "population::update_activity_profile day = %d\n", day);
 
     // update activity profiles on July 1
     if (Global::Enable_Aging
@@ -739,25 +728,25 @@ void Population::update(int day) {
         blq.apply(update_population_activities);
     }
 
-    FRED_VERBOSE(1, "population::update_travel day = %d\n", day);
+    PHIL_VERBOSE(1, "population::update_travel day = %d\n", day);
 
     // update travel decisions
     Travel::update_travel(day);
-    // Utils::fred_print_wall_time("day %d update_travel", day);
+    // Utils::phil_print_wall_time("day %d update_travel", day);
 
-    FRED_VERBOSE(1, "population::update vacc_manager day = %d\n", day);
+    PHIL_VERBOSE(1, "population::update vacc_manager day = %d\n", day);
 
     // distribute vaccines
     vacc_manager->update(day);
-    // Utils::fred_print_wall_time("day %d vacc_manager", day);
+    // Utils::phil_print_wall_time("day %d vacc_manager", day);
 
-    FRED_VERBOSE(1, "population::update av_manager day = %d\n", day);
+    PHIL_VERBOSE(1, "population::update av_manager day = %d\n", day);
 
     // distribute AVs
     av_manager->update(day);
-    // Utils::fred_print_wall_time("day %d av_manager", day);
+    // Utils::phil_print_wall_time("day %d av_manager", day);
 
-    FRED_STATUS(1, "population begin_day finished\n");
+    PHIL_STATUS(1, "population begin_day finished\n");
 }
 
 void Population::Update_Population_Births::operator()(Person & p) {
@@ -1041,7 +1030,7 @@ void Population::quality_control() {
             }
         }
     }
-    FRED_STATUS(0, "population quality control finished\n");
+    PHIL_STATUS(0, "population quality control finished\n");
 }
 
 void Population::set_changed(Person *p) {
@@ -1100,7 +1089,7 @@ void Population::get_network_stats(char *directory) {
         fprintf(Global::Statusfp, "get_network_stats entered\n");
         fflush(Global::Statusfp);
     }
-    char filename[FRED_STRING_SIZE];
+    char filename[PHIL_STRING_SIZE];
     sprintf(filename, "%s/degree.csv", directory);
     FILE *fp = fopen(filename, "w");
     fprintf(fp, "id,age,deg,h,n,s,c,w,o\n");
@@ -1149,7 +1138,7 @@ void Population::print_age_distribution(char * dir, char * date_string, int run)
     FILE *fp;
     int count[21];
     double pct[21];
-    char filename[FRED_STRING_SIZE];
+    char filename[PHIL_STRING_SIZE];
     sprintf(filename, "%s/age_dist_%s.%02d", dir, date_string, run);
     printf("print_age_dist entered, filename = %s\n", filename);
     fflush(stdout);
@@ -1195,12 +1184,12 @@ Person * Population::select_random_person_by_age(int min_age, int max_age) {
 void Population::write_population_output_file(int day) {
 
     //Loop over the whole population and write the output of each Person's to_string to the file
-    char population_output_file[FRED_STRING_SIZE];
+    char population_output_file[PHIL_STRING_SIZE];
     sprintf(population_output_file, "%s/%s_%s.txt", Global::Output_directory, Population::pop_outfile,
             (char *) Global::Sim_Current_Date->get_YYYYMMDD().c_str());
     FILE *fp = fopen(population_output_file, "w");
     if (fp == NULL) {
-        Utils::fred_abort("Help! population_output_file %s not found\n", population_output_file);
+        Utils::phil_abort("Help! population_output_file %s not found\n", population_output_file);
     }
 
     //  fprintf(fp, "Population for day %d\n", day);
@@ -1233,7 +1222,7 @@ void Population::Update_Vaccine_Infection_Counts::operator()(Person & p) {
 
 void Population::report_vaccine_infection_events(int day) {
     Update_Vaccine_Infection_Counts update_vaccine_infection_counts(day, 0);
-    this->blq.masked_apply(fred::Infectious, update_vaccine_infection_counts);
+    this->blq.masked_apply(phil::Infectious, update_vaccine_infection_counts);
     for (int a=0; a < Global::MAX_AGE; ++a) {
         std::map<int,int> m = update_vaccine_infection_counts.sym[a];
         if (!m.empty()) {

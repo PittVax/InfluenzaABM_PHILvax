@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 #include <string>
 
 #include "Compression.h"
@@ -183,7 +172,7 @@ bool SnappyFileCompression::check_magic_bytes() {
 
 bool SnappyFileCompression::load_next_block_stream(std::stringstream & stream) {
 
-    fred::Scoped_Lock lock(mutex);
+    phil::Scoped_Lock lock(mutex);
 
     if (begin < end) {
         char current_block_size_byte_array[ sizeof(size_t) ];

@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Household.h
 //
 
-#ifndef _FRED_HOUSEHOLD_H
-#define _FRED_HOUSEHOLD_H
+#ifndef _PHIL_HOUSEHOLD_H
+#define _PHIL_HOUSEHOLD_H
 
 #include <map>
 
@@ -25,7 +14,7 @@
 #include "Random.h"
 
 /**
- * This class represents a household location in the FRED application. It inherits from <code>Place</code>.
+ * This class represents a household location in the PHIL application. It inherits from <code>Place</code>.
  * The class contains static variables that will be filled with values from the parameter file.
  *
  * @see Place
@@ -41,9 +30,9 @@ class Household: public Place {
     /**
      * Convenience constructor that sets most of the values by calling Place::setup
      *
-     * @see Place::setup( const char *lab, fred::geo lon, fred::geo lat, Place* cont, Population *pop)
+     * @see Place::setup( const char *lab, phil::geo lon, phil::geo lat, Place* cont, Population *pop)
      */
-    Household(const char *lab, fred::geo lon, fred::geo lat, Place *container, Population* pop);
+    Household(const char *lab, phil::geo lon, phil::geo lat, Place *container, Population* pop);
 
     ~Household() {}
 
@@ -51,7 +40,7 @@ class Household: public Place {
      * @see Place::get_parameters(int diseases)
      *
      * This method is called by the constructor
-     * <code>Household(int loc, const char *lab, fred:geo lon, fred::geo lat, Place *container, Population* pop)</code>
+     * <code>Household(int loc, const char *lab, phil:geo lon, phil::geo lat, Place *container, Population* pop)</code>
      */
     void get_parameters(int diseases);
 
@@ -252,5 +241,5 @@ class Household: public Place {
 
 };
 
-#endif // _FRED_HOUSEHOLD_H
+#endif // _PHIL_HOUSEHOLD_H
 

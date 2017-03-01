@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File Params.cc
@@ -33,8 +22,8 @@ int Params::read_parameters(char *paramfile) {
     char name[MAX_PARAM_SIZE];
     Params::param_count = 0;
 
-    strcpy(name, "$FRED_HOME/input_files/params.default");
-    fp = Utils::fred_open_file(name);
+    strcpy(name, "$PHIL_HOME/input_files/params.default");
+    fp = Utils::phil_open_file(name);
     if (fp != NULL) {
         while (fscanf(fp, "%s", name) == 1) {
             if (name[0] == '#') {
@@ -71,16 +60,16 @@ int Params::read_parameters(char *paramfile) {
                     }
                     Params::param_count++;
                 } else {
-                    Utils::fred_abort("Bad format in params.default file on line starting with %s\n",name);
+                    Utils::phil_abort("Bad format in params.default file on line starting with %s\n",name);
                 }
             }
         }
     } else {
-        Utils::fred_abort("Help!  Can't read paramfile %s\n", "params.default");
+        Utils::phil_abort("Help!  Can't read paramfile %s\n", "params.default");
     }
     fclose(fp);
 
-    fp = Utils::fred_open_file(paramfile);
+    fp = Utils::phil_open_file(paramfile);
     if (fp != NULL) {
         while (fscanf(fp, "%s", name) == 1) {
             if (name[0] == '#') {
@@ -117,12 +106,12 @@ int Params::read_parameters(char *paramfile) {
                     }
                     Params::param_count++;
                 } else {
-                    Utils::fred_abort("Help! Bad format in file %s on line starting with %s\n",paramfile, name);
+                    Utils::phil_abort("Help! Bad format in file %s on line starting with %s\n",paramfile, name);
                 }
             }
         }
     } else {
-        Utils::fred_abort("Help!  Can't read paramfile %s\n", paramfile);
+        Utils::phil_abort("Help!  Can't read paramfile %s\n", paramfile);
     }
     fclose(fp);
 
@@ -155,7 +144,7 @@ int Params::get_param(char *s, int *p) {
             printf("PARAMS: %s not found\n", s);
             fflush(stdout);
         }
-        Utils::fred_abort("PARAMS: %s not found\n", s);
+        Utils::phil_abort("PARAMS: %s not found\n", s);
     }
     return 0;
 }
@@ -180,7 +169,7 @@ int Params::get_param(char *s, unsigned long *p) {
             printf("PARAMS: %s not found\n", s);
             fflush(stdout);
         }
-        Utils::fred_abort("PARAMS: %s not found\n", s);
+        Utils::phil_abort("PARAMS: %s not found\n", s);
     }
     return 0;
 }
@@ -205,7 +194,7 @@ int Params::get_param(char *s, double *p) {
             printf("PARAMS: %s not found\n", s);
             fflush(stdout);
         }
-        Utils::fred_abort("PARAMS: %s not found\n", s);
+        Utils::phil_abort("PARAMS: %s not found\n", s);
     }
     return 0;
 }
@@ -230,7 +219,7 @@ int Params::get_param(char *s, float *p) {
             printf("PARAMS: %s not found\n", s);
             fflush(stdout);
         }
-        Utils::fred_abort("PARAMS: %s not found\n", s);
+        Utils::phil_abort("PARAMS: %s not found\n", s);
     }
     return 0;
 }
@@ -258,7 +247,7 @@ int Params::get_param(char *s, string &p) {
             printf("PARAMS: %s not found\n", s);
             fflush(stdout);
         }
-        Utils::fred_abort("PARAMS: %s not found\n", s);
+        Utils::phil_abort("PARAMS: %s not found\n", s);
     }
     return 0;
 }
@@ -283,7 +272,7 @@ int Params::get_param(char *s, char *p) {
             printf("PARAMS: %s not found\n", s);
             fflush(stdout);
         }
-        Utils::fred_abort("PARAMS: %s not found\n", s);
+        Utils::phil_abort("PARAMS: %s not found\n", s);
     }
     return 0;
 }
@@ -299,13 +288,13 @@ int Params::get_param_vector(char *s, vector < int > &p) {
         for (int i=0; i<n; i++) {
             pch = strtok(NULL," ");
             if (pch == NULL) {
-                Utils::fred_abort("Help! bad param vector: %s\n", s);
+                Utils::phil_abort("Help! bad param vector: %s\n", s);
             }
             sscanf(pch,"%d",&v);
             p.push_back(v);
         }
     } else {
-        Utils::fred_abort("Incorrect format for vector %s\n", s);
+        Utils::phil_abort("Incorrect format for vector %s\n", s);
     }
     return n;
 }
@@ -321,13 +310,13 @@ int Params::get_param_vector(char *s, vector < double > &p) {
         for (int i = 0; i < n; i++) {
             pch = strtok(NULL, " ");
             if (pch == NULL) {
-                Utils::fred_abort("Help! bad param vector: %s\n", s);
+                Utils::phil_abort("Help! bad param vector: %s\n", s);
             }
             sscanf(pch, "%lf", &v);
             p.push_back(v);
         }
     } else {
-        Utils::fred_abort("Incorrect format for vector %s\n", s);
+        Utils::phil_abort("Incorrect format for vector %s\n", s);
     }
     return n;
 }
@@ -342,12 +331,12 @@ int Params::get_param_vector(char *s, double *p) {
         for (int i = 0; i < n; i++) {
             pch = strtok(NULL, " ");
             if (pch == NULL) {
-                Utils::fred_abort("Help! bad param vector: %s\n", s);
+                Utils::phil_abort("Help! bad param vector: %s\n", s);
             }
             sscanf(pch, "%lf", &p[i]);
         }
     } else {
-        Utils::fred_abort("PARAMS: %s not found\n", s);
+        Utils::phil_abort("PARAMS: %s not found\n", s);
     }
     return n;
 }
@@ -362,12 +351,12 @@ int Params::get_param_vector(char *s, int *p) {
         for (int i = 0; i < n; i++) {
             pch = strtok(NULL, " ");
             if (pch == NULL) {
-                Utils::fred_abort("Help! bad param vector: %s\n", s);
+                Utils::phil_abort("Help! bad param vector: %s\n", s);
             }
             sscanf(pch, "%d", &p[i]);
         }
     } else {
-        Utils::fred_abort("");
+        Utils::phil_abort("");
     }
     return n;
 }
@@ -382,7 +371,7 @@ int Params::get_param_matrix(char *s, double ***p) {
         Params::get_param_vector((char *) s, tmp);
         int temp_n = (int) sqrt((double) n);
         if (n != temp_n * temp_n) {
-            Utils::fred_abort("Improper matrix dimensions: matricies must be square found dimension %i\n", n);
+            Utils::phil_abort("Improper matrix dimensions: matricies must be square found dimension %i\n", n);
         }
         n = temp_n;
         (*p) = new double *[n];
@@ -452,7 +441,7 @@ int Params::get_param_map(char *s, map<string, double> *p) {
             //p->insert( pair<string, double> ( (char *)key.c_str(), val1) );
             (*p)[key] = valDouble;
         } else {
-            Utils::fred_abort("Help! bad param vector: %s\n", s);
+            Utils::phil_abort("Help! bad param vector: %s\n", s);
         }
     }
 

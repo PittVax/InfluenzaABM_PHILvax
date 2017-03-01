@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Health.cc
@@ -54,15 +43,15 @@ void Health::setup(Person * person) {
     intervention_flags = intervention_flags_type();
     // infection pointers stored in statically allocated array (length of which
     // is determined by static constant Global::MAX_NUM_DISEASES)
-    active_infections = fred::disease_bitset();
-    susceptible = fred::disease_bitset();
-    infectious = fred::disease_bitset();
-    symptomatic = fred::disease_bitset();
-    recovered_today = fred::disease_bitset();
-    evaluate_susceptibility = fred::disease_bitset();
-    immunity = fred::disease_bitset();
+    active_infections = phil::disease_bitset();
+    susceptible = phil::disease_bitset();
+    infectious = phil::disease_bitset();
+    symptomatic = phil::disease_bitset();
+    recovered_today = phil::disease_bitset();
+    evaluate_susceptibility = phil::disease_bitset();
+    immunity = phil::disease_bitset();
     // Determines if the agent is at risk
-    at_risk = fred::disease_bitset();
+    at_risk = phil::disease_bitset();
 
     for (int disease_id = 0; disease_id < Global::Diseases; disease_id++) {
         infection[ disease_id ] = NULL;
@@ -79,7 +68,7 @@ void Health::setup(Person * person) {
             }
         }
         if (Global::Enable_Simple_Strain_Model) {
-            strain_susceptible[disease_id] = new fred::simple_strains_bitset;
+            strain_susceptible[disease_id] = new phil::simple_strains_bitset;
             strain_susceptible[disease_id]->set();
         }
     }
@@ -129,7 +118,7 @@ void Health::become_susceptible(Person * self, int disease_id) {
     evaluate_susceptibility.reset(disease_id);
     Disease * disease = Global::Pop.get_disease(disease_id);
     disease->become_susceptible(self);
-    FRED_STATUS(1, "person %d is now SUSCEPTIBLE for disease %d\n", self->get_id(), disease_id);
+    PHIL_STATUS(1, "person %d is now SUSCEPTIBLE for disease %d\n", self->get_id(), disease_id);
 }
 
 void Health::become_susceptible(Person * self, Disease * disease) {
@@ -149,12 +138,12 @@ void Health::become_exposed(Person * self, Disease *disease, Transmission & tran
         if (infector != NULL) {
             infector->get_health()->get_infection(disease_id)->get_strains(strains);
             for (int s=0; s<strains.size(); ++s) {
-                FRED_STATUS(1, "Person %d Evaluating strain %d\n", self->get_id(), strains[s]);
+                PHIL_STATUS(1, "Person %d Evaluating strain %d\n", self->get_id(), strains[s]);
                 if (strain_susceptible[disease_id]->test(strains[s])) {
-                    FRED_STATUS(1, "Person %d Susceptible to strain %d\n", self->get_id(), strains[s]);
+                    PHIL_STATUS(1, "Person %d Susceptible to strain %d\n", self->get_id(), strains[s]);
                 }
                 else {
-                    FRED_STATUS(1, "Person %d Immune to strain %d\n", self->get_id(), strains[s]);
+                    PHIL_STATUS(1, "Person %d Immune to strain %d\n", self->get_id(), strains[s]);
                     susceptible_to_strain = false;
                 }
             }
@@ -178,9 +167,9 @@ void Health::become_exposed(Person * self, Disease *disease, Transmission & tran
         susceptible_date[disease_id] = -1;
         if (Global::Verbose > 1) {
             if (!(transmission.get_infected_place())) {
-                FRED_STATUS(1, "SEEDED person %d with disease %d\n", self->get_id(), disease->get_id());
+                PHIL_STATUS(1, "SEEDED person %d with disease %d\n", self->get_id(), disease->get_id());
             } else {
-                FRED_STATUS(1, "EXPOSED person %d to disease %d\n", self->get_id(), disease->get_id());
+                PHIL_STATUS(1, "EXPOSED person %d to disease %d\n", self->get_id(), disease->get_id());
             }
         }
         if (Global::Report_Epidemic_Data_By_Census_Block) {
@@ -194,7 +183,7 @@ void Health::become_exposed(Person * self, Disease *disease, Transmission & tran
             if (infector != NULL) {
                 for (int s=0; s<strains.size(); ++s) {
                     if (strains[s] >= Global::SimpleStrains) {
-                        Utils::fred_abort("Strain ID %d >= Global::SimpleStrains", strains[s]);
+                        Utils::phil_abort("Strain ID %d >= Global::SimpleStrains", strains[s]);
                     } else {
                         strain_susceptible[disease_id]->reset(strains[s]);
                     }
@@ -210,7 +199,7 @@ void Health::become_unsusceptible(Person * self, Disease * disease) {
         return;
     susceptible.reset(disease_id);
     disease->become_unsusceptible(self);
-    FRED_STATUS(1, "person %d is now UNSUSCEPTIBLE for disease %d\n", self->get_id(), disease_id);
+    PHIL_STATUS(1, "person %d is now UNSUSCEPTIBLE for disease %d\n", self->get_id(), disease_id);
 }
 
 void Health::become_infectious(Person * self, Disease * disease) {
@@ -224,7 +213,7 @@ void Health::become_infectious(Person * self, Disease * disease) {
         Global::Block_Epi_Day_Tracker->increment_index_key_pair(block,"E",int(-1));
         Global::Block_Epi_Day_Tracker->increment_index_key_pair(block,"I",int(1));
     }
-    FRED_STATUS(1, "person %d is now INFECTIOUS for disease %d\n", self->get_id(), disease_id);
+    PHIL_STATUS(1, "person %d is now INFECTIOUS for disease %d\n", self->get_id(), disease_id);
 }
 
 void Health::become_symptomatic(Person * self, Disease * disease) {
@@ -240,13 +229,13 @@ void Health::become_symptomatic(Person * self, Disease * disease) {
         Global::Block_Epi_Day_Tracker->increment_index_key_pair(block,"Cs",int(1));
         Global::Block_Epi_Day_Tracker->increment_index_key_pair(block,"Is",int(1));
     }
-    FRED_STATUS(1, "person %d is now SYMPTOMATIC for disease %d\n", self->get_id(), disease_id);
+    PHIL_STATUS(1, "person %d is now SYMPTOMATIC for disease %d\n", self->get_id(), disease_id);
 }
 
 void Health::recover(Person * self, Disease * disease) {
     int disease_id = disease->get_id();
     assert(active_infections.test(disease_id));
-    FRED_STATUS(1, "person %d is now RECOVERED for disease %d\n", self->get_id(), disease_id);
+    PHIL_STATUS(1, "person %d is now RECOVERED for disease %d\n", self->get_id(), disease_id);
     if (Global::Report_Epidemic_Data_By_Census_Block) {
         Household *house = (Household *) self->get_household();
         string block = house->get_census_block();
@@ -267,7 +256,7 @@ void Health::become_removed(Person * self, int disease_id) {
     susceptible.reset(disease_id);
     infectious.reset(disease_id);
     symptomatic.reset(disease_id);
-    FRED_STATUS(1, "person %d is now REMOVED for disease %d\n", self->get_id(), disease_id);
+    PHIL_STATUS(1, "person %d is now REMOVED for disease %d\n", self->get_id(), disease_id);
 }
 
 void Health::become_immune(Person * self, Disease *disease) {
@@ -287,7 +276,7 @@ void Health::become_immune(Person * self, Disease *disease) {
     infectious.reset(disease_id);
     symptomatic.reset(disease_id);
 
-    FRED_STATUS(1, "person %d is now IMMUNE for disease %d\n", self->get_id(), disease_id);
+    PHIL_STATUS(1, "person %d is now IMMUNE for disease %d\n", self->get_id(), disease_id);
 
 }
 
@@ -346,7 +335,7 @@ void Health::update(Person * self, int day) {
     } else if (active_infections.none()) {
         // no active infections, no need to evaluate susceptibility so we no longer
         // need to update this Person's Health
-        Global::Pop.clear_mask_by_index(fred::Update_Health, self->get_pop_index());
+        Global::Pop.clear_mask_by_index(phil::Update_Health, self->get_pop_index());
     }
 } // end Health::update //
 
@@ -388,7 +377,7 @@ void Health::update_interventions(Person * self, int day) {
     }
     update(self, day);
     if (no_more_vaccine_updates_needed && no_more_antiviral_updates_needed && evaluate_susceptibility.none()) {
-        Global::Pop.clear_mask_by_index(fred::Update_Interventions, self->get_pop_index());
+        Global::Pop.clear_mask_by_index(phil::Update_Interventions, self->get_pop_index());
     }
 } // end Health::update_interventions
 
@@ -581,10 +570,10 @@ void Health::take_vaccine(Person * self, Vaccine* vaccine, int day, Vaccine_Mana
         }
         susceptible_date[disease_id] = day + disease->get_days_recovered();
         evaluate_susceptibility.set(disease_id);
-        FRED_STATUS(1, "Simple Strain Model: person %d is temporarily immune to disease %d until %d\n",
+        PHIL_STATUS(1, "Simple Strain Model: person %d is temporarily immune to disease %d until %d\n",
                 self->get_id(), disease_id, susceptible_date[disease_id]);
     }
-    Global::Pop.set_mask_by_index(fred::Update_Interventions, self->get_pop_index());
+    Global::Pop.set_mask_by_index(phil::Update_Interventions, self->get_pop_index());
 
     return;
 }
@@ -604,7 +593,7 @@ void Health::take(Person * p, Antiviral* av, int day) {
     }
     av_health->push_back(new AV_Health(day,av,this));
     intervention_flags[ takes_av ] = true;
-    Global::Pop.set_mask_by_index(fred::Update_Interventions, p->get_pop_index());
+    Global::Pop.set_mask_by_index(phil::Update_Interventions, p->get_pop_index());
     return;
 }
 
@@ -633,7 +622,7 @@ void Health::infect(Person * self, Person *infectee, int disease_id, Transmissio
 
     disease->increment_cohort_infectee_count(infection[disease_id]->get_exposure_date());
 
-    FRED_STATUS(1, "person %d infected person %d infectees = %d\n",
+    PHIL_STATUS(1, "person %d infected person %d infectees = %d\n",
                 self->get_id(), infectee->get_id(), infectee_count[disease_id]);
 }
 

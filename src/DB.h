@@ -1,20 +1,9 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 // File: DB.h
 //
 
-#ifndef _FRED_DB_H
-#define _FRED_DB_H
+#ifndef _PHIL_DB_H
+#define _PHIL_DB_H
 
 /*
  * Thread-safe database logging classes.
@@ -97,7 +86,7 @@ struct Transaction {
 
 class DB {
 
-    fred::Mutex mutex;
+    phil::Mutex mutex;
 
     sqlite3 * db;
     typedef std::deque< Transaction * > TransactionQueue;
@@ -129,12 +118,12 @@ class DB {
     }
 
     void enqueue_transaction(Transaction * t) {
-        fred::Scoped_Lock lock(mutex);
+        phil::Scoped_Lock lock(mutex);
         transactions.push_back(t);
     }
 
     bool process_transactions() {
-        fred::Scoped_Lock lock(mutex);
+        phil::Scoped_Lock lock(mutex);
         TransactionQueue::iterator iter = transactions.begin();
         for (; iter != transactions.end(); ++iter) {
             (*iter)->prepare();

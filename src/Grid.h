@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Grid.h
 //
 
-#ifndef _FRED_GRID_H
-#define _FRED_GRID_H
+#ifndef _PHIL_GRID_H
+#define _PHIL_GRID_H
 
 #include <string.h>
 #include "Place.h"
@@ -36,7 +25,7 @@ class Grid : public Abstract_Grid {
      * @param maxlat the maximum latitude for this Grid
      */
     Grid(Large_Grid * lgrid);
-    Grid(fred::geo minlon, fred::geo minlat, fred::geo maxlon, fred::geo maxlat);
+    Grid(phil::geo minlon, phil::geo minlat, phil::geo maxlon, phil::geo maxlat);
     ~Grid() {}
 
     void setup(Place::Allocator< Neighborhood > & neighborhood_allocator);
@@ -52,7 +41,7 @@ class Grid : public Abstract_Grid {
      * @return a pointer to the Cell at the row and column requested
      */
     Cell * get_grid_cell(int row, int col);
-    Cell * get_grid_cell(fred::geo lat, fred::geo lon);
+    Cell * get_grid_cell(phil::geo lat, phil::geo lon);
     Cell * select_random_grid_cell(double x0, double y0, double dist);
     Cell * select_random_neighbor(int row, int col);
 
@@ -80,7 +69,7 @@ class Grid : public Abstract_Grid {
      * @param radius_in_km the distance from the center of the circle
      * @return a Vector of places
      */
-    vector < Place * > get_households_by_distance(fred::geo lat, fred::geo lon, double radius_in_km);
+    vector < Place * > get_households_by_distance(phil::geo lat, phil::geo lon, double radius_in_km);
 
     // Specific to Cell grid:
     /**
@@ -168,4 +157,4 @@ class Grid : public Abstract_Grid {
     void select_immigrants(int day);
 };
 
-#endif // _FRED_GRID_H
+#endif // _PHIL_GRID_H

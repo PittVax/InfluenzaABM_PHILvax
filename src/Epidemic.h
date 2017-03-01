@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Epidemic.h
 //
 
-#ifndef _FRED_EPIDEMIC_H
-#define _FRED_EPIDEMIC_H
+#ifndef _PHIL_EPIDEMIC_H
+#define _PHIL_EPIDEMIC_H
 
 #include <set>
 #include <map>
@@ -168,7 +157,7 @@ class Epidemic {
     // "user_specified" => SEED_USER 'U'
     // "random" => SEED_RANDOM 'R'
     // see Epidemic::advance_seed_infection"
-    char seeding_type_name[ FRED_STRING_SIZE ];
+    char seeding_type_name[ PHIL_STRING_SIZE ];
     char seeding_type;
     double fraction_seeds_infectious;
 
@@ -219,15 +208,15 @@ class Epidemic {
     int prevalence_count;
     double prevalence;
 
-    //fred::Mutex mutex;
-    fred::Spin_Mutex neighborhood_mutex;
-    fred::Spin_Mutex household_mutex;
-    fred::Spin_Mutex workplace_mutex;
-    fred::Spin_Mutex office_mutex;
-    fred::Spin_Mutex school_mutex;
-    fred::Spin_Mutex classroom_mutex;
+    //phil::Mutex mutex;
+    phil::Spin_Mutex neighborhood_mutex;
+    phil::Spin_Mutex household_mutex;
+    phil::Spin_Mutex workplace_mutex;
+    phil::Spin_Mutex office_mutex;
+    phil::Spin_Mutex school_mutex;
+    phil::Spin_Mutex classroom_mutex;
 
-    fred::Spin_Mutex spin_mutex;
+    phil::Spin_Mutex spin_mutex;
 
     size_t place_person_list_reserve_size;
 
@@ -253,4 +242,4 @@ class Epidemic {
 
 };
 
-#endif // _FRED_EPIDEMIC_H
+#endif // _PHIL_EPIDEMIC_H

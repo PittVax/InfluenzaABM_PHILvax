@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Timestep_Map.h
 //
 
-#ifndef _FRED_TIMESTEP_MAP_H
-#define _FRED_TIMESTEP_MAP_H
+#ifndef _PHIL_TIMESTEP_MAP_H
+#define _PHIL_TIMESTEP_MAP_H
 
 #include "Global.h"
 #include <stdio.h>
@@ -71,4 +60,4 @@ class Timestep_Map {
     int current_value;       // Holds the current value of th map.
 };
 
-#endif // _FRED_TIMESTEP_MAP_H
+#endif // _PHIL_TIMESTEP_MAP_H

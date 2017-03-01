@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Place.cc
@@ -30,7 +19,7 @@
 #include "Small_Cell.h"
 
 
-void Place::setup(const char *lab, fred::geo lon, fred::geo lat, Place* cont, Population *pop) {
+void Place::setup(const char *lab, phil::geo lon, phil::geo lat, Place* cont, Population *pop) {
     population = pop;
     id = -1;          // actual id assigned in Place_List::add_place
     container = cont;
@@ -72,9 +61,9 @@ void Place::prepare() {
         // the number of states saves memory.  The values used here must be determined
         // through experimentation.  Optimal values will vary based on the particular
         // cpu, number of threads, calibrated attack rate, population density, etc...
-        unsigned int dim = (N / 1000) * (fred::omp_get_max_threads() / 2);
+        unsigned int dim = (N / 1000) * (phil::omp_get_max_threads() / 2);
         dim = dim == 0 ? 1 : dim;
-        dim = dim <= fred::omp_get_max_threads() ? dim : fred::omp_get_max_threads();
+        dim = dim <= phil::omp_get_max_threads() ? dim : phil::omp_get_max_threads();
         // Initialize specified number of states for this disease
         place_state[ d ] = State< Place_State >(dim);
         // Clear the states for use
@@ -204,7 +193,7 @@ double Place::get_contact_rate(int day, int disease_id) {
             contacts = Neighborhood::get_weekend_contact_rate(disease_id) * contacts;
         }
     }
-    // FRED_VERBOSE(1,"Disease %d, expected contacts = %f\n", disease_id, contacts);
+    // PHIL_VERBOSE(1,"Disease %d, expected contacts = %f\n", disease_id, contacts);
     return contacts;
 }
 
@@ -213,15 +202,15 @@ int Place::get_contact_count(Person * infector, int disease_id, int day, double 
     double infectivity = infector->get_infectivity(disease_id, day);
     double infector_contacts = contact_rate * infectivity;
 
-    FRED_VERBOSE(1, "infectivity = %f, so ", infectivity);
-    FRED_VERBOSE(1, "infector's effective contacts = %f\n", infector_contacts);
+    PHIL_VERBOSE(1, "infectivity = %f, so ", infectivity);
+    PHIL_VERBOSE(1, "infector's effective contacts = %f\n", infector_contacts);
 
     // randomly round off the expected value of the contact counts
     int contact_count = (int) infector_contacts;
     double r = RANDOM();
     if (r < infector_contacts - contact_count) contact_count++;
 
-    FRED_VERBOSE(1, "infector contact_count = %d  r = %f\n", contact_count, r);
+    PHIL_VERBOSE(1, "infector contact_count = %d  r = %f\n", contact_count, r);
 
     return contact_count;
 }
@@ -230,14 +219,14 @@ void Place::attempt_transmission(double transmission_prob, Person * infector,
                                  Person * infectee, int disease_id, int day) {
 
     assert(infectee->is_susceptible(disease_id));
-    FRED_STATUS(1,"infectee is susceptible\n","");
+    PHIL_STATUS(1,"infectee is susceptible\n","");
 
     double susceptibility = infectee->get_susceptibility(disease_id);
-    FRED_VERBOSE(2, "susceptibility = %f\n", susceptibility);
+    PHIL_VERBOSE(2, "susceptibility = %f\n", susceptibility);
 
     double r = RANDOM();
     double infection_prob = transmission_prob * susceptibility;
-    FRED_CONDITIONAL_VERBOSE(1, r >= infection_prob,
+    PHIL_CONDITIONAL_VERBOSE(1, r >= infection_prob,
                              "transmission failed: r = %f  prob = %f\n", r, infection_prob);
 
     if (r < infection_prob) {
@@ -245,13 +234,13 @@ void Place::attempt_transmission(double transmission_prob, Person * infector,
         Transmission transmission = Transmission(infector, this, day);
         infector->infect(infectee, disease_id, transmission);
 
-        FRED_VERBOSE(1, "transmission succeeded: r = %f  prob = %f\n", r, infection_prob);
-        FRED_CONDITIONAL_VERBOSE(1, infector->get_exposure_date(disease_id) == 0,
+        PHIL_VERBOSE(1, "transmission succeeded: r = %f  prob = %f\n", r, infection_prob);
+        PHIL_CONDITIONAL_VERBOSE(1, infector->get_exposure_date(disease_id) == 0,
                                  "SEED infection day %i from %d to %d\n", day, infector->get_id(),infectee->get_id());
-        FRED_CONDITIONAL_VERBOSE(1, infector->get_exposure_date(disease_id) != 0,
+        PHIL_CONDITIONAL_VERBOSE(1, infector->get_exposure_date(disease_id) != 0,
                                  "infection day %i of disease %i from %d to %d\n",
                                  day, disease_id, infector->get_id(), infectee->get_id());
-        FRED_CONDITIONAL_VERBOSE(3, infection_prob > 1, "infection_prob exceeded unity!\n");
+        PHIL_CONDITIONAL_VERBOSE(3, infection_prob > 1, "infection_prob exceeded unity!\n");
     }
 }
 
@@ -342,7 +331,7 @@ void Place::turn_workers_into_teachers(Place *school) {
         // printf("new teacher %d age %d moving from workplace %s to school %s\n",
         // enrollees[i]->get_id(), enrollees[i]->get_age(), label, school->get_label());
     }
-    FRED_VERBOSE(0, "%d new teachers reassigned from workplace %s to school %s\n",
+    PHIL_VERBOSE(0, "%d new teachers reassigned from workplace %s to school %s\n",
                  new_teachers, label, school->get_label());
     N = 0;
 }

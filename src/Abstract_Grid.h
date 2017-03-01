@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 
 #ifndef _ABSTRACT_GRID_H
 #define _ABSTRACT_GRID_H
@@ -29,16 +18,16 @@ class Abstract_Grid {
     int get_number_of_cells() {
         return rows*cols;
     }
-    fred::geo get_min_lat() {
+    phil::geo get_min_lat() {
         return min_lat;
     }
-    fred::geo get_min_lon() {
+    phil::geo get_min_lon() {
         return min_lon;
     }
-    fred::geo get_max_lat() {
+    phil::geo get_max_lat() {
         return max_lat;
     }
-    fred::geo get_max_lon() {
+    phil::geo get_max_lon() {
         return max_lon;
     }
     double get_min_x() {
@@ -62,11 +51,11 @@ class Abstract_Grid {
     int get_col(double x) {
         return (int)((x-min_x)/grid_cell_size);
     }
-    int get_row(fred::geo lat) {
+    int get_row(phil::geo lat) {
         double y = Geo_Utils::get_y(lat);
         return (int)((y-min_y)/grid_cell_size);
     }
-    int get_col(fred::geo lon) {
+    int get_col(phil::geo lon) {
         double x = Geo_Utils::get_x(lon);
         return (int)((x-min_x)/grid_cell_size);
     }
@@ -95,10 +84,10 @@ class Abstract_Grid {
     int rows;                    // number of rows
     int cols;                    // number of columns
     double grid_cell_size;            // km per side
-    fred::geo min_lat;                // lat of SW corner
-    fred::geo min_lon;                // lon of SW corner
-    fred::geo max_lat;                // lat of NE corner
-    fred::geo max_lon;                // lon of NE corner
+    phil::geo min_lat;                // lat of SW corner
+    phil::geo min_lon;                // lon of SW corner
+    phil::geo max_lat;                // lat of NE corner
+    phil::geo max_lon;                // lon of NE corner
     double min_x;                    // global x of SW corner
     double min_y;                    // global y of SW corner
     double max_x;                    // global x of NE corner

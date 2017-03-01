@@ -1,4 +1,4 @@
-##################### FRED Makefile ###########################
+##################### PHIL Makefile ###########################
 
 SRC_DIR = $(shell pwd)
 PRNG_DIR = $(SRC_DIR)/PRNG__Mersenne_Twister
@@ -39,13 +39,13 @@ SNAPPY_LIB = $(SNAPPY_DIR)/lib/libsnappy.dylib
 M64 = -m64
 endif
 ################   Compiler Flags   ##############################
-FRED_EXECUTABLE_NAME = FRED
-FRED_memcheck: FRED_EXECUTABLE_NAME = FRED_memcheck
+PHIL_EXECUTABLE_NAME = PHIL
+PHIL_memcheck: PHIL_EXECUTABLE_NAME = PHIL_memcheck
 
 LOGGING_PRESET_0 = 
-LOGGING_PRESET_1 = -DFREDWARNING
-LOGGING_PRESET_2 = -DFREDSTATUS -DFREDWARNING
-LOGGING_PRESET_3 = -DFREDVERBOSE -DFREDSTATUS -DFREDWARNING -DFREDDEBUG
+LOGGING_PRESET_1 = -DPHILWARNING
+LOGGING_PRESET_2 = -DPHILSTATUS -DPHILWARNING
+LOGGING_PRESET_3 = -DPHILVERBOSE -DPHILSTATUS -DPHILWARNING -DPHILDEBUG
 
 DSFMT_CPPFLAGS = -g -O3 -DDSFMT_MEXP=19937 -DDSFMT_DO_NOT_USE_OLD_NAMES -finline-functions -fomit-frame-pointer -DNDEBUG \
 -fno-strict-aliasing --param max-inline-insns-single=1800
@@ -63,7 +63,7 @@ DSFMT_HDR = $(DSFMT_DIR)/dSFMT.h $(DSFMT_DIR)/dSFMT-params19937.h
 
 ## Use this to run with multiple threads
 CPPFLAGS = -g $(M64) -O3 -fopenmp $(LOGGING_PRESET_3) -DNCPU=$(NCPU) -fno-omit-frame-pointer $(INCLUDE_DIRS) 
-FRED_memcheck: CPPFLAGS = -g $(M64) -O0 -fopenmp $(LOGGING_PRESET_3) -DNCPU=$(NCPU) -fno-omit-frame-pointer $(INCLUDE_DIRS)
+PHIL_memcheck: CPPFLAGS = -g $(M64) -O0 -fopenmp $(LOGGING_PRESET_3) -DNCPU=$(NCPU) -fno-omit-frame-pointer $(INCLUDE_DIRS)
 
 ## Use this to make reproducible serial runs
 # CPPFLAGS = -g $(M64) -O3 $(LOGGING_PRESET_3) -DNCPU=1 #-fast #-Wall
@@ -91,7 +91,7 @@ endif
 %.o:%.c %.h
 	$(CPP) $(CPPFLAGS) -c $< $(INCLUDES)
 
-OBJ =   Fred.o Global.o Age_Map.o Timestep_Map.o Utils.o Params.o Date.o Random.o \
+OBJ =   Phil.o Global.o Age_Map.o Timestep_Map.o Utils.o Params.o Date.o Random.o \
 	Geo_Utils.o Cell.o Grid.o Large_Grid.o Large_Cell.o Small_Grid.o Small_Cell.o Travel.o \
 	Decision.o Policy.o Manager.o \
 	Antiviral.o Antivirals.o AV_Decisions.o AV_Policies.o AV_Manager.o AV_Health.o \
@@ -114,23 +114,23 @@ SRC = $(OBJ:.o=.cc)
 
 HDR = $(OBJ:.o=.h)
 
-MD5 := FRED.md5
+MD5 := PHIL.md5
 
-all: FRED FRED.tar.gz fsz $(MD5)
+all: PHIL PHIL.tar.gz fsz $(MD5)
 
-FRED: $(SNAPPY_LIB) $(OBJ) dSFMT.o
-	$(CPP) -o $(FRED_EXECUTABLE_NAME) $(CPPFLAGS) $(LDFLAGS) $(OBJ) dSFMT.o $(LFLAGS) -ldl
-	cp $(FRED_EXECUTABLE_NAME) ../bin
+PHIL: $(SNAPPY_LIB) $(OBJ) dSFMT.o
+	$(CPP) -o $(PHIL_EXECUTABLE_NAME) $(CPPFLAGS) $(LDFLAGS) $(OBJ) dSFMT.o $(LFLAGS) -ldl
+	cp $(PHIL_EXECUTABLE_NAME) ../bin
 
-#LIBFRED: $(SNAPPY_LIB) $(OBJ) dSFMT.o
-#	$(CPP) -shared -fPIC  -o libfred.so $(CPPFLAGS) $(LDFLAGS) $(OBJ) dSFMT.o $(LFLAGS) -ldl
+#LIBPHIL: $(SNAPPY_LIB) $(OBJ) dSFMT.o
+#	$(CPP) -shared -fPIC  -o libphil.so $(CPPFLAGS) $(LDFLAGS) $(OBJ) dSFMT.o $(LFLAGS) -ldl
 
-FRED_Unit_Tracker: 
+PHIL_Unit_Tracker: 
 	cd TestSuite/Tracker; $(CPP) -g -O0 -fopenmp -DUNIT_TEST=1 -I../../ Tracker_Unit_Test.cc -c -o Tracker_Unit_Test.o
-	cd TestSuite/Tracker; $(CPP) -g -O0 -fopenmp -o FRED_Unit_Tracker -DUNIT_TEST=1 -I../../ ../../Global.o Tracker_Unit_Test.o
+	cd TestSuite/Tracker; $(CPP) -g -O0 -fopenmp -o PHIL_Unit_Tracker -DUNIT_TEST=1 -I../../ ../../Global.o Tracker_Unit_Test.o
 
 
-FRED_memcheck: FRED
+PHIL_memcheck: PHIL
 
 dSFMT.o:
 	$(CPP) $(DSFMT_CPPFLAGS) $(DSFMT_SRC) -c $(DSFMT_HDR) 
@@ -145,13 +145,13 @@ DEPENDS: $(SRC) $(HDR)
 include DEPENDS
 
 $(SNAPPY_LIB):
-	cd $(SNAPPY_DIR); tar --strip-components=1 -xzvf snappy-1.0.5.tar.gz; CPP=$(CPP) CXX=$(CPP) ./configure --prefix=$(SNAPPY_DIR); make && make install;
+	cd $(SNAPPY_DIR); tar --strip-components=1 -xzvf snappy-1.0.5.tar.gz; CPP=$(CPP) CXX=$(CPP) ./configure --prefix=$(SNAPPY_DIR); make && make install; mv .libs lib;
 
 
-FRED.tar.gz: $(SRC) $(HDR)
-	tar -czf FRED.tar.gz $(HDR) $(SRC) Makefile
+PHIL.tar.gz: $(SRC) $(HDR)
+	tar -czf PHIL.tar.gz $(HDR) $(SRC) Makefile
 
-FRED.md5 : FRED.tar.gz
+PHIL.md5 : PHIL.tar.gz
 	$(MD5SUM) $< > $@
 
 ##############################################
@@ -160,29 +160,29 @@ print:
 	enscript $(SRC) $(HDR)
 
 clean:
-	rm -f gmock.a gmock_main.a *.o FRED ../bin/FRED fsz ../bin/fsz *~
-	#(cd $(SNAPPY_DIR); make clean)
-	#(cd $(SNAPPY_DIR); rm -r lib include share)
+	rm -f gmock.a gmock_main.a *.o PHIL ../bin/PHIL fsz ../bin/fsz *~
+	(cd $(SNAPPY_DIR); make clean)
+	(cd $(SNAPPY_DIR); rm -r lib)
 
 tar: clean
 	cd ..
-	tar cvf FRED-`date +"%Y-%m-%d"`.tar FRED
+	tar cvf PHIL-`date +"%Y-%m-%d"`.tar PHIL
 
 dist:
 	make clean
-	(cd ../..; tar cvf FRED-`date +"%Y-%m-%d"`.tar FRED/src/Makefile \
-	FRED/src/*.txt FRED/src/*.cc FRED/src/*.h FRED/src/params* \
-	FRED/bin/* FRED/src/OUT.RT/* ; cd FRED/src)
+	(cd ../..; tar cvf PHIL-`date +"%Y-%m-%d"`.tar PHIL/src/Makefile \
+	PHIL/src/*.txt PHIL/src/*.cc PHIL/src/*.h PHIL/src/params* \
+	PHIL/bin/* PHIL/src/OUT.RT/* ; cd PHIL/src)
 	make
 
 VER = 1.0.1
 
 release:
 	make clean
-	(cd ../..; tar cvzf FRED-V${VER}-`date +"%Y-%m-%d"`.tgz --exclude CVS \
-	FRED/Makefile FRED/LICENSE FRED/bin FRED/input_files FRED/region/ \
-	FRED/src/Makefile FRED/src/*.h  FRED/src/*.cc FRED/src/mt*.c FRED/tests)
-	rm -f gmock.a gmock_main.a *.o FRED ../bin/FRED *~
+	(cd ../..; tar cvzf PHIL-V${VER}-`date +"%Y-%m-%d"`.tgz --exclude CVS \
+	PHIL/Makefile PHIL/LICENSE PHIL/bin PHIL/input_files PHIL/region/ \
+	PHIL/src/Makefile PHIL/src/*.h  PHIL/src/*.cc PHIL/src/mt*.c PHIL/tests)
+	rm -f gmock.a gmock_main.a *.o PHIL ../bin/PHIL *~
 
 tags:
 	find . -name \*.[ch]* | xargs etags

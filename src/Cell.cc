@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Cell.cc
@@ -52,8 +41,8 @@ void Cell::setup(Grid * grd, int i, int j) {
 void Cell::make_neighborhood(Place::Allocator< Neighborhood > & neighborhood_allocator) {
     char str[80];
     sprintf(str, "N-%04d-%04d",row,col);
-    fred::geo lat = Geo_Utils::get_latitude(center_y);
-    fred::geo lon = Geo_Utils::get_longitude(center_x);
+    phil::geo lat = Geo_Utils::get_latitude(center_y);
+    phil::geo lon = Geo_Utils::get_longitude(center_x);
 
     neighborhood = new(neighborhood_allocator.get_free())
     Neighborhood(str, lon, lat, 0, &Global::Pop);
@@ -63,8 +52,8 @@ void Cell::add_household(Place *p) {
     houses++;
     household.push_back(p);
     if (Global::Householdfp != NULL) {
-        fred::geo lat = p->get_latitude();
-        fred::geo lon = p->get_longitude();
+        phil::geo lat = p->get_latitude();
+        phil::geo lon = p->get_longitude();
         double x = Geo_Utils::get_x(lon);
         double y = Geo_Utils::get_y(lat);
         fprintf(Global::Householdfp,"%s %f %f %f %f house_id: %d row = %d  col = %d  house_number = %d\n",
@@ -85,7 +74,7 @@ void Cell::record_favorite_places() {
     workplace.clear();
     for (int age = 0; age < Global::ADULT_AGE; age++) school[age].clear();
 
-    // char filename[FRED_STRING_SIZE];
+    // char filename[PHIL_STRING_SIZE];
     // sprintf(filename, "PATCHES/Cell-%d-%d-households", row, col);
     // fp = fopen(filename, "w");
     for (int i = 0; i < houses; i++) {

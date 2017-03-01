@@ -1,20 +1,9 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 // File: State.h
 //
 
-#ifndef _FRED_STATE_H
-#define _FRED_STATE_H
+#ifndef _PHIL_STATE_H
+#define _PHIL_STATE_H
 
 /*
  * A template class that abstracts the notion of thread-local storage
@@ -54,7 +43,7 @@ class State {
     }
 
     Typ & operator()() {
-        return state_array[ fred::omp_get_thread_num() % Dim ];
+        return state_array[ phil::omp_get_thread_num() % Dim ];
     }
 
     int size() {

@@ -1,20 +1,9 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File Params.h
 //
-#ifndef _FRED_PARAMS_H
-#define _FRED_PARAMS_H
+#ifndef _PHIL_PARAMS_H
+#define _PHIL_PARAMS_H
 
 #define MAX_PARAMS 1000
 #define MAX_PARAM_SIZE 1024
@@ -29,7 +18,7 @@
 using namespace std;
 
 /**
- * This class contains the static methods used by the FRED program to access parameters. By making them
+ * This class contains the static methods used by the PHIL program to access parameters. By making them
  * static class methods, the compiler forces the programmer to reference them using the full nomenclature
  * <code>Params::method_name()</code>, which in turn makes it clear for code maintenance where the actual
  * method resides.
@@ -178,4 +167,4 @@ class Params {
 
 };
 
-#endif // _FRED_PARAMS_H
+#endif // _PHIL_PARAMS_H

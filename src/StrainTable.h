@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: StrainTable.h
 //
 
-#ifndef _FRED_StrainTable_H
-#define _FRED_StrainTable_H
+#ifndef _PHIL_StrainTable_H
+#define _PHIL_StrainTable_H
 
 #include <vector>
 #include <map>
@@ -50,7 +39,7 @@ class StrainTable {
     double get_transmissibility(int id);
 
     int get_num_strains() {
-        fred::Spin_Lock lock(mutex);
+        phil::Spin_Lock lock(mutex);
         return strains.size();
     }
 
@@ -66,10 +55,10 @@ class StrainTable {
     std::string get_strain_data_string(int strain_id);
 
   private:
-    fred::Spin_Mutex mutex;
+    phil::Spin_Mutex mutex;
     Disease * disease;
     std::vector < Strain * > strains;
     std::map< std::string, int > strain_genotype_map;
 };
 
-#endif // _FRED_StrainTable_H
+#endif // _PHIL_StrainTable_H

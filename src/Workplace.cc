@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Workplace.cc
@@ -131,7 +120,7 @@ int Workplace::get_number_of_rooms() {
 void Workplace::setup_offices(Allocator< Office > & office_allocator) {
     int rooms = get_number_of_rooms();
 
-    FRED_STATUS(1, "workplace %d %s number %d rooms %d\n", id, label, N, rooms);
+    PHIL_STATUS(1, "workplace %d %s number %d rooms %d\n", id, label, N, rooms);
 
     for (int i = 0; i < rooms; i++) {
         char new_label[128];
@@ -146,7 +135,7 @@ void Workplace::setup_offices(Allocator< Office > & office_allocator) {
         offices.push_back(p);
         int id = p->get_id();
 
-        FRED_STATUS(1, "workplace %d %s added office %d %s %d\n",
+        PHIL_STATUS(1, "workplace %d %s added office %d %s %d\n",
                     id, label,i,p->get_label(),p->get_id());
     }
 }
@@ -157,7 +146,7 @@ Place * Workplace::assign_office(Person *per) {
         return NULL;
     }
 
-    FRED_STATUS(1, "assign office for person %d at workplace %d %s size %d == ",
+    PHIL_STATUS(1, "assign office for person %d at workplace %d %s size %d == ",
                 per->get_id(), id, label, N);
 
     // pick next office, round-robin
@@ -165,7 +154,7 @@ Place * Workplace::assign_office(Person *per) {
 
     assert(offices.size() > i);
 
-    FRED_STATUS(1, "office = %d %s %d\n",
+    PHIL_STATUS(1, "office = %d %s %d\n",
                 i, offices[i]->get_label(), offices[i]->get_id());
 
     // update next pick

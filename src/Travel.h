@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Travel.h
 //
 
-#ifndef _FRED_TRAVEL_H
-#define _FRED_TRAVEL_H
+#ifndef _PHIL_TRAVEL_H
+#define _PHIL_TRAVEL_H
 
 #include <stdio.h>
 class Person;
@@ -51,7 +40,7 @@ class Travel {
 
     /**
      * Creates a sample of trip using the gravity model, prints statistics,
-     * and terminates FRED.
+     * and terminates PHIL.
      */
     static void test_gravity_model();
 
@@ -64,7 +53,7 @@ class Travel {
     static void terminate_person(Person *per);
 };
 
-#endif // _FRED_TRAVEL_H
+#endif // _PHIL_TRAVEL_H
 
 
 

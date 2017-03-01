@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Travel.cc
@@ -48,7 +37,7 @@ static int max_trip_list_size;
 static double active_trip_fraction;
 static int max_trips_per_day;
 static int trips_per_day;
-char tripfile[FRED_STRING_SIZE];
+char tripfile[PHIL_STRING_SIZE];
 
 // runtime parameters
 static double * Travel_Duration_Cdf;    // cdf for trip duration
@@ -95,9 +84,9 @@ void Travel::setup(char * directory) {
     }
 
     // read the preprocessed trip file
-    FILE *fp = Utils::fred_open_file(tripfile);
+    FILE *fp = Utils::phil_open_file(tripfile);
     if (fp == NULL) {
-        Utils::fred_abort("Help! Can't open tripfile %s\n", tripfile);
+        Utils::phil_abort("Help! Can't open tripfile %s\n", tripfile);
     }
     if (Global::Verbose > 0)
         fprintf(Global::Statusfp, "reading tripfile %s\n", tripfile);
@@ -178,7 +167,7 @@ void Travel::setup(char * directory) {
 
     // save the active trips for possible later use
     /*
-    char activefilename[FRED_STRING_SIZE];
+    char activefilename[PHIL_STRING_SIZE];
     sprintf(activefilename, "%s/active_trips.txt", directory);
     FILE *outfp = fopen(activefilename,"w");
     for (int i = 0; i < active_trips; i++) {

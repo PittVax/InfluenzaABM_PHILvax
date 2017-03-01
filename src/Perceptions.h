@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Perceptions.h
 //
 
-#ifndef _FRED_PERCEPTIONS_H
-#define _FRED_PERCEPTIONS_H
+#ifndef _PHIL_PERCEPTIONS_H
+#define _PHIL_PERCEPTIONS_H
 
 #include "Global.h"
 #include "Population.h"
@@ -115,5 +104,5 @@ class Perceptions {
     ~Perceptions() {}
 };
 
-#endif // _FRED_PERCEPTIONS_H
+#endif // _PHIL_PERCEPTIONS_H
 

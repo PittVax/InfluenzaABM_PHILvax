@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Large_Grid.cc
@@ -32,7 +21,7 @@ using namespace std;
 #include "Population.h"
 #include "Date.h"
 
-Large_Grid::Large_Grid(fred::geo minlon, fred::geo minlat, fred::geo maxlon, fred::geo maxlat) {
+Large_Grid::Large_Grid(phil::geo minlon, phil::geo minlat, phil::geo maxlon, phil::geo maxlat) {
     min_lon  = minlon;
     min_lat  = minlat;
     max_lon  = maxlon;
@@ -125,7 +114,7 @@ Large_Cell * Large_Grid::get_grid_cell(int row, int col) {
 }
 
 
-Large_Cell * Large_Grid::get_grid_cell(fred::geo lat, fred::geo lon) {
+Large_Cell * Large_Grid::get_grid_cell(phil::geo lat, phil::geo lon) {
     int row = get_row(lat);
     int col = get_col(lon);
     if (row >= 0 && col >= 0 && row < rows && col < cols)
@@ -142,7 +131,7 @@ Large_Cell * Large_Grid::get_grid_cell_with_global_coords(int row, int col) {
 Large_Cell * Large_Grid::get_grid_cell_from_id(int id) {
     int row = id / cols;
     int col = id % cols;
-    FRED_VERBOSE(4, "grid cell lookup for id = %d ... calculated row = %d, col = %d, rows = %d, cols = %d\n", id, row, col, rows, cols);
+    PHIL_VERBOSE(4, "grid cell lookup for id = %d ... calculated row = %d, col = %d, rows = %d, cols = %d\n", id, row, col, rows, cols);
     assert(grid[ row ][ col ].get_id() == id);
     return &(grid[ row ][ col ]);
 }
@@ -167,7 +156,7 @@ void Large_Grid::quality_control(char * directory) {
     }
 
     if (Global::Verbose>1) {
-        char filename [FRED_STRING_SIZE];
+        char filename [PHIL_STRING_SIZE];
         sprintf(filename, "%s/large_grid.dat", directory);
         FILE *fp = fopen(filename, "w");
         for (int row = 0; row < rows; row++) {
@@ -212,7 +201,7 @@ void Large_Grid::set_population_size() {
     // print debugging data for large grid
     /*
     FILE *fp;
-    char filename[FRED_STRING_SIZE];
+    char filename[PHIL_STRING_SIZE];
     sprintf(filename, "OUT/largegrid.txt");
     fp = fopen(filename,"w");
     for (int i = 0; i < rows; i++) {
@@ -220,8 +209,8 @@ void Large_Grid::set_population_size() {
         Large_Cell * cell = get_grid_cell(i,j);
         double x = cell->get_center_x();
         double y = cell->get_center_y();
-        fred::geo lat = Geo_Utils::get_latitude(y);
-        fred::geo lon = Geo_Utils::get_longitude(x);
+        phil::geo lat = Geo_Utils::get_latitude(y);
+        phil::geo lon = Geo_Utils::get_longitude(x);
         int popsize = cell->get_popsize();
         fprintf(fp, "%d %d %f %f %f %f %d\n", i,j,x,y,lon,lat,popsize);
       }
@@ -233,12 +222,12 @@ void Large_Grid::set_population_size() {
 
 void Large_Grid::read_max_popsize() {
     int r,c, n;
-    char filename[FRED_STRING_SIZE];
+    char filename[PHIL_STRING_SIZE];
     if (Global::Enable_Travel) {
         Params::get_param_from_string("cell_popfile", filename);
-        FILE *fp = Utils::fred_open_file(filename);
+        FILE *fp = Utils::phil_open_file(filename);
         if (fp == NULL) {
-            Utils::fred_abort("Help! Can't open cell_pop_file %s\n", filename);
+            Utils::phil_abort("Help! Can't open cell_pop_file %s\n", filename);
         }
         printf("reading %s\n", filename);
         while (fscanf(fp, "%d %d %d ", &c,&r,&n) == 3) {

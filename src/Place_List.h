@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Place_List.h
 //
 
-#ifndef _FRED_PLACE_LIST_H
-#define _FRED_PLACE_LIST_H
+#ifndef _PHIL_PLACE_LIST_H
+#define _PHIL_PLACE_LIST_H
 
 #include <vector>
 #include <map>
@@ -133,7 +122,7 @@ class Place_List {
         number_of_demes = n;
     }
 
-    fred::geo min_lat, max_lat, min_lon, max_lon;
+    phil::geo min_lat, max_lat, min_lon, max_lon;
 
     void delete_place_label_map();
 
@@ -177,9 +166,9 @@ class Place_List {
             }
             ++(place);
         }
-        FRED_STATUS(0, "Added %7d %16s places to Place_List\n",
+        PHIL_STATUS(0, "Added %7d %16s places to Place_List\n",
                     places_added, lookup_place_type_name(place_type).c_str());
-        FRED_CONDITIONAL_WARNING(places_added != places_allocated,
+        PHIL_CONDITIONAL_WARNING(places_added != places_allocated,
                                  "%7d %16s places were added to the Place_List, but %7d were allocated\n",
                                  places_added, lookup_place_type_name(place_type).c_str(),
                                  places_allocated);
@@ -207,7 +196,7 @@ struct Place_Init_Data {
     char place_type;
     int income;
     unsigned char deme_id;
-    fred::geo lat, lon;
+    phil::geo lat, lon;
     bool is_group_quarters;
     string census_block;
 
@@ -263,4 +252,4 @@ struct Place_Init_Data {
 
 };
 
-#endif // _FRED_PLACE_LIST_H
+#endif // _PHIL_PLACE_LIST_H

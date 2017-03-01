@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Age_Map.h
@@ -17,8 +6,8 @@
 // The age ranges must be mutually exclusive.
 //
 
-#ifndef _FRED_AGEMAP_H
-#define _FRED_AGEMAP_H
+#ifndef _PHIL_AGEMAP_H
+#define _PHIL_AGEMAP_H
 
 #include "Global.h"
 #include <stdio.h>

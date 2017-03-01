@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Date.cc
@@ -157,19 +146,19 @@ Date::Date(int year, int month, int day_of_month) {
  */
 void Date::set_date(int year, int month, int day_of_month) {
     if (year < Date::EPOCH_START_YEAR) {
-        Utils::fred_abort("Help! \"%d\" is an invalid year! Years prior to the EPOCH_START_YEAR, %d, are not recognized!\n", year, Date::EPOCH_START_YEAR);
+        Utils::phil_abort("Help! \"%d\" is an invalid year! Years prior to the EPOCH_START_YEAR, %d, are not recognized!\n", year, Date::EPOCH_START_YEAR);
     } else {
         this->year = year;
     }
 
     if (month < Date::JANUARY || month > Date::DECEMBER) {
-        Utils::fred_abort("Help!  Month must be between 1 and 12 inclusive.\n");
+        Utils::phil_abort("Help!  Month must be between 1 and 12 inclusive.\n");
     } else {
         this->month = month;
     }
 
     if (day_of_month < 1 || day_of_month > Date::day_table[(Date::is_leap_year(year) ? 1 : 0)][month]) {
-        Utils::fred_abort("Help!  Day of month is out of range for the given month.\n");
+        Utils::phil_abort("Help!  Day of month is out of range for the given month.\n");
     } else {
         this->day_of_month = day_of_month;
     }
@@ -699,7 +688,7 @@ int Date::parse_month_from_date_string(string date_string, string format_string)
         }
 
     } else {
-        Utils::fred_abort("Help! Unrecognized date format string [\" %s \"]\n", format_string.c_str());
+        Utils::phil_abort("Help! Unrecognized date format string [\" %s \"]\n", format_string.c_str());
     }
 
     return -1;
@@ -753,7 +742,7 @@ int Date::parse_day_of_month_from_date_string(string date_string, string format_
         }
 
     } else {
-        Utils::fred_abort("Help!  Unrecognized date format string [\" %s \"]\n", format_string.c_str());
+        Utils::phil_abort("Help!  Unrecognized date format string [\" %s \"]\n", format_string.c_str());
     }
 
     return -1;
@@ -805,7 +794,7 @@ int Date::parse_year_from_date_string(string date_string, string format_string) 
         }
 
     } else {
-        Utils::fred_abort("Help!  Unrecognized date format string [\" %s \"]\n", format_string.c_str());
+        Utils::phil_abort("Help!  Unrecognized date format string [\" %s \"]\n", format_string.c_str());
     }
 
     return -1;

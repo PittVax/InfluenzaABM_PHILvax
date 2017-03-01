@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: StrainTable.cc
@@ -54,7 +43,7 @@ void StrainTable::add(Strain * strain) {
 }
 
 int StrainTable::add(Strain * new_strain, double transmissibility) {
-    fred::Spin_Lock lock(mutex);
+    phil::Spin_Lock lock(mutex);
 
     int new_strain_id;
     // if this genotype has been seen already, re-use existing id
@@ -76,7 +65,7 @@ int StrainTable::add(Strain * new_strain, double transmissibility) {
 
 int StrainTable::add(Strain * child_strain, double transmissibility, int parent_strain_id) {
 
-    fred::Spin_Lock lock(mutex);
+    phil::Spin_Lock lock(mutex);
 
     int child_strain_id = parent_strain_id;
     Strain * parent_strain = strains[ parent_strain_id ];
@@ -115,7 +104,7 @@ const Strain_Data & StrainTable::get_strain_data(int strain) {
 }
 
 int StrainTable :: get_strain_data_element(int strain, int i) {
-    fred::Spin_Lock lock(mutex);
+    phil::Spin_Lock lock(mutex);
     //if(strain >= strains.size()) return -1;
     return strains[ strain ]->get_data_element(i);
 }

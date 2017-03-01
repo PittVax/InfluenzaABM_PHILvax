@@ -1,21 +1,10 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Activities.h
 //
 
-#ifndef _FRED_ACTIVITIES_H
-#define _FRED_ACTIVITIES_H
+#ifndef _PHIL_ACTIVITIES_H
+#define _PHIL_ACTIVITIES_H
 
 #include <vector>
 #include <bitset>
@@ -79,7 +68,7 @@ class Activities {
         case OFFICE_ACTIVITY:
             return "Office";
         default:
-            Utils::fred_abort("Invalid Activity Type", "");
+            Utils::phil_abort("Invalid Activity Type", "");
         }
     }
     /**
@@ -526,4 +515,4 @@ class Activities {
 };
 
 
-#endif // _FRED_ACTIVITIES_H
+#endif // _PHIL_ACTIVITIES_H

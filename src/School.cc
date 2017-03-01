@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: School.cc
@@ -327,7 +316,7 @@ void School::setup_classrooms(Allocator< Classroom > & classroom_allocator) {
         int rooms = n / School::school_classroom_size;
         if (n % School::school_classroom_size) rooms++;
 
-        FRED_STATUS(1, "school %d %s age %d number %d rooms %d\n",
+        PHIL_STATUS(1, "school %d %s age %d number %d rooms %d\n",
                     id, label, a, n, rooms);
 
         for (int c = 0; c < rooms; c++) {

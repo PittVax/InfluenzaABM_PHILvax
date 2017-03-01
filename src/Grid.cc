@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Grid.cc
@@ -109,7 +98,7 @@ Cell * Grid::get_grid_cell(int row, int col) {
         return NULL;
 }
 
-Cell * Grid::get_grid_cell(fred::geo lat, fred::geo lon) {
+Cell * Grid::get_grid_cell(phil::geo lat, phil::geo lon) {
     int row = get_row(lat);
     int col = get_col(lon);
     return get_grid_cell(row,col);
@@ -176,7 +165,7 @@ void Grid::quality_control(char * directory) {
     }
 
     if (Global::Verbose>1) {
-        char filename [FRED_STRING_SIZE];
+        char filename [PHIL_STRING_SIZE];
         sprintf(filename, "%s/grid.dat", directory);
         FILE *fp = fopen(filename, "w");
         for (int row = 0; row < rows; row++) {
@@ -222,7 +211,7 @@ void Grid::quality_control(char * directory, double min_x, double min_y) {
     }
 
     if (Global::Verbose>1) {
-        char filename [FRED_STRING_SIZE];
+        char filename [PHIL_STRING_SIZE];
         sprintf(filename, "%s/grid.dat", directory);
         FILE *fp = fopen(filename, "w");
         for (int row = 0; row < rows; row++) {
@@ -286,7 +275,7 @@ void Grid::record_favorite_places() {
     }
 }
 
-vector < Place * >  Grid::get_households_by_distance(fred::geo lat, fred::geo lon, double radius_in_km) {
+vector < Place * >  Grid::get_households_by_distance(phil::geo lat, phil::geo lon, double radius_in_km) {
     double px = Geo_Utils::get_x(lon);
     double py = Geo_Utils::get_y(lat);
     //  get cells around the point, make sure their rows & cols are in bounds
@@ -308,8 +297,8 @@ vector < Place * >  Grid::get_households_by_distance(fred::geo lat, fred::geo lo
             Cell * p = get_grid_cell(r,c);
             vector <Place *> h = p->get_households();
             for (vector <Place *>::iterator hi = h.begin(); hi != h.end(); hi++) {
-                fred::geo hlat = (*hi)->get_latitude();
-                fred::geo hlon = (*hi)->get_longitude();
+                phil::geo hlat = (*hi)->get_latitude();
+                phil::geo hlon = (*hi)->get_longitude();
                 //printf("DEBUG: household_latitude %f, household_longitude %f\n",hlat,hlon);
                 double hx = Geo_Utils::get_x(hlon);
                 double hy = Geo_Utils::get_y(hlat);
@@ -417,7 +406,7 @@ void Grid::print_household_distribution(char * dir, char * date_string, int run)
     FILE *fp;
     int targ, count;
     double pct;
-    char filename[FRED_STRING_SIZE];
+    char filename[PHIL_STRING_SIZE];
     sprintf(filename, "%s/household_dist_%s.%02d", dir, date_string, run);
     printf("print_household_dist entered, filename = %s\n", filename);
     fflush(stdout);

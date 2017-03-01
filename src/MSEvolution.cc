@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 #include <map>
 #include <cmath>
 #include <fstream>
@@ -90,7 +79,7 @@ double MSEvolution::antigenic_distance(int strain1, int strain2) {
 }
 
 double MSEvolution::prob_inf_blocking(int old_strain, int new_strain, int time, int age) {
-    FRED_VERBOSE(3, "Prob Blocking %f old strain %d new strain %d time %d halflife %f age %d init prot inf %f\n",
+    PHIL_VERBOSE(3, "Prob Blocking %f old strain %d new strain %d time %d halflife %f age %d init prot inf %f\n",
                  prob_blocking(old_strain, new_strain, time, halflife_inf->find_value(age), init_prot_inf),
                  old_strain, new_strain, time, halflife_inf->find_value(age), age, init_prot_inf);
     return prob_blocking(old_strain, new_strain, time, halflife_inf->find_value(age), init_prot_inf);

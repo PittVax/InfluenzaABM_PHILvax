@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 //
 //
 // File: Vaccine_Manager.cpp
@@ -254,10 +243,10 @@ string Vaccine_Manager::get_vaccine_dose_priority_string() const {
     case VACC_DOSE_LAST_PRIORITY:
         return "Priority, Place at End of Queue";
     default:
-        FRED_WARNING("Unrecognized Vaccine Dose Priority\n");
+        PHIL_WARNING("Unrecognized Vaccine Dose Priority\n");
         return "";
     }
-    FRED_WARNING("Unrecognized Vaccine Dose Priority\n");
+    PHIL_WARNING("Unrecognized Vaccine Dose Priority\n");
     return "";
 }
 
@@ -311,7 +300,7 @@ void Vaccine_Manager::process_vaccine_queue(const std::string& queue_name, int d
         this_queue = &queue;
     }
     else {
-        Utils::fred_abort("Invalid queue specified!");
+        Utils::phil_abort("Invalid queue specified!");
     }
 
     int number_vaccinated = 0;

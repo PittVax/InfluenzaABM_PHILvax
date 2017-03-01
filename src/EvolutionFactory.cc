@@ -1,14 +1,3 @@
-/*
-  This file is part of the FRED system.
-
-  Copyright (c) 2010-2012, University of Pittsburgh, John Grefenstette,
-  Shawn Brown, Roni Rosenfield, Alona Fyshe, David Galloway, Nathan
-  Stone, Jay DePasse, Anuroop Sriram, and Donald Burke.
-
-  Licensed under the BSD 3-Clause license.  See the file "LICENSE" for
-  more information.
-*/
-
 
 #include "EvolutionFactory.h"
 #include "Evolution.h"
@@ -23,7 +12,7 @@ Evolution *EvolutionFactory :: newEvolution(int type) {
     case 1:
         return new MSEvolution;
     default:
-        FRED_WARNING("Unknown Evolution type (%d) supplied to EvolutionFactory.  Using the default.", type);
+        PHIL_WARNING("Unknown Evolution type (%d) supplied to EvolutionFactory.  Using the default.", type);
         return new Evolution;
     }
 }
