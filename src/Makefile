@@ -98,7 +98,7 @@ OBJ =   Phil.o Global.o Age_Map.o Timestep_Map.o Utils.o Params.o Date.o Random.
 	Vaccine_Health.o Vaccine_Dose.o Vaccine.o Vaccines.o \
 	Vaccine_Priority_Decisions.o Vaccine_Priority_Policies.o Vaccine_Manager.o \
 	Person.o Place.o Place_List.o Population.o \
-	Activities.o Demographics.o Health.o Perceptions.o \
+	Activities.o Demographics.o Health.o \
 	Classroom.o Hospital.o Household.o Neighborhood.o Office.o School.o Workplace.o \
 	Disease.o Infection.o Epidemic.o \
 	EvolutionFactory.o Evolution.o Strain.o Trajectory.o StrainTable.o \
