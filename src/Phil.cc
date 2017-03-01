@@ -202,7 +202,6 @@ int main(int argc, char* argv[]) {
 
     if (Global::Report_Epidemic_Data_By_Census_Block) {
         //Global::Block_Tracker = new Tracker<string>("Census String Block Tracker Test","BlockGroup");
-
         //Global::Pop.report_mean_hh_stats_per_census_block();
         //Global::Pop.report_mean_hh_stats_per_census_block();
     }
@@ -210,8 +209,6 @@ int main(int argc, char* argv[]) {
     if (Global::Enable_Seasonality) {
         Global::Clim->print_summary();
     }
-
-
 
     for (int d = 0; d < Global::Diseases; ++d) {
         Disease * disease = Global::Pop.get_disease(d);

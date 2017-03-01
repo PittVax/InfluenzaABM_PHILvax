@@ -39,8 +39,8 @@ SNAPPY_LIB = $(SNAPPY_DIR)/lib/libsnappy.dylib
 M64 = -m64
 endif
 ################   Compiler Flags   ##############################
-PHIL_EXECUTABLE_NAME = PHIL
-PHIL_memcheck: PHIL_EXECUTABLE_NAME = PHIL_memcheck
+PHIL_EXECUTABLE_NAME = phil
+PHIL_memcheck: PHIL_EXECUTABLE_NAME = phil_memcheck
 
 LOGGING_PRESET_0 = 
 LOGGING_PRESET_1 = -DPHILWARNING
