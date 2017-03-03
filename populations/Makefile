@@ -9,7 +9,7 @@
 # 2005_2009_ver2_42065 = Jefferson_County_PA_V2 (deprecated)
 #
 
-FRED_HOME ?= $(CURDIR)/..
+PHIL_HOME ?= $(CURDIR)/..
 POPS = 2005_2009_ver2_42065
 OS := $(shell uname)
 
@@ -19,7 +19,7 @@ all: $(POPS)
 % :: %.zip
 	unzip $< -d $@
 ifneq ($(shell echo $(OS) | cut -f1 -d_),CYGWIN)
-	(cd $@; $(FRED_HOME)/bin/fsz -c $@_synth_people.txt > $@_synth_people.txt.fsz; cd ..)
+	(cd $@; $(PHIL_HOME)/bin/fsz -c $@_synth_people.txt > $@_synth_people.txt.fsz; cd ..)
 endif
 
 # To create a zip file, run "make X.zip"
