@@ -3,8 +3,21 @@
 *.pyc
 
 output_processing/phil_output_extractor/build
+output_processing/phil_output_extractor/src/phil_output_extractor.egg-info
 
-wrk/
+wrk/pagmo/
+wrk/test/
+wrk/univax/*
+
+!wrk/univax/config.yaml
+!wrk/univax/params.seasonal
+!wrk/univax/params.universal
+!wrk/univax/phil_optimize_attack_rate_by_age.py
+!wrk/univax/primary_case_schedule-0.txt
+!wrk/univax/report.json_lines
+!wrk/univax/univax-analysis.r
+!wrk/univax/vaccination_capacity.txt
+
 bin/
 
 src/fsz

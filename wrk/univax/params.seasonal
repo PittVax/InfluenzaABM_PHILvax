@@ -1,0 +1,205 @@
+synthetic_population_id = 2005_2009_ver2_42003
+
+event_report_file = none
+outdir = OUT.1
+
+days = 360 
+#days = 720 
+#days = 1080
+#days = 1440
+#days = 1800
+#days = 2160
+#days = 2520
+#days = 2880
+
+###############################################################################
+
+trans[0] = 2.4
+#R0 = 2.75
+#R0_a = 0.053589
+#R0_b = 0.568486
+
+household_contacts[0] = 0.6 #0.198226
+neighborhood_contacts[0] = 20.00 #42.478577
+school_contacts[0] = 22.00 #14.320478
+workplace_contacts[0] = 1.0 #1.589467
+classroom_contacts[0] = -1
+office_contacts[0] = -1
+hospital_contacts[0] = 0
+
+#community contacts increase on weekends
+weekend_contact_rate[0] = 1.1 #1.5
+# groups = children adults
+household_prob[0] = 4 0.8 0.3 0.5 0.2 #4 0.6 0.3 0.3 0.4
+# groups = adult_workers
+workplace_prob[0] = 1 0.2 #1 0.0575
+office_prob[0] = 1 0.04 #1 0.0575
+# groups = elem_students mid_students high_students teachers
+#school_prob[0] = 16 0.0435 0 0 0.0435 0 0.0375 0 0.0375 0 0 0.0315 0.0315 0.0435 0.0375 0.0315 0.0575
+school_prob[0] = 16 0.08 0.001 0.001 0.0435 0.001 0.0375 0.001 0.0375 0.001 0.001 0.0315 0.0315 0.0435 0.0375 0.0315 0.02
+#classroom_prob[0] = 16 0.0435 0 0 0.0435 0 0.0375 0 0.0375 0 0 0.0315 0.0315 0.0435 0.0375 0.0315 0.0575
+classroom_prob[0] = 16 0.08 0 0 0.0435 0 0.0375 0 0.0375 0 0 0.0315 0.0315 0.0435 0.0375 0.0315 0.02
+# goups = children adults
+neighborhood_prob[0] = 4 0.08 0.004 0.004 0.002 #4 0.0048 0.0048 0.0048 0.0048
+
+###############################################################################
+
+primary_cases_file[0] = primary_case_schedule-0.txt
+
+simple_strains = 8
+enable_simple_strain_model = 1
+
+enable_vaccination = 1
+vaccine_tracefile = vacctrace
+
+vaccine_coverage_by_age = 1
+event_report_file = none
+track_vaccine_infection_events = 1
+vaccine_infection_tracker_file = vaccinf
+
+immunity_loss_mu[0] = 180
+immunity_loss_sigma[0] = 30
+
+enable_aging = 0
+enable_births = 0
+enable_deaths = 0 
+enable_mobility = 0 
+enable_migration = 0 
+
+yearly_mortality_rate_file = $FRED_HOME/input_files/mortality_rate.txt
+#yearly_mobility_rate_file = $FRED_HOME/input_files/mobility_rate.txt
+yearly_birth_rate_file = $FRED_HOME/input_files/birth_rate.txt
+birth_rate_multiplier = 1
+
+vaccination_capacity_file = vaccination_capacity.txt
+
+#vaccinate_symptomatics = 0
+
+number_of_vaccines = 7
+
+# Vaccine: 0 [UNIVERSAL VACCINE]
+vaccine_number_of_doses[0] = 1
+vaccine_total_avail[0] = 0 #465120
+vaccine_additional_per_day[0] = 0 #323 
+vaccine_starting_day[0] = 0
+# Vaccine Dose
+vaccine_next_dosage_day[0][0] = 0
+vaccine_dose_efficacy_ages[0][0] = 2 0 110
+vaccine_dose_efficacy_values[0][0] = 1 0.20
+vaccine_dose_efficacy_delay_ages[0][0] = 2 0 100
+vaccine_dose_efficacy_delay_values[0][0] = 1 14
+# Vaccine Simple Strains Parameters
+vaccine_simple_strains[0] = 4 1 2 3 4 5 6 7 8
+# Vaccine Age-Specific Coverage Policy Decisions
+vaccine_coverage_age_map_ages[0] = 10 0 5 6 18 19 50 51 65 66 106
+vaccine_coverage_age_map_values[0] = 5 0.0795 0.2806 0.2204 0.1907 0.2289
+
+
+# Vaccine: 1
+vaccine_number_of_doses[1] = 1
+vaccine_total_avail[1] = 582440 
+vaccine_additional_per_day[1] = 582440
+vaccine_starting_day[1] = 0
+# Vaccine Dose
+vaccine_next_dosage_day[1][0] = 0
+vaccine_dose_efficacy_ages[1][0] = 2 0 110
+vaccine_dose_efficacy_values[1][0] = 1 0.60
+vaccine_dose_efficacy_delay_ages[1][0] = 2 0 100
+vaccine_dose_efficacy_delay_values[1][0] = 1 14
+# Vaccine Simple Strains Parameters
+vaccine_simple_strains[1] = 1 1
+# Vaccine Age-Specific Coverage Policy Decisions
+vaccine_coverage_age_map_ages[1] = 10 0 5 6 18 19 50 51 65 66 106
+vaccine_coverage_age_map_values[1] = 5 0.0795 0.2806 0.2204 0.1907 0.2289
+
+
+# Vaccine: 2
+vaccine_number_of_doses[2] = 1
+vaccine_total_avail[2] = 582440
+vaccine_additional_per_day[2] = 582440
+vaccine_starting_day[2] = 360
+# Vaccine Dose
+vaccine_next_dosage_day[2][0] = 0
+vaccine_dose_efficacy_ages[2][0] = 2 0 110
+vaccine_dose_efficacy_values[2][0] = 1 0.60
+vaccine_dose_efficacy_delay_ages[2][0] = 2 0 100
+vaccine_dose_efficacy_delay_values[2][0] = 1 14
+# Vaccine Simple Strains Parameters
+vaccine_simple_strains[2] = 1 2
+# Vaccine Age-Specific Coverage Policy Decisions
+vaccine_coverage_age_map_ages[2] = 10 0 5 6 18 19 50 51 65 66 106
+vaccine_coverage_age_map_values[2] = 5 0.0795 0.2806 0.2204 0.1907 0.2289
+
+
+# Vaccine: 3
+vaccine_number_of_doses[3] = 1
+vaccine_total_avail[3] = 582440
+vaccine_additional_per_day[3] = 582440
+vaccine_starting_day[3] = 720
+# Vaccine Dose
+vaccine_next_dosage_day[3][0] = 0
+vaccine_dose_efficacy_ages[3][0] = 2 0 110
+vaccine_dose_efficacy_values[3][0] = 1 0.60
+vaccine_dose_efficacy_delay_ages[3][0] = 2 0 100
+vaccine_dose_efficacy_delay_values[3][0] = 1 14
+# Vaccine Simple Strains Parameters
+vaccine_simple_strains[3] = 1 3
+# Vaccine Age-Specific Coverage Policy Decisions
+vaccine_coverage_age_map_ages[3] = 10 0 5 6 18 19 50 51 65 66 106
+vaccine_coverage_age_map_values[3] = 5 0.0795 0.2806 0.2204 0.1907 0.2289
+
+
+# Vaccine: 4
+vaccine_number_of_doses[4] = 1
+vaccine_total_avail[4] = 582440
+vaccine_additional_per_day[4] = 582440
+vaccine_starting_day[4] = 1080
+# Vaccine Dose
+vaccine_next_dosage_day[4][0] = 0
+vaccine_dose_efficacy_ages[4][0] = 2 0 110
+vaccine_dose_efficacy_values[4][0] = 1 0.60
+vaccine_dose_efficacy_delay_ages[4][0] = 2 0 100
+vaccine_dose_efficacy_delay_values[4][0] = 1 14
+# Vaccine Simple Strains Parameters
+vaccine_simple_strains[4] = 1 4
+# Vaccine Age-Specific Coverage Policy Decisions
+vaccine_coverage_age_map_ages[4] = 10 0 5 6 18 19 50 51 65 66 106
+vaccine_coverage_age_map_values[4] = 5 0.0795 0.2806 0.2204 0.1907 0.2289
+
+
+# Vaccine: 5
+vaccine_number_of_doses[5] = 1
+vaccine_total_avail[5] = 582440
+vaccine_additional_per_day[5] = 582440
+vaccine_starting_day[5] = 1440
+# Vaccine Dose
+vaccine_next_dosage_day[5][0] = 0
+vaccine_dose_efficacy_ages[5][0] = 2 0 110
+vaccine_dose_efficacy_values[5][0] = 1 0.60
+vaccine_dose_efficacy_delay_ages[5][0] = 2 0 100
+vaccine_dose_efficacy_delay_values[5][0] = 1 14
+# Vaccine Simple Strains Parameters
+vaccine_simple_strains[5] = 1 5
+# Vaccine Age-Specific Coverage Policy Decisions
+vaccine_coverage_age_map_ages[5] = 10 0 5 6 18 19 50 51 65 66 106
+vaccine_coverage_age_map_values[5] = 5 0.0795 0.2806 0.2204 0.1907 0.2289
+
+
+# Vaccine: 6
+vaccine_number_of_doses[6] = 1
+vaccine_total_avail[6] = 582440
+vaccine_additional_per_day[6] = 582440
+vaccine_starting_day[6] = 1800
+# Vaccine Dose
+vaccine_next_dosage_day[6][0] = 0
+vaccine_dose_efficacy_ages[6][0] = 2 0 110
+vaccine_dose_efficacy_values[6][0] = 1 0.60
+vaccine_dose_efficacy_delay_ages[6][0] = 2 0 100
+vaccine_dose_efficacy_delay_values[6][0] = 1 14
+# Vaccine Simple Strains Parameters
+vaccine_simple_strains[6] = 1 6
+# Vaccine Age-Specific Coverage Policy Decisions
+vaccine_coverage_age_map_ages[6] = 10 0 5 6 18 19 50 51 65 66 106
+vaccine_coverage_age_map_values[6] = 5 0.0795 0.2806 0.2204 0.1907 0.2289
+
+
