@@ -27,20 +27,20 @@ classroom_contacts[0] = -1
 office_contacts[0] = -1
 hospital_contacts[0] = 0
 
-#community contacts increase on weekends
-weekend_contact_rate[0] = 1.1 #1.5
-# groups = children adults
-household_prob[0] = 4 0.8 0.3 0.5 0.2 #4 0.6 0.3 0.3 0.4
-# groups = adult_workers
-workplace_prob[0] = 1 0.2 #1 0.0575
-office_prob[0] = 1 0.04 #1 0.0575
-# groups = elem_students mid_students high_students teachers
-#school_prob[0] = 16 0.0435 0 0 0.0435 0 0.0375 0 0.0375 0 0 0.0315 0.0315 0.0435 0.0375 0.0315 0.0575
-school_prob[0] = 16 0.08 0.001 0.001 0.0435 0.001 0.0375 0.001 0.0375 0.001 0.001 0.0315 0.0315 0.0435 0.0375 0.0315 0.02
-#classroom_prob[0] = 16 0.0435 0 0 0.0435 0 0.0375 0 0.0375 0 0 0.0315 0.0315 0.0435 0.0375 0.0315 0.0575
-classroom_prob[0] = 16 0.08 0 0 0.0435 0 0.0375 0 0.0375 0 0 0.0315 0.0315 0.0435 0.0375 0.0315 0.02
-# goups = children adults
-neighborhood_prob[0] = 4 0.08 0.004 0.004 0.002 #4 0.0048 0.0048 0.0048 0.0048
+## #community contacts increase on weekends
+## weekend_contact_rate[0] = 1.1 #1.5
+## # groups = children adults
+## household_prob[0] = 4 0.8 0.3 0.5 0.2 #4 0.6 0.3 0.3 0.4
+## # groups = adult_workers
+## workplace_prob[0] = 1 0.2 #1 0.0575
+## office_prob[0] = 1 0.04 #1 0.0575
+## # groups = elem_students mid_students high_students teachers
+## #school_prob[0] = 16 0.0435 0 0 0.0435 0 0.0375 0 0.0375 0 0 0.0315 0.0315 0.0435 0.0375 0.0315 0.0575
+## school_prob[0] = 16 0.08 0.001 0.001 0.0435 0.001 0.0375 0.001 0.0375 0.001 0.001 0.0315 0.0315 0.0435 0.0375 0.0315 0.02
+## #classroom_prob[0] = 16 0.0435 0 0 0.0435 0 0.0375 0 0.0375 0 0 0.0315 0.0315 0.0435 0.0375 0.0315 0.0575
+## classroom_prob[0] = 16 0.08 0 0 0.0435 0 0.0375 0 0.0375 0 0 0.0315 0.0315 0.0435 0.0375 0.0315 0.02
+## # goups = children adults
+## neighborhood_prob[0] = 4 0.08 0.004 0.004 0.002 #4 0.0048 0.0048 0.0048 0.0048
 
 ###############################################################################
 

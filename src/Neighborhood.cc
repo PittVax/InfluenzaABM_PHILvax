@@ -59,11 +59,17 @@ void Neighborhood::get_parameters(int diseases) {
 
 int Neighborhood::get_group(int disease, Person * per) {
     int age = per->get_age();
-    if (age < Global::ADULT_AGE) {
-        return 0;
-    } else {
-        return 1;
-    }
+//    if (age < Global::ADULT_AGE) {
+//        return 0;
+//    } else {
+//        return 1;
+//    }
+    //  Age groups: '[0, 5)','[5, 18)','[18, 50)','[50, 65)','[65, 106)'
+    if (age < 5)  {return 0;}
+    if (age < 18) {return 1;}
+    if (age < 50) {return 2;}
+    if (age < 65) {return 3;}
+    return 4;
 }
 
 double Neighborhood::get_transmission_prob(int disease, Person * i, Person * s) {

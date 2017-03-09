@@ -35,7 +35,7 @@ class PhilOptimizeAttackRateByAge(PyGMO_Problem_Base):
         1.5,       # weekend_contact_rate[0]
 
         # household_prob[0] = 4
-        0.6, 0.3, 0.3, 0.4,
+        0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3,
         # workplace_prob[0] = 1
         0.0575,
         # office_prob[0] = 1
@@ -45,28 +45,28 @@ class PhilOptimizeAttackRateByAge(PyGMO_Problem_Base):
         # classroom_prob[0] = 16
         0.0435, 0, 0, 0.0435, 0, 0.0375, 0, 0.0375, 0, 0, 0.0315, 0.0315, 0.0435, 0.0375, 0.0315, 0.0575,
         # neighborhood_prob[0] = 4
-        0.0048, 0.0048, 0.0048, 0.0048,
-       
+        0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3,
+      
         1.0,       # trans[0]
         ]
 
     idx = namedtuple('ArrayIndexes', ['start', 'end', 'is_indexed', 'min', 'max'])
 
     optimized_param_array_indexes = OrderedDict([
-        ('household_contacts',    idx( 0,  1,  False,  0.00,  5.00 )),
+        ('household_contacts',    idx( 0,  1, False,  0.00,  5.00 )),
         ('neighborhood_contacts', idx( 1,  2,  False,  0.00, 50.00 )),
         ('school_contacts',       idx( 2,  3,  False,  0.00, 20.00 )),
         ('workplace_contacts',    idx( 3,  4,  False,  0.00,  4.00 )),
         ('classroom_contacts',    idx( 4,  5,  False,  0.00, 20.00 )),
         ('office_contacts',       idx( 5,  6,  False,  0.00,  4.00 )),
         ('weekend_contact_rate',  idx( 6,  7,  False,  0.00,  2.00 )),
-        ('household_prob',        idx( 7,  11, True,   0.00,  1.00 )),
-        ('workplace_prob',        idx( 11, 12, True,   0.00,  1.00 )),
-        ('office_prob',           idx( 12, 13, True,   0.00,  1.00 )),
-        ('school_prob',           idx( 13, 29, True,   0.00,  1.00 )),
-        ('classroom_prob',        idx( 29, 45, True,   0.00,  1.00 )),
-        ('neighborhood_prob',     idx( 45, 49, True,   0.00,  1.00 )),
-        ('trans',                 idx( 49, 50, False,  0.10,  4.00 )),
+        ('household_prob',        idx( 7,  32, True,   0.00,  1.00 )),
+        ('workplace_prob',        idx( 32, 33, True,   0.00,  1.00 )),
+        ('office_prob',           idx( 33, 34, True,   0.00,  1.00 )),
+        ('school_prob',           idx( 34, 50, True,   0.00,  1.00 )),
+        ('classroom_prob',        idx( 50, 66, True,   0.00,  1.00 )),
+        ('neighborhood_prob',     idx( 66, 91, True,   0.00,  1.00 )),
+        ('trans',                 idx( 91, 92, False,  0.10,  4.00 )),
         ])
 
     # The annual impact of seasonal influenza in the US: Measuring disease burden and costs
