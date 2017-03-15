@@ -120,6 +120,7 @@ all: PHIL PHIL.tar.gz fsz $(MD5)
 
 PHIL: $(SNAPPY_LIB) $(OBJ) dSFMT.o
 	$(CPP) -o $(PHIL_EXECUTABLE_NAME) $(CPPFLAGS) $(LDFLAGS) $(OBJ) dSFMT.o $(LFLAGS) -ldl
+	mkdir -p ../bin
 	cp $(PHIL_EXECUTABLE_NAME) ../bin
 
 #LIBPHIL: $(SNAPPY_LIB) $(OBJ) dSFMT.o
@@ -137,6 +138,7 @@ dSFMT.o:
 
 fsz: $(SNAPPY_LIB) Compression.o Global.h fsz.cc
 	$(CPP) -o fsz $(CPPFLAGS) $(LDFLAGS) Compression.o $(LFLAGS) fsz.cc
+	mkdir -p ../bin
 	cp fsz ../bin
 
 DEPENDS: $(SRC) $(HDR)
