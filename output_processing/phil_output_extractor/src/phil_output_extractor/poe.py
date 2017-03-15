@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
 """
-foe: FRED Output Extraction tool
+poe: phil Output Extraction tool
 
 Given the synthetic population files and the one or more line-list files
-with json recorded events produced by pFRED, this script will generate
+with json recorded events produced by phil, this script will generate
 compressed hdf5-format data tables containing stratified disease state counts.
 """
 
-__version__ = '0.0.0'
+__version__ = '0.0.1'
 
 import argparse, os
 
 try:
     from convert_output import * 
 except ImportError as e:
-    from fred_output_extractor.convert_output import *
+    from phil_output_extractor.convert_output import *
 
 import yaml, ujson
 import logging
