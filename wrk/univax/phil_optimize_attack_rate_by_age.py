@@ -1,13 +1,32 @@
+# coding: utf-8
+
 import sh
 import os
 import re
+import time
+import argparse
+import jinja2
 
 import pandas as pd
 
 from tempfile import mkdtemp
+from random import randint
 from collections import OrderedDict, namedtuple
-
+from fasteners import InterProcessLock
+from datetime import datetime
 from PyGMO.problem import base as PyGMO_Problem_Base
+
+
+# if logging is imported as a module, duplicate loggers created on reload()
+import logging
+log = logging.getLogger()
+# NOTE: this business is necessary so that the logger is completely
+# reinitialized upon a module reload
+list(map(log.removeHandler, log.handlers[:]))
+list(map(log.removeFilter, log.filters[:]))
+log.addHandler(logging.StreamHandler())
+log.setLevel(logging.INFO)
+
 
 class PhilOptimizeAttackRateByAge(PyGMO_Problem_Base):
     age_groups = ['[0, 5)','[5, 18)','[18, 50)',
@@ -16,9 +35,6 @@ class PhilOptimizeAttackRateByAge(PyGMO_Problem_Base):
     synthetic_population_directory = os.path.join(os.environ['PHIL_HOME'], 'populations')
     synthetic_population_id = '2005_2009_ver2_42003'
     synthetic_population = os.path.join(synthetic_population_directory, synthetic_population_id)
-
-    phil = sh.phil
-    poe = sh.Command(sh.which('poe.py'))
 
     base_params = {
                 'synthetic_population_directory': synthetic_population_directory,
@@ -80,7 +96,13 @@ class PhilOptimizeAttackRateByAge(PyGMO_Problem_Base):
     target_year = 1
 
     def __init__(self):
+        self.wrkdir = os.getcwd()
+        self.phil_home = os.environ['PHIL_HOME']
+        self.qsub = sh.qsub.bake('-v','PHIL_HOME=%s' % self.phil_home)
         self.base_param_file = 'params.seasonal'
+        self.qsub_template_file = 'qsub.tpl'
+        with open(self.qsub_template_file, 'r') as f:
+            self.qsub_template = jinja2.Template(f.read())
         nobj = len(self.target.index)
         nint = 0
         ndim = 0
@@ -111,19 +133,21 @@ class PhilOptimizeAttackRateByAge(PyGMO_Problem_Base):
         return p
 
     def read_phil_base_params_from_file(self):
-	p = {}
-	with open(self.base_param_file, 'r') as f:
-	    for l in f:
-		l = l.strip()
-		if not l.startswith('#') and len(l) > 0 and '=' in l:
-		    m = re.search('^(.+?) = (.+)$', l)
-		    if m is not None:
-			p[m.group(1)] = m.group(2)
-	return p
+        p = {}
+        with open(self.base_param_file, 'r') as f:
+            for l in f:
+                l = l.strip()
+                if not l.startswith('#') and len(l) > 0 and '=' in l:
+                    m = re.search('^(.+?) = (.+)$', l)
+                    if m is not None:
+                        p[m.group(1)] = m.group(2)
+        return p
 
     def run_phil_pipeline(self, opt_params):
-        tempdir = mkdtemp()
-        print(tempdir)
+        tempdir_container = mkdtemp(prefix='philo_', dir=self.wrkdir)
+        tempdir = mkdtemp(dir=tempdir_container)
+        basename = os.path.basename(tempdir)
+        log.info(tempdir)
         event_report_file = os.path.join(tempdir, 'events.json_lines')
         poe_output_file = os.path.join(tempdir, 'poe_output')
         poe_format = 'csv'
@@ -134,20 +158,54 @@ class PhilOptimizeAttackRateByAge(PyGMO_Problem_Base):
             params.update({
                 'outdir': tempdir,
                 'event_report_file' : event_report_file,
+                'seed': randint(1, 2147483647)
             })
             params.update(opt_params)
 
             for param, value in params.items():
                 paramfile.write('%s = %s\n' % (param, str(value)))
             paramfile.flush()
-            
-            try:
-                self.phil(paramfile.name)
-                self.poe(p=self.synthetic_population, r=event_report_file, 
-                        o=poe_output_file, c='none', g='config.yaml', f=poe_format)
-            except sh.SignalException_SIGABRT as e:
-                print(e.stdout)
-                raise
+
+            lockfile = os.path.join(tempdir, 'lockfile')
+            lock = InterProcessLock(lockfile)
+            statusfile = os.path.join(tempdir, 'statusfile')
+
+            sh.cp(params['primary_cases_file[0]'], tempdir)
+            sh.cp(params['vaccination_capacity_file'], tempdir)
+            sh.cp('config.yaml', tempdir)
+
+            qsub_template_args = dict(
+                lockfile = lockfile,
+                statusfile = statusfile,
+                tempdir = tempdir,
+                jobname = basename,
+                reservation = 'depasse.0',
+                paramfile = paramfile.name,
+                synthetic_population = self.synthetic_population,
+                event_report_file = event_report_file,
+                poe_output_file = poe_output_file,
+                poe_format = poe_format
+                )
+           
+            qsub_file = os.path.join(tempdir, 'qsub.py')
+            with open(qsub_file, 'w') as f:
+                f.write(self.qsub_template.render(qsub_template_args))
+
+            jobid = self.qsub(qsub_file).strip()
+            sh.ln('-s', tempdir, os.path.join(tempdir_container, jobid))
+
+            while True:
+                if lock.exists():
+                    break
+                else:
+                    print('Waiting for job %s to start' % jobid)
+                time.sleep(10)
+            lock.acquire(blocking=True, delay=10, max_delay=60*60)
+            with open(statusfile, 'r') as f:
+                stat = f.read()
+                if len(stat) > 0:
+                    raise Exception(stat)
+
         return '%s.%s' % (poe_output_file, poe_format)
 
     def evaluate_phil_output(self, poe_output_file):
@@ -155,20 +213,19 @@ class PhilOptimizeAttackRateByAge(PyGMO_Problem_Base):
         d1['year'] = pd.cut(d1.day, [x for x in range(0,2880,360)],
                 include_lowest=True, right=True).cat.codes + 1
 
-	def yearly_stats(s):
-	    return pd.Series({
-		'N_p': s['N_p'].mean(),
-		'IS_i': s['IS_i'].sum(),
-		'attack_rate': s['IS_i'].sum() / s['N_p'].mean(),
-	    })
-	d2 = d1.groupby(['year','age']).apply(yearly_stats)
+        def yearly_stats(s):
+            return pd.Series({
+                'N_p': s['N_p'].mean(),
+                'IS_i': s['IS_i'].sum(),
+                'attack_rate': s['IS_i'].sum() / s['N_p'].mean(),
+            })
+        d2 = d1.groupby(['year','age']).apply(yearly_stats)
         d2 = d2.xs(self.target_year, level='year')
         d3 = d2.join(self.target)
         d3['z_abs'] = ((d3.attack_rate - d3.attack_rate_mean) / d3.attack_rate_stddev).abs()
-        d3 = d3.sort_index(level='age')    
+        d3 = d3.sort_index(level='age')
 
         return d3.z_abs.tolist()
-
 
 
 
