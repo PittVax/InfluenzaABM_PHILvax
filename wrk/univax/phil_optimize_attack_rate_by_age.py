@@ -139,7 +139,7 @@ class PhilOptimizeAttackRateByAge(base):
             if i.is_indexed:
                 p['%s[0]' % k] = '%d %s' % (
                         i.end - i.start,
-                        ['%f' % x[j] for j in range(i.start, i.end)])
+                        ' '.join(['%f' % x[j] for j in range(i.start, i.end)]))
             else:
                 p['%s[0]' % k] = '%f' % x[i.start]
         return p
@@ -156,7 +156,8 @@ class PhilOptimizeAttackRateByAge(base):
         return p
 
     def run_phil_pipeline(self, opt_params):
-        tempdir_container = os.path.join(self.wrkdir,'philo_output')
+        from random import randint
+        tempdir_container = os.path.join(self.wrkdir,'philo_output',str(randint(0,32)),str(randint(0,32)))
         sh.mkdir('-p',tempdir_container)
         tempdir = mkdtemp(prefix='phl-', dir=tempdir_container)
         basename = os.path.basename(tempdir)
@@ -164,7 +165,9 @@ class PhilOptimizeAttackRateByAge(base):
         event_report_file = os.path.join(tempdir, 'events.json_lines')
         poe_output_file = os.path.join(tempdir, 'poe_output')
         poe_format = 'csv'
-        qsub = sh.qsub.bake('-v','PHIL_HOME=%s,OMP_NUM_THREADS=8' % self.phil_home)
+        #login_node = 'login%d.olympus.psc.edu' % randint(1,1)
+        #ssh = sh.ssh.bake(login_node)
+        qsub = sh.qsub.bake('-v','PHIL_HOME=%s,OMP_NUM_THREADS=12' % self.phil_home)
 
         with open(os.path.join(tempdir,'params'), 'w') as paramfile:
             params = self.read_phil_base_params_from_file()
@@ -213,8 +216,11 @@ class PhilOptimizeAttackRateByAge(base):
             sh.ln('-s', tempdir, os.path.join(tempdir_container, jobid))
 
             sh.touch(lockfile)
-            while os.path.isfile(lockfile):
+            while sh.qstat('-x', jobid, _ok_code=[0,153]).exit_code == 0:
                 time.sleep(10)
+
+            if os.path.isfile(lockfile):
+                raise Exception('Lockfile present but %s not in queue!' % jobid)
 
             with open(statusfile, 'r') as f:
                 stat = f.read()
@@ -225,18 +231,19 @@ class PhilOptimizeAttackRateByAge(base):
 
     def evaluate_phil_output(self, poe_output_file, tempdir):
         d1 = pd.read_csv(poe_output_file)
-        d1['year'] = pd.cut(d1.day, [x for x in range(0,2880,360)],
-                include_lowest=True, right=True).cat.codes + 1
+        #d1['year'] = pd.cut(d1.day, [x for x in range(0,2880,360)],
+        #        include_lowest=True, right=True).cat.codes + 1
 
         def yearly_stats(s):
             return pd.Series({
                 'N_p': s['N_p'].mean(),
-                'IS_i': s['IS_i'].sum(),
-                'attack_rate': s['IS_i'].sum() / s['N_p'].mean(),
+                'IS_i': s['IS_i'].sum() / 365.0,
+                'attack_rate': ((s['IS_i'] / s['N_p']).mean() * 365.0).round(2),
             })
-        d2 = d1.groupby(['year','age']).apply(yearly_stats)
-        d2 = d2.xs(self.target_year, level='year')
+
+        d2 = d1.groupby(['age']).apply(yearly_stats)
         d3 = d2.join(self.target)
+
         d3['z_abs'] = ((d3.attack_rate - d3.attack_rate_mean) / d3.attack_rate_stddev).abs()
         d3 = d3.sort_index(level='age')
 
