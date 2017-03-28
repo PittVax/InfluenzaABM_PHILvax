@@ -68,7 +68,7 @@ class PhilOptimizeAttackRateByAge(base):
     idx = namedtuple('ArrayIndexes', ['start', 'end', 'is_indexed', 'min', 'max'])
 
     optimized_param_array_indexes = OrderedDict([
-        ('household_contacts',    idx( 0,  1, False,  0.00,  5.00 )),
+        ('household_contacts',    idx( 0,  1,  False,  0.00,  5.00 )),
         ('neighborhood_contacts', idx( 1,  2,  False,  0.00, 50.00 )),
         ('school_contacts',       idx( 2,  3,  False,  0.00, 20.00 )),
         ('workplace_contacts',    idx( 3,  4,  False,  0.00,  4.00 )),
@@ -81,7 +81,7 @@ class PhilOptimizeAttackRateByAge(base):
         ('school_prob',           idx( 34, 50, True,   0.00,  1.00 )),
         ('classroom_prob',        idx( 50, 66, True,   0.00,  1.00 )),
         ('neighborhood_prob',     idx( 66, 91, True,   0.00,  1.00 )),
-        ('trans',                 idx( 91, 92, False,  0.10,  4.00 )),
+        ('trans',                 idx( 91, 92, False,  0.10,  2.00 )),
         ])
 
     # The annual impact of seasonal influenza in the US: Measuring disease burden and costs
@@ -99,7 +99,7 @@ class PhilOptimizeAttackRateByAge(base):
         self.phil_home = os.environ['PHIL_HOME']
         self.base_param_file = 'params.seasonal'
         self.qsub_template_file = 'qsub.tpl'
-        nobj = len(self.target.index)
+        nobj = 2 * len(self.target.index)
         nint = 0
         ndim = 0
         lower_bounds = []
@@ -112,28 +112,21 @@ class PhilOptimizeAttackRateByAge(base):
         super(PhilOptimizeAttackRateByAge, self).__init__(ndim, nint, nobj)
         self.set_bounds(lower_bounds, upper_bounds)
 
-#    def __copy__(self):
-#        cls = self.__class__
-#        result = cls.__new__(cls)
-#        result.__dict__.update(self.__dict__)
-#        return result
-#
-#    def __deepcopy__(self, memo):
-#        from copy import deepcopy
-#        cls = self.__class__
-#        result = cls.__new__(cls)
-#        memo[id(self)] = result
-#        for k, v in self.__dict__.items():
-#            print(k)
-#            setattr(result, k, deepcopy(v, memo))
-#        return result
-
     def _objfun_impl(self, x):
-        opt_params = self.build_phil_opt_params(x)
-        tempdir, poe_output_file = self.run_phil_pipeline(opt_params)
-        return self.evaluate_phil_output(poe_output_file, tempdir)
+        for i in range(3):
+            try:
+                opt_params = self.build_phil_opt_params_dict_from_vec(x)
+                tempdir, poe_output_file = self.run_phil_pipeline(opt_params)
+                return self.evaluate_phil_output(poe_output_file, tempdir)
+            except Exception as e:
+                # this is a hack.  there are occasional filesystem errors that cause 
+                # approx 1 in 10,000 executions to fail silently (and the island evolve
+                # method doesn't handle the exception at all).  So just sleep and try again
+                time.sleep(30)
+        # if we never get it, return a guaranteed crappy objective
+        return [999.999] * len(self.target.index)
 
-    def build_phil_opt_params(self, x):
+    def build_phil_opt_params_dict_from_vec(self, x):
         p = OrderedDict()
         for k, i in self.optimized_param_array_indexes.items():
             if i.is_indexed:
@@ -144,12 +137,28 @@ class PhilOptimizeAttackRateByAge(base):
                 p['%s[0]' % k] = '%f' % x[i.start]
         return p
 
-    def read_phil_base_params_from_file(self):
+    def build_phil_opt_params_vec_from_dict(self, p):
+        v = self.optimized_param_array_defaults[:]
+        for k, i in self.optimized_param_array_indexes.items():
+            _k = '%s[0]' % k
+            if _k in p:
+                if i.is_indexed:
+                    for v_i, p_i in zip(range(i.start,i.end), range(i.end-i.start)):
+                        v[v_i] = p[_k].split()[p_i+1]
+                else:
+                    v[i.start] = p[_k]
+            else:
+                print(_k)
+        return [float(s) for s in v]
+
+    def read_phil_base_params_from_file(self, filename=None):
         p = {}
-        with open(self.base_param_file, 'r') as f:
+        _filename = self.base_param_file if filename is None else filename
+        with open(_filename, 'r') as f:
             for l in f:
                 l = l.strip()
                 if not l.startswith('#') and len(l) > 0 and '=' in l:
+                    l = re.sub(r'(?m)^ *#.*\n?', '', l)
                     m = re.search('^(.+?) = (.+)$', l)
                     if m is not None:
                         p[m.group(1)] = m.group(2)
@@ -167,7 +176,7 @@ class PhilOptimizeAttackRateByAge(base):
         poe_format = 'csv'
         #login_node = 'login%d.olympus.psc.edu' % randint(1,1)
         #ssh = sh.ssh.bake(login_node)
-        qsub = sh.qsub.bake('-v','PHIL_HOME=%s,OMP_NUM_THREADS=12' % self.phil_home)
+        qsub = sh.qsub.bake('-h','-v','PHIL_HOME=%s,OMP_NUM_THREADS=12' % self.phil_home)
 
         with open(os.path.join(tempdir,'params'), 'w') as paramfile:
             params = self.read_phil_base_params_from_file()
@@ -197,7 +206,7 @@ class PhilOptimizeAttackRateByAge(base):
                 statusfile = statusfile,
                 tempdir = tempdir,
                 jobname = basename,
-                reservation = 'depasse.0',
+                reservation = 'philo.0',
                 paramfile = paramfile.name,
                 synthetic_population = self.synthetic_population,
                 event_report_file = event_report_file,
@@ -214,38 +223,62 @@ class PhilOptimizeAttackRateByAge(base):
 
             jobid = qsub(qsub_file).strip()
             sh.ln('-s', tempdir, os.path.join(tempdir_container, jobid))
-
             sh.touch(lockfile)
+            sh.qalter('-h','n',jobid)
+
             while sh.qstat('-x', jobid, _ok_code=[0,153]).exit_code == 0:
-                time.sleep(10)
+                time.sleep(randint(1,4))
 
-            if os.path.isfile(lockfile):
-                raise Exception('Lockfile present but %s not in queue!' % jobid)
+            n_check = 3
+            for _n in range(n_check+1):
+                try:
+                    if os.path.isfile(lockfile):
+                        raise Exception('Lockfile present but %s not in queue!' % jobid)
 
-            with open(statusfile, 'r') as f:
-                stat = f.read()
-                if len(stat) > 0:
-                    raise Exception(stat)
+                    with open(statusfile, 'r') as f:
+                        stat = f.read()
+                        if len(stat) > 0:
+                            raise Exception(stat)
+                    break
+                except Exception as e:
+                    if _n == n_check:
+                        raise(e)
+                    else:
+                        time.sleep(randint(10,20))
 
         return (tempdir, '%s.%s' % (poe_output_file, poe_format))
 
     def evaluate_phil_output(self, poe_output_file, tempdir):
         d1 = pd.read_csv(poe_output_file)
-        #d1['year'] = pd.cut(d1.day, [x for x in range(0,2880,360)],
-        #        include_lowest=True, right=True).cat.codes + 1
 
         def yearly_stats(s):
             return pd.Series({
                 'N_p': s['N_p'].mean(),
                 'IS_i': s['IS_i'].sum() / 365.0,
-                'attack_rate': ((s['IS_i'] / s['N_p']).mean() * 365.0).round(2),
+                'attack_rate': ((s['IS_i'] / s['N_p']).mean() * 365.0).round(3),
             })
 
         d2 = d1.groupby(['age']).apply(yearly_stats)
         d3 = d2.join(self.target)
 
-        d3['z_abs'] = ((d3.attack_rate - d3.attack_rate_mean) / d3.attack_rate_stddev).abs()
-        d3 = d3.sort_index(level='age')
+        def build_objectives(_s):
+            s = _s.copy()
+            z = s.z.round(3).item()
+            s['z_abs'] = z if z >= 0 else (-1) * z
+            s_pos = s.copy()
+            s_pos['objective_type'] = 'z-pos'
+            s_neg = s.copy()
+            s_neg['objective_type'] = 'z-neg'
+            if z < 0:
+                s_pos.z_abs = 0
+            if z > 0:
+                s_neg.z_abs = 0
+            return pd.concat([s_pos,s_neg])
+
+        d3['z'] = (d3.attack_rate - d3.attack_rate_mean) / d3.attack_rate_stddev
+
+        d3 = d3.groupby(level=0, group_keys=False).apply(build_objectives
+                         ).reset_index().rename(columns={'index':'age_index'})
 
         d3.to_csv(os.path.join(tempdir, 'objective.csv'))
         return d3.z_abs.tolist()
