@@ -6,6 +6,7 @@ import re
 import time
 import argparse
 import jinja2
+import stopit
 
 import pandas as pd
 
@@ -115,16 +116,22 @@ class PhilOptimizeAttackRateByAge(base):
     def _objfun_impl(self, x):
         for i in range(3):
             try:
-                opt_params = self.build_phil_opt_params_dict_from_vec(x)
-                tempdir, poe_output_file = self.run_phil_pipeline(opt_params)
-                return self.evaluate_phil_output(poe_output_file, tempdir)
+                with stopit.ThreadingTimeout(60*20) as timeout_mgr:
+                    assert timeout_mgr.state == timeout_mgr.EXECUTING
+                    opt_params = self.build_phil_opt_params_dict_from_vec(x)
+                    tempdir, poe_output_file = self.run_phil_pipeline(opt_params)
+                    objective = self.evaluate_phil_output(poe_output_file, tempdir)
+                if timeout_mgr.state == timeout_mgr.EXECUTED:
+                    return objective
+                else:
+                    raise Exception('Timeout!')
             except Exception as e:
                 # this is a hack.  there are occasional filesystem errors that cause 
                 # approx 1 in 10,000 executions to fail silently (and the island evolve
                 # method doesn't handle the exception at all).  So just sleep and try again
                 time.sleep(30)
         # if we never get it, return a guaranteed crappy objective
-        return [999.999] * len(self.target.index)
+        return [999.999] * len(self.target.index) * 2
 
     def build_phil_opt_params_dict_from_vec(self, x):
         p = OrderedDict()
@@ -165,86 +172,77 @@ class PhilOptimizeAttackRateByAge(base):
         return p
 
     def run_phil_pipeline(self, opt_params):
-        from random import randint
         tempdir_container = os.path.join(self.wrkdir,'philo_output',str(randint(0,32)),str(randint(0,32)))
         sh.mkdir('-p',tempdir_container)
         tempdir = mkdtemp(prefix='phl-', dir=tempdir_container)
         basename = os.path.basename(tempdir)
-        #log.info(tempdir)
         event_report_file = os.path.join(tempdir, 'events.json_lines')
         poe_output_file = os.path.join(tempdir, 'poe_output')
         poe_format = 'csv'
-        #login_node = 'login%d.olympus.psc.edu' % randint(1,1)
-        #ssh = sh.ssh.bake(login_node)
-        qsub = sh.qsub.bake('-h','-v','PHIL_HOME=%s,OMP_NUM_THREADS=12' % self.phil_home)
+        qsub = sh.qsub.bake('-h','-v','PHIL_HOME=%s,OMP_NUM_THREADS=16' % self.phil_home)
 
-        with open(os.path.join(tempdir,'params'), 'w') as paramfile:
-            params = self.read_phil_base_params_from_file()
-            params.update(self.base_params)
-            params.update({
-                'outdir': tempdir,
-                'event_report_file' : event_report_file,
-                'seed': randint(1, 2147483647)
-            })
-            params.update(opt_params)
+        paramfile = open(os.path.join(tempdir,'params'), 'w')
+        params = self.read_phil_base_params_from_file()
+        params.update(self.base_params)
+        params.update({
+            'outdir': tempdir,
+            'event_report_file' : event_report_file,
+            'seed': randint(1, 2147483647)
+        })
+        params.update(opt_params)
 
-            for param, value in params.items():
-                paramfile.write('%s = %s\n' % (param, str(value)))
-            paramfile.flush()
+        for param, value in params.items():
+            paramfile.write('%s = %s\n' % (param, str(value)))
+        paramfile.close()
 
-            lockfile = os.path.join(tempdir, 'lockfile')
-            statusfile = os.path.join(tempdir, 'statusfile')
+        lockfile = os.path.join(tempdir, 'lockfile')
+        statusfile = os.path.join(tempdir, 'statusfile')
 
-            sh.cp(params['primary_cases_file[0]'], tempdir)
-            sh.cp(params['vaccination_capacity_file'], tempdir)
-            sh.cp('config.yaml', tempdir)
+        sh.cp(params['primary_cases_file[0]'], tempdir)
+        sh.cp(params['vaccination_capacity_file'], tempdir)
+        sh.cp('config.yaml', tempdir)
 
-            qsub_template_args = dict(
-                stdout = os.path.join(tempdir, 'stdout'),
-                stderr = os.path.join(tempdir, 'stderr'),
-                lockfile = lockfile,
-                statusfile = statusfile,
-                tempdir = tempdir,
-                jobname = basename,
-                reservation = 'philo.0',
-                paramfile = paramfile.name,
-                synthetic_population = self.synthetic_population,
-                event_report_file = event_report_file,
-                poe_output_file = poe_output_file,
-                poe_format = poe_format
-                )
+        qsub_template_args = dict(
+            stdout = os.path.join(tempdir, 'stdout'),
+            stderr = os.path.join(tempdir, 'stderr'),
+            lockfile = lockfile, statusfile = statusfile,
+            tempdir = tempdir, jobname = basename,
+            reservation = 'philo.0', paramfile = paramfile.name,
+            synthetic_population = self.synthetic_population,
+            event_report_file = event_report_file,
+            poe_output_file = poe_output_file, poe_format = poe_format)
 
-            with open(self.qsub_template_file, 'r') as f:
-                qsub_template = jinja2.Template(f.read())
-          
-            qsub_file = os.path.join(tempdir, 'qsub.py')
-            with open(qsub_file, 'w') as f:
-                f.write(qsub_template.render(qsub_template_args))
+        with open(self.qsub_template_file, 'r') as f:
+            qsub_template = jinja2.Template(f.read())
+      
+        qsub_file = os.path.join(tempdir, 'qsub.py')
+        with open(qsub_file, 'w') as f:
+            f.write(qsub_template.render(qsub_template_args))
 
-            jobid = qsub(qsub_file).strip()
-            sh.ln('-s', tempdir, os.path.join(tempdir_container, jobid))
-            sh.touch(lockfile)
-            sh.qalter('-h','n',jobid)
+        jobid = qsub(qsub_file).strip()
+        sh.ln('-s', tempdir, os.path.join(tempdir_container, jobid))
+        sh.touch(lockfile)
+        sh.qalter('-h','n', jobid)
 
-            while sh.qstat('-x', jobid, _ok_code=[0,153]).exit_code == 0:
-                time.sleep(randint(1,4))
+        while sh.qstat('-x', jobid, _ok_code=[0,153]).exit_code == 0:
+            time.sleep(randint(1,4))
 
-            n_check = 3
-            for _n in range(n_check+1):
-                try:
-                    if os.path.isfile(lockfile):
-                        raise Exception('Lockfile present but %s not in queue!' % jobid)
+        n_check = 3
+        for _n in range(n_check+1):
+            try:
+                if os.path.isfile(lockfile):
+                    raise Exception('Lockfile present but %s not in queue!' % jobid)
 
-                    with open(statusfile, 'r') as f:
-                        stat = f.read()
-                        if len(stat) > 0:
-                            raise Exception(stat)
-                    break
-                except Exception as e:
-                    if _n == n_check:
-                        raise(e)
-                    else:
-                        time.sleep(randint(10,20))
+                with open(statusfile, 'r') as f:
+                    stat = f.read()
+                    if len(stat) > 0:
+                        raise Exception(stat)
+                break
+            except Exception as e:
+                if _n == n_check:
+                    raise(e)
+                else:
+                    time.sleep(randint(10,20))
 
         return (tempdir, '%s.%s' % (poe_output_file, poe_format))
 
