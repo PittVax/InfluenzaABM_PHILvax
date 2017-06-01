@@ -137,7 +137,12 @@ class OutputCollection(object):
                     size=len(self.population.index))
             #self.population.reset_index(inplace=True)
             #self.population['person'] = self.population.index
-            self.population.rename(columns={'p_id':'person'}, inplace=True)
+            self.population.rename(
+                    columns={
+                        'p_id': 'person',
+                        'sp_id': 'person',
+                        'sp_hh_id': 'hh_id'},
+                    inplace=True)
             if self.persist:
                 try:
                     self.population.to_hdf('%s.h5' % popfile,
@@ -150,6 +155,7 @@ class OutputCollection(object):
         self.households = pd.read_csv(
                 os.path.join(self.popdir, '%s_synth_households.txt' % base))
         self.households.reset_index()
+        self.households.rename(columns={'sp_id': 'hh_id'}, inplace=True)
         self.households['stcotr'] = (self.households.stcotrbg/10).astype(np.int64)
         apollo_locations = pd.read_csv(self.apollo_location_lookup_filename)
         apollo_locations.reset_index(level=0, inplace=True)
