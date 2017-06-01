@@ -504,7 +504,7 @@ void Place_List::read_household_file(unsigned char deme_id, char * location_file
     for (char * line = line_str; fgets(line, 1024, fp); line = line_str) {
         tokens = Utils::split_by_delim(line, ',', tokens, false);
         // skip header line
-        if (strcmp(tokens[ hh_id ], "hh_id") != 0) {
+        if ((strcmp(tokens[ hh_id ], "hh_id") != 0) && (strcmp(tokens[ hh_id ], "sp_id") != 0)) {
             char place_type = 'H';
             char s[80];
             string census_block_str;
@@ -544,7 +544,7 @@ void Place_List::read_workplace_file(unsigned char deme_id, char * location_file
     for (char * line = line_str; fgets(line, 255, fp); line = line_str) {
         tokens = Utils::split_by_delim(line, ',', tokens, false);
         // skip header line
-        if (strcmp(tokens[ workplace_id ], "workplace_id") != 0) {
+        if ((strcmp(tokens[ workplace_id ], "workplace_id") != 0) && (strcmp(tokens[ workplace_id ], "sp_id") != 0)) {
             char place_type = 'W';
             char s[80];
 
