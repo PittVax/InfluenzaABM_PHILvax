@@ -31,6 +31,7 @@ src/PRNG__Mersenne_Twister/dSFMT-src-2.2/dSFMT-params19937.h.gch
 src/PRNG__Mersenne_Twister/dSFMT-src-2.2/dSFMT.h.gch
 src/libphil.so.dSYM/
 src/tags
+src/phil
 
 !src/snappy/snappy-1.0.5.tar.gz
 
