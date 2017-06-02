@@ -34,5 +34,6 @@ make
 ## License
 
 Both `phil` and `FRED` (on which `phil` is based), are distributed under the "BSD Simplified" open source license.
+Please refer to the contents of the directory `LICENSE` for detailed text of the license.
 Code changes prior to the commit 895218b6e8a788ecf959ba535bf580bc240262be are copyright of the University of Pittsburgh.
 All subsequent changes are copyright of Carnegie Mellon University.
