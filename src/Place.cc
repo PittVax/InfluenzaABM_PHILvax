@@ -218,6 +218,10 @@ int Place::get_contact_count(Person * infector, int disease_id, int day, double 
 void Place::attempt_transmission(double transmission_prob, Person * infector,
                                  Person * infectee, int disease_id, int day) {
 
+    if (!infectee->is_susceptible(disease_id)) {
+        infectee->print(stdout, disease_id);
+    }
+
     assert(infectee->is_susceptible(disease_id));
     PHIL_STATUS(1,"infectee is susceptible\n","");
 
