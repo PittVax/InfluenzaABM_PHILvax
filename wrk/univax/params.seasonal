@@ -1,11 +1,11 @@
-synthetic_population_id = 2005_2009_ver2_42003
-
+#synthetic_population_id = ExtDC2010 #%s:5824400:594057:g
+synthetic_population_id = 2010_ver1_42003
 event_report_file = none
-outdir = OUT.1
+outdir = SEASONAL.1
 
-days = 360 
+#days = 360 
 #days = 720 
-#days = 1080
+days = 1080
 #days = 1440
 #days = 1800
 #days = 2160
@@ -14,33 +14,21 @@ days = 360
 
 ###############################################################################
 
-trans[0] = 2.4
-#R0 = 2.75
-#R0_a = 0.053589
-#R0_b = 0.568486
-
-household_contacts[0] = 0.6 #0.198226
-neighborhood_contacts[0] = 20.00 #42.478577
-school_contacts[0] = 22.00 #14.320478
-workplace_contacts[0] = 1.0 #1.589467
-classroom_contacts[0] = -1
-office_contacts[0] = -1
+trans[0] = 0.417209
+household_contacts[0] = 0.140081
+neighborhood_contacts[0] = 11.187586
+school_contacts[0] = 18.144090
+workplace_contacts[0] = 1.256267
+classroom_contacts[0] = 18.542881
+office_contacts[0] = 0.395035
 hospital_contacts[0] = 0
-
-## #community contacts increase on weekends
-## weekend_contact_rate[0] = 1.1 #1.5
-## # groups = children adults
-## household_prob[0] = 4 0.8 0.3 0.5 0.2 #4 0.6 0.3 0.3 0.4
-## # groups = adult_workers
-## workplace_prob[0] = 1 0.2 #1 0.0575
-## office_prob[0] = 1 0.04 #1 0.0575
-## # groups = elem_students mid_students high_students teachers
-## #school_prob[0] = 16 0.0435 0 0 0.0435 0 0.0375 0 0.0375 0 0 0.0315 0.0315 0.0435 0.0375 0.0315 0.0575
-## school_prob[0] = 16 0.08 0.001 0.001 0.0435 0.001 0.0375 0.001 0.0375 0.001 0.001 0.0315 0.0315 0.0435 0.0375 0.0315 0.02
-## #classroom_prob[0] = 16 0.0435 0 0 0.0435 0 0.0375 0 0.0375 0 0 0.0315 0.0315 0.0435 0.0375 0.0315 0.0575
-## classroom_prob[0] = 16 0.08 0 0 0.0435 0 0.0375 0 0.0375 0 0 0.0315 0.0315 0.0435 0.0375 0.0315 0.02
-## # goups = children adults
-## neighborhood_prob[0] = 4 0.08 0.004 0.004 0.002 #4 0.0048 0.0048 0.0048 0.0048
+weekend_contact_rate[0] = 0.116628
+household_prob[0] = 25 0.974742 0.495408 0.222061 0.629701 0.303267 0.761054 0.988453 0.531152 0.074072 0.325889 0.619297 0.398835 0.396093 0.204104 0.382259 0.169243 0.422188 0.319023 0.396068 0.912775 0.184357 0.048568 0.070667 0.708184 0.125559
+workplace_prob[0] = 1 0.502379
+office_prob[0] = 1 0.240774
+school_prob[0] = 16 0.448698 0.428781 0.443945 0.406608 0.296279 0.742764 0.721234 0.877784 0.440993 0.656300 0.380305 0.840058 0.419676 0.740406 0.079766 0.636093
+classroom_prob[0] = 16 0.572923 0.970452 0.743338 0.065612 0.868157 0.070204 0.075926 0.703235 0.655644 0.283758 0.169608 0.555309 0.355563 0.892812 0.681540 0.855102
+neighborhood_prob[0] = 25 0.217542 0.438001 0.276903 0.301194 0.948666 0.946237 0.631228 0.099833 0.018847 0.980395 0.856516 0.089403 0.052191 0.111024 0.482022 0.693177 0.670704 0.101624 0.575005 0.454581 0.623213 0.413402 0.001473 0.002983 0.081120
 
 ###############################################################################
 
@@ -58,7 +46,7 @@ track_vaccine_infection_events = 1
 vaccine_infection_tracker_file = vaccinf
 
 immunity_loss_mu[0] = 180
-immunity_loss_sigma[0] = 30
+immunity_loss_sigma[0] = 1
 
 enable_aging = 0
 enable_births = 0
@@ -79,8 +67,8 @@ number_of_vaccines = 7
 
 # Vaccine: 0 [UNIVERSAL VACCINE]
 vaccine_number_of_doses[0] = 1
-vaccine_total_avail[0] = 0 #465120
-vaccine_additional_per_day[0] = 0 #323 
+vaccine_total_avail[0] = 0 #594057
+vaccine_additional_per_day[0] = 0 #594057 
 vaccine_starting_day[0] = 0
 # Vaccine Dose
 vaccine_next_dosage_day[0][0] = 0
@@ -97,8 +85,8 @@ vaccine_coverage_age_map_values[0] = 5 0.0795 0.2806 0.2204 0.1907 0.2289
 
 # Vaccine: 1
 vaccine_number_of_doses[1] = 1
-vaccine_total_avail[1] = 582440 
-vaccine_additional_per_day[1] = 582440
+vaccine_total_avail[1] = 594057 
+vaccine_additional_per_day[1] = 594057
 vaccine_starting_day[1] = 0
 # Vaccine Dose
 vaccine_next_dosage_day[1][0] = 0
@@ -115,8 +103,8 @@ vaccine_coverage_age_map_values[1] = 5 0.0795 0.2806 0.2204 0.1907 0.2289
 
 # Vaccine: 2
 vaccine_number_of_doses[2] = 1
-vaccine_total_avail[2] = 582440
-vaccine_additional_per_day[2] = 582440
+vaccine_total_avail[2] = 594057
+vaccine_additional_per_day[2] = 594057
 vaccine_starting_day[2] = 360
 # Vaccine Dose
 vaccine_next_dosage_day[2][0] = 0
@@ -133,8 +121,8 @@ vaccine_coverage_age_map_values[2] = 5 0.0795 0.2806 0.2204 0.1907 0.2289
 
 # Vaccine: 3
 vaccine_number_of_doses[3] = 1
-vaccine_total_avail[3] = 582440
-vaccine_additional_per_day[3] = 582440
+vaccine_total_avail[3] = 594057
+vaccine_additional_per_day[3] = 594057
 vaccine_starting_day[3] = 720
 # Vaccine Dose
 vaccine_next_dosage_day[3][0] = 0
@@ -151,8 +139,8 @@ vaccine_coverage_age_map_values[3] = 5 0.0795 0.2806 0.2204 0.1907 0.2289
 
 # Vaccine: 4
 vaccine_number_of_doses[4] = 1
-vaccine_total_avail[4] = 582440
-vaccine_additional_per_day[4] = 582440
+vaccine_total_avail[4] = 594057
+vaccine_additional_per_day[4] = 594057
 vaccine_starting_day[4] = 1080
 # Vaccine Dose
 vaccine_next_dosage_day[4][0] = 0
@@ -169,8 +157,8 @@ vaccine_coverage_age_map_values[4] = 5 0.0795 0.2806 0.2204 0.1907 0.2289
 
 # Vaccine: 5
 vaccine_number_of_doses[5] = 1
-vaccine_total_avail[5] = 582440
-vaccine_additional_per_day[5] = 582440
+vaccine_total_avail[5] = 594057
+vaccine_additional_per_day[5] = 594057
 vaccine_starting_day[5] = 1440
 # Vaccine Dose
 vaccine_next_dosage_day[5][0] = 0
@@ -187,8 +175,8 @@ vaccine_coverage_age_map_values[5] = 5 0.0795 0.2806 0.2204 0.1907 0.2289
 
 # Vaccine: 6
 vaccine_number_of_doses[6] = 1
-vaccine_total_avail[6] = 582440
-vaccine_additional_per_day[6] = 582440
+vaccine_total_avail[6] = 594057
+vaccine_additional_per_day[6] = 594057
 vaccine_starting_day[6] = 1800
 # Vaccine Dose
 vaccine_next_dosage_day[6][0] = 0
