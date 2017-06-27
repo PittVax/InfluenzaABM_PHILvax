@@ -3,6 +3,7 @@
 import sh
 import os
 import re
+import sys
 import time
 import argparse
 import jinja2
@@ -43,13 +44,12 @@ class PhilOptimizeAttackRateByAge(object):
         self.base_param_file = 'params.seasonal'
         self.qsub_template_file = 'qsub.tpl'
 
-    def run(self, x):
+    def run(self, base_paramfile, opt_params, run_name):
         for i in range(3):
             try:
                 with stopit.ThreadingTimeout(60*20) as timeout_mgr:
                     assert timeout_mgr.state == timeout_mgr.EXECUTING
-                    opt_params = self.build_phil_opt_params_dict_from_vec(x)
-                    tempdir, poe_output_file = self.run_phil_pipeline(opt_params)
+                    tempdir, poe_output_file = self.run_phil_pipeline(base_paramfile, opt_params, run_name)
                     objective = self.evaluate_phil_output(poe_output_file, tempdir)
                 if timeout_mgr.state == timeout_mgr.EXECUTED:
                     return True
@@ -75,8 +75,8 @@ class PhilOptimizeAttackRateByAge(object):
                         p[m.group(1)] = m.group(2)
         return p
 
-    def run_phil_pipeline(self, base_paramfile, opt_params):
-        tempdir_container = os.path.join(self.wrkdir,'phil_univax_out',base_paramfile,
+    def run_phil_pipeline(self, base_paramfile, opt_params, run_name):
+        tempdir_container = os.path.join(self.wrkdir, 'phil_univax_out', base_paramfile, '%s.%d' % (run_name, randint(0,sys.maxsize)))
         sh.mkdir('-p',tempdir_container)
         tempdir = mkdtemp(prefix='phl-', dir=tempdir_container)
         basename = os.path.basename(tempdir)
