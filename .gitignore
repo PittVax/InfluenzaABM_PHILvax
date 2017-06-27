@@ -17,6 +17,7 @@ wrk/univax/*
 !wrk/univax/report.json_lines
 !wrk/univax/univax-analysis.r
 !wrk/univax/vaccination_capacity.txt
+!wrk/univax/qsub.tpl
 
 bin/
 
