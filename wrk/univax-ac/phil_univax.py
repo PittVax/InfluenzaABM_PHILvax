@@ -27,7 +27,7 @@ class log(object):
     def error(s):
         print(s)
 
-class PhilOptimizeAttackRateByAge(object):
+class PhilUniversalExperiment(object):
 
     synthetic_population_directory = os.path.join(os.environ['PHIL_HOME'], 'populations')
     synthetic_population_id = '2005_2009_ver2_42003'
@@ -50,7 +50,6 @@ class PhilOptimizeAttackRateByAge(object):
                 with stopit.ThreadingTimeout(60*20) as timeout_mgr:
                     assert timeout_mgr.state == timeout_mgr.EXECUTING
                     tempdir, poe_output_file = self.run_phil_pipeline(base_paramfile, opt_params, run_name)
-                    objective = self.evaluate_phil_output(poe_output_file, tempdir)
                 if timeout_mgr.state == timeout_mgr.EXECUTED:
                     return True
                 else:
@@ -110,7 +109,8 @@ class PhilOptimizeAttackRateByAge(object):
             stderr = os.path.join(tempdir, 'stderr'),
             lockfile = lockfile, statusfile = statusfile,
             tempdir = tempdir, jobname = basename,
-            reservation = 'philo.0', paramfile = paramfile.name,
+            #reservation = 'philo.0',
+            paramfile = paramfile.name,
             synthetic_population = self.synthetic_population,
             event_report_file = event_report_file,
             poe_output_file = poe_output_file, poe_format = poe_format)

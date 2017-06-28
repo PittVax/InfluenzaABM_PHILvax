@@ -68,7 +68,7 @@ number_of_vaccines = 7
 # Vaccine: 0 [UNIVERSAL VACCINE]
 vaccine_number_of_doses[0] = 1
 vaccine_total_avail[0] = 594057
-vaccine_additional_per_day[0] = 594057 
+vaccine_additional_per_day[0] = 59 
 vaccine_starting_day[0] = 0
 # Vaccine Dose
 vaccine_next_dosage_day[0][0] = 0
@@ -85,8 +85,8 @@ vaccine_coverage_age_map_values[0] = 5 0.0795 0.2806 0.2204 0.1907 0.2289
 
 # Vaccine: 1
 vaccine_number_of_doses[1] = 1
-vaccine_total_avail[1] = 0 #594057
-vaccine_additional_per_day[1] = 0 #594057
+vaccine_total_avail[1] = 594057
+vaccine_additional_per_day[1] = 594057
 vaccine_starting_day[1] = 0
 # Vaccine Dose
 vaccine_next_dosage_day[1][0] = 0
