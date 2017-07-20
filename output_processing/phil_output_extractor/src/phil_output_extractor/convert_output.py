@@ -9,7 +9,7 @@ from collections import OrderedDict, defaultdict
 #import pyximport
 #pyximport.install(reload_support=True)
 #import cyprinev.count_events as count_events
-import count_events
+import phil_output_extractor.count_events as count_events
 import logging
 import joblib
 from numpy import arange
@@ -385,13 +385,81 @@ class OutputCollection(object):
         hdf.close()
         log.info('Wrote apollo output format to disk in %s seconds' % timer())
 
+    def write_galapagos(self, reportfiles, outfile, groupconfig=None):
+        log.info('Producing galapagos output format')
+
+        outfile_name = '%s.galapagos.h5' % outfile
+        hdf = pd.HDFStore(path=outfile_name, mode='w', complib='zlib', complevel=4)
+
+        def reshape_thin(d):
+            ds = d.stack()
+            return pd.DataFrame(ds[ds!=0])
+
+        def add_file_index(df,ind):
+            df['file_ind']=ind
+            df['file_ind']=(df['file_ind']).astype(np.uint8)
+            return df
+
+        def make_csv_struct_from_orig_dataframe(df):
+            d2 = pd.concat([pd.DataFrame(df['simulator_time']),pd.DataFrame(df['infection_state']),pd.DataFrame(df['count'])],axis=1)
+            d2sum = d2.groupby(['simulator_time','infection_state']).sum()
+            d2sum = d2sum.fillna(value=0)
+            d2sum['count']=(d2sum['count']).astype(np.uint32)
+            return d2sum
+
+        timer = Timer()
+        count_all=self.count_events_apollo(reportfiles,groupconfig)
+
+        d1 = pd.concat([add_file_index(reshape_thin(r['counts']),r['file_ind']) for r in count_all],copy=False)
+        log.info('Concatenated all realizations in %s seconds' % timer())
+
+        d1.reset_index(inplace=True)
+        d1.columns = [x for x in d1.columns[:-3]] + ['state_tuple','count','report_index']
+
+        d3 = d1.state_tuple.str.split(':', expand=True)
+        d3.columns = ['infection_state', 'disease_state']
+
+        d1.drop('state_tuple', axis=1, inplace=True)
+        for s in ['infection_state', 'disease_state']:
+            d1[s] = d3[s].astype('category')
+            d3.drop(s, axis=1, inplace=True)
+        del(d3)
+
+        if 'gender' in d1:
+            d1['sex'] = d1.gender.apply(lambda x: 'M' if x==1 else 'F').astype('category')
+            d1.drop('gender', axis=1, inplace=True)
+        if 'age' in d1:
+            d1.rename(columns={'age':'age_range_category_label'}, inplace=True)
+        if 'location' in d1:
+            d1.rename(columns={'location':'household_location_admin4'}, inplace=True)
+        if 'income' in d1:
+            d1.rename(columns={'income':'household_median_income_category_label'}, inplace=True)
+        if 'vaccination_status' in d1:
+            v_s_map = {0: 'noVaccination', 1: 'successfulVaccination'}
+            d1.vaccination_status = d1.vaccination_status.apply(lambda x: v_s_map[x]).astype('category')
+
+        log.info('Renamed/recast data table to galapagos standard in %s seconds' % timer())
+
+        d2 = make_csv_struct_from_orig_dataframe(d1)
+        d2.to_csv(outfile+'galapagos.csv')
+        log.info('Wrote CSV file of infection state counts to '+outfile+'.galapagos.csv in %s seconds' % timer())
+
+        d1.set_index([x for x in d1.columns if x != 'count'], inplace=True)
+        log.info('Begin writing galapagos output format to %s' % outfile_name)
+        hdf.put('apollo_aggregated_counts', d1, format='table')
+        hdf.close()
+        log.info('Wrote galapagos output format to disk in %s seconds' % timer())
+
+
+
     def count_events_apollo(self, reportfiles, groupconfig=None):
         for f in reportfiles:
+            k_ind = reportfiles.index(f)
             k_orig = os.path.basename(f)
             k_safe = re.sub(r'[-.+ ]', '_', k_orig)
             events = self.read_event_report(f)
             counts = self.apply_count_events_apollo(events, groupconfig)
-            yield({'key': k_safe, 'name': k_orig, 'counts': counts, 'events': events})
+            yield({'key': k_safe, 'name': k_orig, 'counts': counts, 'events': events,'file_ind':k_ind})
 
     def apply_count_events_apollo(self, events, groupconfig):
         timer = Timer()

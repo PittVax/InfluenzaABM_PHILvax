@@ -12,10 +12,10 @@ __version__ = '0.0.1'
 
 import argparse, os
 
-try:
-    from convert_output import * 
-except ImportError as e:
-    from phil_output_extractor.convert_output import *
+#try:
+from convert_output import * 
+#except ImportError as e:
+#    from phil_output_extractor.convert_output import *
 
 import yaml, ujson
 import logging
@@ -38,7 +38,7 @@ def main():
             help='Base name for output file')
 
     parser.add_argument('-f', '--format', required=False,
-            choices=['hdf','csv','apollo'], default='csv',
+            choices=['hdf','csv','apollo','galapagos'], default='csv',
             help='Format for output file')
   
     parser.add_argument('-c', '--compression', required=False,
@@ -67,6 +67,8 @@ def main():
         output_collection.write_event_counts_to_csv(args.reportfiles, args.outfile, groupconfig)
     if args.format == 'apollo': 
         output_collection.write_apollo_internal(args.reportfiles, args.outfile, groupconfig)
+    if args.format == 'galapagos':
+        output_collection.write_galapagos(args.reportfiles, args.outfile, groupconfig)
 
 
 if __name__ == '__main__':
