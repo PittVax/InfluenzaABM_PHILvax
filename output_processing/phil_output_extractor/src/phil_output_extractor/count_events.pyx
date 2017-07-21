@@ -130,8 +130,9 @@ cpdef np.uint32_t[:,:] get_counts_from_group_apollo(np.uint32_t[:,:] rows,
     cdef int i_s = state_map['infectious:symptomatic']
     cdef int i_a = state_map['infectious:asymptomatic']
     cdef int r_r = state_map['recovered:recovery']
-    cdef int n_s = state_map['newly_sick:symptomatic']
-    cdef int n_a = state_map['newly_sick:asymptomatic']
+    cdef int ns_s = state_map['newly_sick:symptomatic']
+    cdef int ns_a = state_map['newly_sick:asymptomatic']
+    cdef int nl_a = state_map['newly_latent:asymptomatic']
 
     cdef np.uint32_t[:,:] a = np.zeros([ndays*2, len(state_map)+1], dtype=np.uint32)
     cdef np.uint32_t[:] r
@@ -160,6 +161,8 @@ cpdef np.uint32_t[:,:] get_counts_from_group_apollo(np.uint32_t[:,:] rows,
                         a[d, s_r] += 1
 
             else:
+                a[r[exposed], nl_a] += 1
+
                 for d in xrange(r[exposed], r[infectious]):
                     if r[vaccine_day] != NA and d >= r[vaccine_day]:
                         a[d+vaccine_row_offset, l_a] += 1
@@ -188,9 +191,9 @@ cpdef np.uint32_t[:,:] get_counts_from_group_apollo(np.uint32_t[:,:] rows,
                 if r[infectious] != NA:
                     if r[symptomatic] != NA:
                         if r[symptomatic] == r[vaccine_day]:
-                            a[r[symptomatic]+vaccine_row_offset, n_s] += 1
+                            a[r[symptomatic]+vaccine_row_offset, ns_s] += 1
                         else:
-                            a[r[symptomatic], n_s] += 1
+                            a[r[symptomatic], ns_s] += 1
 
                         for d in xrange(r[symptomatic], r[recovered]):
                             if r[vaccine_day] != NA and d >= r[vaccine_day]:
@@ -206,9 +209,9 @@ cpdef np.uint32_t[:,:] get_counts_from_group_apollo(np.uint32_t[:,:] rows,
                                     a[d, i_a] += 1
                     else:
                         if r[vaccine_day] == r[infectious]:
-                            a[r[infectious]+vaccine_row_offset, n_a] += 1
+                            a[r[infectious]+vaccine_row_offset, ns_a] += 1
                         else:
-                            a[r[infectious], n_a] += 1
+                            a[r[infectious], ns_a] += 1
 
                         for d in xrange(r[infectious], r[recovered]):
                             if r[vaccine_day] != NA and d >= r[vaccine_day]:

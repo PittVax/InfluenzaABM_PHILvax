@@ -510,7 +510,8 @@ class OutputCollection(object):
             ('infectious:asymptomatic', 3),
             ('recovered:recovery', 4),
             ('newly_sick:symptomatic', 5),
-            ('newly_sick:asymptomatic', 6)
+            ('newly_sick:asymptomatic', 6),
+            ('newly_latent:asymptomatic', 7)
             ])
 
 
