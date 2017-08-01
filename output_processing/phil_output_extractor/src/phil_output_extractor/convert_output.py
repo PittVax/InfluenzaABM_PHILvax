@@ -392,6 +392,10 @@ class OutputCollection(object):
         hdf = pd.HDFStore(path=outfile_name, mode='w', complib='zlib', complevel=4)
 
         def reshape_thin(d):
+            if ('latent:asymptomatic' in d) & ('newly_latent:asymptomatic' in d):
+                d['existing_latent:asymptomatic']=d['latent:asymptomatic']-d['newly_latent:asymptomatic']
+            else:
+                d['existing_latent:asymptomatic']=0
             ds = d.stack()
             return pd.DataFrame(ds[ds!=0])
 
@@ -441,7 +445,7 @@ class OutputCollection(object):
         log.info('Renamed/recast data table to galapagos standard in %s seconds' % timer())
 
         d2 = make_csv_struct_from_orig_dataframe(d1)
-        d2.to_csv(outfile+'galapagos.csv')
+        d2.to_csv(outfile+'.galapagos.csv')
         log.info('Wrote CSV file of infection state counts to '+outfile+'.galapagos.csv in %s seconds' % timer())
 
         d1.set_index([x for x in d1.columns if x != 'count'], inplace=True)
