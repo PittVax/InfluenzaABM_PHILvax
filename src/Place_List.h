@@ -192,7 +192,7 @@ class Place_List {
 
 struct Place_Init_Data {
 
-    char s[ 80 ];
+    char s[ 200 ];
     char place_type;
     int income;
     unsigned char deme_id;

@@ -23,6 +23,7 @@ void Place::setup(const char *lab, phil::geo lon, phil::geo lat, Place* cont, Po
     population = pop;
     id = -1;          // actual id assigned in Place_List::add_place
     container = cont;
+    label = new char[strlen(lab)];
     strcpy(label, lab);
     longitude = lon;
     latitude = lat;

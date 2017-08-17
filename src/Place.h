@@ -604,7 +604,7 @@ class Place {
     // track whether or not place is infectious with each disease
     phil::disease_bitset infectious_bitset;
 
-    char label[32];         // external id
+    char * label;         // external id
     char type;              // HOME, WORK, SCHOOL, COMMUNITY
     int id;                 // place id
     Place *container;       // container place
