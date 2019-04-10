@@ -20,15 +20,24 @@ PHIL uses agent-based modeling based on census-based synthetic populations that 
 
 Our agent-based influenza modeling framework, PHIL, has been developed during our R01 and is a highly modified version of the open source agent-based simulation platform called FRED (A Framework for Reconstructing Epidemic Dynamics) in collaboration with the Pittsburgh Supercomputing Center and the School of Computer Science at Carnegie Mellon University. Development of both PHIL and FRED were developed as part of the NIH funded MIDAS program. PHIL enables us to simulate the daily activities and interactions of millions of simulated individuals during an epidemic and to measure the effects of a wide range of intervention strategies for infectious disease. The MIDAS group has used such population-based computer simulations to evaluate potential responses to influenza pandemics, including vaccination policies (Lee et al, 2010acd, 2011), school closure (Lee et al, 2010b; Brown et al, 2011), and the effects of commuting modalities (Cooley et al, 2011). Key features of FRED include: Dr. Brown, Co-I, is well versed in the utilization of PHIL for modeling simulations.
 
-## Installation
+## Installation  
 
 Compilation should be straightforward on both linux and OSX platforms.  In order to take advantage of multithreading through OpenMP, the `gcc` compiler should be used.
+Requires `unzip`
 
 ```bash
-cd src
-make
+cd src/snappy
+./configure --prefix=`pwd`
+make install
 cd ..
 make
+
+# Set environment variables
+export PHIL_HOME=`pwd`
+export PATH=$PHIL_HOME/bin:$PATH
+
+# Confirmation
+which phil
 ```
 
 ## License
