@@ -1,6 +1,7 @@
 *.o
 *.so
 *.pyc
+*.swp
 
 output_processing/phil_output_extractor/build
 output_processing/phil_output_extractor/src/phil_output_extractor.egg-info
