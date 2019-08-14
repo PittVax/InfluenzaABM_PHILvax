@@ -1,0 +1,5 @@
+Installs the package 'phil_output_extractor' and the command line script 'poe.py'
+
+The 'poe.py' script can be run from the bin directory where it will be installed
+by setup.py, or the location in the build directory may be added to the users
+PATH.
